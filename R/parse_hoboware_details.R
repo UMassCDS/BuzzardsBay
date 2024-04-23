@@ -2,8 +2,9 @@
 #'
 #' Read a HOBOware details file and parse into a nested list.
 #'
-#' The HOBOware details file contains a lot of information on the deployment
-#' with multiple levels of indentation used to indicate the hierarchy in the
+#' The HOBOware details file contains data on the sensor, the deployment,
+#' and the calibration process.
+#' Indentation level is used to indicate the hierarchy in the
 #' data. `parse_hoboware_details()` parses the file into a list that
 #' captures that structure.
 #'
@@ -17,17 +18,18 @@
 #'
 #' @note
 #'
-#' The sample numbers in the details files included commas (e.g 1,283 ) that
-#' were tripping up the YAML conversion.  These were eliminated in a targeted
+#' The sample numbers in the details files include commas (e.g 1,283 ) that
+#' trip up the YAML conversion.  These are eliminated in a targeted
 #' fashion - dropping commas between digits only on lines with
 #' `"Max:"`, `"Min:"`, `"Avg:"`, `"Std Dev:"` or `"Samples:"`.
 #' With other output files this might need to be expanded to cover more of
-#' the file, but given that I wasn't sure if commas ever delineate items in
-#' a list a surgical approach seemed safer.
+#' the file, but given that commas could potential delineate items in
+#' a list a surgical approach was used.
 #'
-#' With conductivity details files some of the values were delimited from the
-#' field names with "=" instead of ":". To process these correctly all " = "
-#' are replaced with ": " before parsing as YAML.  There might create
+#' With conductivity details files some of the values are separated from the
+#' field names with "=" instead of ":", used in most of the file.
+#' To process these items correctly all " = "
+#' are replaced with ": " before parsing as YAML.  This might create
 #' unintended consequences in some fields or with other HOBOware output,
 #' but it does not adversely affect any of the fields extracted by this package,
 #' in [get_do_details()] or [get_cond_details()].
