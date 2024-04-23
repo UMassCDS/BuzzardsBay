@@ -100,7 +100,7 @@ qc_deployment <- function(dir){
     final_qc =  file.path(dir, paste0("QC_", site, "_",
                                       folder_date, ".csv")),
     metadata = file.path(dir, paste0("Metadata_", site, "_",
-                                     folder_date, ".csv"))
+                                     folder_date, ".yml"))
   )
 
   old_output <- unlist(out_paths)[file.exists(unlist(out_paths))]
