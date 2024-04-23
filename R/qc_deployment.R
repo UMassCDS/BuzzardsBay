@@ -31,7 +31,7 @@
 #' @examples
 #' \dontrun{
 #'   paths <- setup_example_dir()
-#'   qc_deployment(paths$deployment)
+#'   a <- qc_deployment(paths$deployment)
 #' }
 #'
 #'
@@ -72,7 +72,12 @@ qc_deployment <- function(dir){
                         ignore.case = TRUE))
 
 
-  cat("QC-QA input paths:\n", yaml::as.yaml(paths))
+  cat("Reading from calibration folder:\n  ", dirname(paths[[1]]), "\n",
+      "Files:\n", sep = "")
+  input_files <- paths |> unlist() |> basename()
+  paste("  ", names(paths), ": ", input_files, "\n", collapse = "", sep = "") |>
+    cat()
+  rm(input_files)
 
   if(!all(sapply(paths, length) == 1))
     stop("Missing expected files in the calibration directory (\"",
@@ -125,6 +130,7 @@ qc_deployment <- function(dir){
   # Final columns names in order
   final_cols <- c(
     "Site",
+    "Date",
     "Date_Time",
     "Gen_QC",
     "Flags",
@@ -218,8 +224,8 @@ qc_deployment <- function(dir){
   #----------------------------------------------------------------------------#
 
   # Read tabular data
-  do <- readr::read_csv(paths$do)
-  cond <- readr::read_csv(paths$cond)
+  do <- readr::read_csv(paths$do, col_types = readr::cols())
+  cond <- readr::read_csv(paths$cond, col_types = readr::cols())
 
   # Extract serial number
   do_sn <- get_logger_sn(do)
@@ -254,9 +260,8 @@ qc_deployment <- function(dir){
   #----------------------------------------------------------------------------#
 
   #  "DO" to "Raw_DO", and "DO_Adj" to "DO"
-  d <- d |>
-    dplyr::rename(Raw_DO = dplyr::.data$DO) |>
-    dplyr::rename(DO = dplyr::.data$DO_Adj)
+  names(d)[names(d) == "DO"] <- "Raw_DO"
+  names(d)[names(d) == "DO_Adj"] <- "DO"
 
 
   # Time column
@@ -284,6 +289,10 @@ qc_deployment <- function(dir){
 
   d <- full
 
+  # Add values to columns
+  d$Site <- site
+  d$Date <- lubridate::mdy_hms(d$Date_Time) |> lubridate::as_date()
+
 
   #============================================================================#
   # QC                                                                      ####
@@ -293,13 +302,12 @@ qc_deployment <- function(dir){
   # Check basic assumptions
   #----------------------------------------------------------------------------#
 
-  # Add temporary date Columns
-  d$Date <- lubridate::mdy_hms(d$Date_Time)
-
-
-  interval <- d$Date[2] - d$Date[1]
+  # Check interval length
+  temp_dt <- lubridate::mdy_hms(d$Date_Time)
+  interval <- temp_dt[2] - temp_dt[1]
   units(interval) <- "mins"
   interval_min <- as.numeric(interval)
+  rm(temp_dt)
 
   if(!interval_min == md$logging_interval_min)
     stop("Apparent interval from log (", interval_min," min)",
@@ -310,7 +318,7 @@ qc_deployment <- function(dir){
     stop("Log is not in date-time order.")
 
   # Check that date in deployment folder name matches last date in data
-  end_date <- lubridate::as_date(max(d$Date))
+  end_date <- max(d$Date)
   if(end_date != lubridate::as_date(folder_date))
     stop("Last date in log files: ", end_date,
             " does not match deployment date in path: ", date, sep = "")
@@ -402,16 +410,6 @@ qc_deployment <- function(dir){
                                     site = md$site)
 
   #----------------------------------------------------------------------------#
-  # Update QC Code
-  #----------------------------------------------------------------------------#
-
-  new_qc_code <- rep(NA, nrow(d))
-  new_qc_code[d$DO_Flag != "" | d$Salinity_Flag != "" ] <- 9999
-  # Preexisting 9 indicates immediate rejection and takes precedence
-  sv <-!is.na(d$Gen_QC) & d$Gen_QC != 9
-  d$Gen_QC[sv] <-  new_qc_code[sv]
-
-  #----------------------------------------------------------------------------#
   # Finalize flags
   #----------------------------------------------------------------------------#
 
@@ -428,16 +426,30 @@ qc_deployment <- function(dir){
     d[[col]] <- gsub(":$", "", d[[col]])
 
   #----------------------------------------------------------------------------#
+  # Update QC Code
+  #----------------------------------------------------------------------------#
+
+  # Don't overwrite preexisting (non-NA) immediate rejection flags
+  d$Gen_QC[is.na(d$Gen_QC) & d$Flags != ""] <- 9999
+
+  #----------------------------------------------------------------------------#
   # Write Files
   #----------------------------------------------------------------------------#
 
-  readr::write_csv(d, out_paths$auto_qc, col_types = readr::cols() )
-  readr::write_csv(d, out_paths$prelim_qc, col_types = readr::cols())
+  readr::write_csv(d, out_paths$auto_qc, na = "")
+  readr::write_csv(d, out_paths$prelim_qc, na = "")
   yaml::write_yaml(md, file = out_paths$metadata)
 
-  cat("Wrote files to:\n  ", dir,"\n",
-      "Review and update QC codes in:\n  ", basename(out_paths$prelim_qc), "\n",
-      "And rename to:\n  ", basename(out_paths$final_qc), "\n", sep = "")
+  cat("\n\nWriting to deployment folder:\n  ", dir,"\n",
+      "Files:\n", sep = "")
+  sel <- c("auto_qc", "prelim_qc", "metadata")
+  cat(paste("  ", sel, ": ", basename(unlist(out_paths[sel])), "\n", sep = ""),
+      sep = "")
+
+
+  cat("\nReview and update QC codes in:\n  ", basename(out_paths$prelim_qc),
+      "\n", "And rename to:\n  ", basename(out_paths$final_qc), "\n\n",
+      sep = "")
 
   return(list(d = d, md = md))
 

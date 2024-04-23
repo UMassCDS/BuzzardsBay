@@ -41,6 +41,6 @@ setup_example_dir <- function(parent_dir = NULL) {
 
   file.copy(source_dir, destination, recursive = TRUE)
   return(list(base = file.path(example_base, "BB_Data"),
-              deployment = file.path(destination, "Calibrated")))
+              deployment = destination))
 
 }

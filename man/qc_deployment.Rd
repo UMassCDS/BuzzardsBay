@@ -42,7 +42,7 @@ total.
 \examples{
 \dontrun{
   paths <- setup_example_dir()
-  qc_deployment(paths$deployment)
+  a <- qc_deployment(paths$deployment)
 }
 
 
