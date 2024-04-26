@@ -1,0 +1,116 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+
+library(BuzzardsBay)
+library(knitr)
+knitr::opts_chunk$set(warning = FALSE) 
+
+```
+
+# BuzzardsBay
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of **BuzzardsBay** (R package) is to process and analyze data for the [Continuous Oxygen Monitoring in Buzzards Bay (COMBB) project](https://www.woodwellclimate.org/project/combb/). 
+
+## Installation
+
+You can install **BuzzardsBay** from [GitHub](https://github.com/) with:
+
+```{r install, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("UMassCDS/BuzzardsBay")
+```
+
+## Usage
+
+Currently the primary function is `qc_deployment()` it reads in calibrated 
+data for a deployment and generates files containing merged and flagged copies
+of the data.  It assumes [this file structure and naming convention](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU).
+In particular it expects data for a deployment to have this path `/BB_Data/<year>/<site>/<year>-<month>-<day>/`  e.g.
+`"~/BB_Data/2022/SR4/2022-07-08"`.  It makes no assumption about the path to 
+base directory (`"BB_Data"`) itself.  
+Within the deployment directory there should be a "Calibration/" sub-directory
+with the calibrated HOBOware output (ending in `.csv` and `Details.txt`) for 
+both dissolved oxygen and conductivity/salinity.
+
+Once that's in place we can process the calibrated data in the deployment with
+the code below.
+
+```{r run, eval = FALSE }
+library(BuzzardsBay)
+deployment_dir <- ""  # Provide full path here. Don't include `Calibration/`
+qc_deployment(deployment_dir)
+
+
+```
+
+## Running on example data
+
+Create an example data folder structure and deployment with `setup_example_dir()`. 
+If you specify a path with the `parent_dir` argument the example will be created 
+there. Otherwise, as in the example below, it creates the example files within
+the location specified by `tempdir()`. 
+```{r run_example, echo = TRUE, results = "hide"}
+paths <- setup_example_dir()  
+print(paths)
+```
+
+With that in place we can then call `qc_deployment()` on the example 
+deployment stored in `paths$deployment` which will also be where the output
+files are created.
+
+```{r qc_deployment, echo = TRUE, results = "hide"}
+a <- qc_deployment(paths$deployment)
+
+```
+The code above will only work once as `qc_deployment()` will throw an error if
+the output already exists. To run again delete all the example data in 
+`paths$base`.
+
+### Output
+
+`qc_deployment()` writes two identical CSV files and a metadata file to the
+deployment directory. 
+
+* `Auto_QC_<deployment>.csv` is a permanent record of this state of the process 
+and should not be edited.
+*  `Preliminary_QC_<deployment>.csv` is for subsequent review and editing. 
+`Preliminary_` should be dropped from the name when review is complete.
+* `Metadata_<deployment>.yml` contains the metadata written as a YAML file.
+
+#### Tabular data 
+
+Here are a few lines of the data written to the two CSV files when using 
+`setup_example_dir()`.
+
+```{r table, echo = FALSE}
+  options(knitr.kable.NA = '')
+  knitr::kable(a$d[41:50, ], row.names = FALSE, format.args = ) 
+
+
+```
+
+#### Metadata
+
+This is the metadata derived from the example.
+
+```{r md, results = "asis", echo = FALSE}
+cat(faux::nested_list(a$md))
+```
+
+
+
+

@@ -1,16 +1,21 @@
 
 # Immediate Rejection check for temperature
-ir_check_temperature <- function(t) {
+# t: temperature sequence
+# logger: logger letter designation for flag, either "D" (DO) or "C" (Cond.)
+ir_check_temperature <- function(t, logger) {
+
+  stopifnot(logger %in% c("D", "C"))
+
   flag <- rep("", length(t))
 
   sv <- t == -888.88 & !is.na(t) # selection vector
-  flag[sv] <- paste0(flag[sv], "Te:") # sensor error indicated
+  flag[sv] <- paste0(flag[sv], "T", logger, "e:") # sensor error indicated
 
   sv <- t < 5 & !is.na(t)
-  flag[sv] <- paste0(flag[sv], "Tl:") # low
+  flag[sv] <- paste0(flag[sv], "T", logger, "l:") # low
 
   sv <- t > 35  & !is.na(t)
-  flag[sv] <- paste0(flag[sv], "Th:") # high
+  flag[sv] <- paste0(flag[sv], "T", logger, "h:") # high
   return(flag)
 }
 
@@ -36,10 +41,10 @@ ir_check_raw_do <- function(d, interval = 0.25) {
   flag <- rep("", length(d))
 
   sv <- d == -888.88
-  flag[sv] <- paste0(flag[sv], "De")
+  flag[sv] <- paste0(flag[sv], "Re")
 
   sv <- d > 20
-  flag[sv] <-  paste0(flag[sv], "Dh")
+  flag[sv] <-  paste0(flag[sv], "Rh")
 
   flag
 }

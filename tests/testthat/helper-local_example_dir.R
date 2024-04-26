@@ -15,6 +15,3 @@ local_example_dir <- function(subdir = "bb_test", env = parent.frame()) {
   withr::defer(unlink(test_dir, recursive = TRUE), envir = env)
   return(paths)
 }
-
-
-

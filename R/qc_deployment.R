@@ -16,7 +16,7 @@
 #' using a heuristic that assumes the detail files end in `"Details.txt"`; the
 #' data files end in `".csv"`; the dissolved oxygen files have `"DO_"`;
 #' the Salinity/Conductivity files have either `"Cond_"`, `"Con_"` or `"Sal_`
-#' in the name; and that there is only one of each time of file - four files
+#' in the name; and that there is only one of each kind of file - four files
 #'  total.
 #'
 #' @param dir The path to a deployment directory to run QC on.  It should
@@ -369,8 +369,8 @@ qc_deployment <- function(dir){
 
 
   # Check Temperature
-  d$Temp_DOLog_Flag <- ir_check_temperature(d$Temp_DOLog)
-  d$Temp_CondLog_Flag<- ir_check_temperature(d$Temp_CondLog)
+  d$Temp_DOLog_Flag <- ir_check_temperature(d$Temp_DOLog, "D")
+  d$Temp_CondLog_Flag<- ir_check_temperature(d$Temp_CondLog, "C")
 
   # Check conductivity high range
   d$High_Range_Flag <- ir_check_high_range(d$High_Range)

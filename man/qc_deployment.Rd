@@ -36,7 +36,7 @@ Input files are looked for within \code{file.path(dir, "Calibration")}
 using a heuristic that assumes the detail files end in \code{"Details.txt"}; the
 data files end in \code{".csv"}; the dissolved oxygen files have \code{"DO_"};
 the Salinity/Conductivity files have either \code{"Cond_"}, \code{"Con_"} or \verb{"Sal_}
-in the name; and that there is only one of each time of file - four files
+in the name; and that there is only one of each kind of file - four files
 total.
 }
 \examples{
