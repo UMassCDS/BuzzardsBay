@@ -21,7 +21,7 @@ calibration.
 }
 \examples{
  file <- system.file(
-   "extdata/Calibrated/Sal_20649629_2022-07-08_cal_Details.txt",
+   "extdata/Calibrated/Cond_RB1_2023-06-09_Details.txt",
                      package = "BuzzardsBay")
  do_cal  <- get_cond_details(file)
  cat(yaml::as.yaml(do_cal))

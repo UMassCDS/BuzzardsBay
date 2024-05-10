@@ -51,12 +51,14 @@ in \code{\link[=get_do_details]{get_do_details()}} or \code{\link[=get_cond_deta
 }
 \examples{
  file <- file <- system.file(
-   "extdata/Calibrated/DO_20659181_2022-07-08_cal_Details.txt",
+   "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
                      package = "BuzzardsBay")
  hwd <- parse_hoboware_details(file)
  str(hwd, max.level = 2)
 
  # These are of particular interest
- hwd$Series_DO_Adj_Conc_mg_per_L$Dissolved_Oxygen_Assistant_Parameters
+ hwd$Series_DO_Adj_Conc_mg_per_L$Dissolved_Oxygen_Assistant_Parameters |>
+   yaml::as.yaml() |>
+   cat()
 
 }

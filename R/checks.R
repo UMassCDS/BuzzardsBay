@@ -1,59 +1,42 @@
 
-# Immediate Rejection check for temperature
-# t: temperature sequence
-# logger: logger letter designation for flag, either "D" (DO) or "C" (Cond.)
-ir_check_temperature <- function(t, logger) {
+# Functions to run QC checks on data columns that result in a flag
+# but not immediate rejection (see immediate_rejection_checks.R)
+# These all take the form of check_<data_col>()
 
-  stopifnot(logger %in% c("D", "C"))
-
-  flag <- rep("", length(t))
-
-  sv <- t == -888.88 & !is.na(t) # selection vector
-  flag[sv] <- paste0(flag[sv], "T", logger, "e:") # sensor error indicated
-
-  sv <- t < 5 & !is.na(t)
-  flag[sv] <- paste0(flag[sv], "T", logger, "l:") # low
-
-  sv <- t > 35  & !is.na(t)
-  flag[sv] <- paste0(flag[sv], "T", logger, "h:") # high
+# Temperature
+#  This is called both on the Dissolved O2 logger temperature and on the
+#   Conductivity logger temperature.
+#  x : temp seq.
+#  logger : either "D" or "C" indicating which logger collected the
+#    temperature.
+# site : site code
+# sites : site table
+check_temperature <- function(x, logger, site, sites) {
+  stopifnot(length(logger) == 1, logger %in% c("D", "C"))
+  flag <- rep("", length(x))
+  si <- which(sites$site == site)
+  flag[x < sites$Min_QC_Temp[si]] <- paste0("T", logger, "sl:")
+  flag[x > sites$Max_QC_Temp[si]] <- paste0("T", logger, "sh:")
   return(flag)
 }
 
-
-# Immediate Rejection check for conductivity high range
-ir_check_high_range <- function(c) {
-  flag <- rep("", length(c))
-
-  sv <- c == -888.88 & !is.na(c)    # sv = selection vector
-  flag[sv]  <- paste0(flag[sv], "He:")  # Error
-
-  sv <- c < 1000 & !is.na(c)
-  flag[sv] <- paste0(flag[sv], "Hl:") # Low
-
-  sv <- c > 55000 & !is.na(c)
-  flag[sv] <- paste0(flag[sv], "Hh:") # High
+# Fouling flags for Raw DO
+#  x : high range values
+# site : site code
+# sites : site table
+check_raw_do <- function(x, site, sites) {
+  flag <- rep("", length(x))
+  si <- which(sites$site == site)
+  flag[x < sites$Min_QC_Raw_DO[si]] <- "Rsl:"
+  flag[x > sites$Max_QC_Raw_DO[si]] <- "Rsh:"
   return(flag)
-}
-
-
-# Immediate rejection check for raw dissolved oxygen
-ir_check_raw_do <- function(d, interval = 0.25) {
-  flag <- rep("", length(d))
-
-  sv <- d == -888.88
-  flag[sv] <- paste0(flag[sv], "Re")
-
-  sv <- d > 20
-  flag[sv] <-  paste0(flag[sv], "Rh")
-
-  flag
 }
 
 
 
 # Fouling flags for calibrated dissolved oxygen
 # interval: interval between observations in minutes
-check_do <- function(x, interval = 15, site, prior_flags = NULL) {
+check_do <- function(x, interval = 15, site, sites) {
 
   ## Set parameters
   do_streak_min  <- 0.5 # Flag if DO is below this for more than an hour
@@ -100,27 +83,30 @@ check_do <- function(x, interval = 15, site, prior_flags = NULL) {
   #----------------------------------------------------------------------------#
   # High or low for site
   #----------------------------------------------------------------------------#
+  si <- which(sites$site == site) # site index
+  low_for_site <- x < sites$Min_QC_DO[si]
+  high_for_site <- x > sites$Max_QC_DO[si]
 
-  warning("Skipped flagging high and low Dissolved O2 for site.")
 
-
+  #----------------------------------------------------------------------------#
   # Set flags
-  if (is.null(prior_flags)) {
-    flags <- rep("", length(x))
-  } else {
-    flags <- prior_flags
-  }
-  flags[low_var] <- paste0(flags[low_var], "Dlv:")
-  flags[big_jump] <- paste0(flags[big_jump], "Dj:")
-  flags[in_low_streak] <- paste0(flags[in_low_streak], "Dls")
+  #----------------------------------------------------------------------------#
 
-  return(flags)
+
+  flag <- rep("", length(x))
+  flag[low_var] <- paste0(flag[low_var], "Dlv:")
+  flag[big_jump] <- paste0(flag[big_jump], "Dj:")
+  flag[in_low_streak] <- paste0(flag[in_low_streak], "Dls:")
+  flag[low_for_site] <- paste0(flag[low_for_site], "Dsl:")
+  flag[high_for_site] <- paste0(flag[high_for_site], "Dsh:")
+
+  return(flag)
 
 }
 
 
 
-check_salinity <- function(s, interval = 15, site) {
+check_salinity <- function(x, interval = 15, site, sites) {
 
   ## Set parameters
   salinity_max_jump <- 0.75 # Flag if DO jumps exceed this between observations
@@ -129,29 +115,50 @@ check_salinity <- function(s, interval = 15, site) {
 
 
   # Jumps
-  diff <- c(s[-1], NA) - s
+  diff <- c(x[-1], NA) - x
   end_of_jump <- abs(diff) > salinity_max_jump & !is.na(diff)
   big_jump <- end_of_jump | c(FALSE, end_of_jump[-length(end_of_jump)])
   big_jump
 
   # Low variation
   n <- ceiling(60 / interval) + 1
-  low_var <- has_low_variation(s,
+  low_var <- has_low_variation(x,
                                max_range = salinity_low_var_max_range,
                                n)
 
-  # Out of site specific range
-  #### PENDING
 
-  warning("Skipped flagging high and low salinity for site.")
+  #----------------------------------------------------------------------------#
+  # High or low for site
+  #----------------------------------------------------------------------------#
+  si <- which(sites$site == site) # site index
+  low_for_site <- x < sites$Min_QC_Sal[si]
+  high_for_site <- x > sites$Max_QC_Sal[si]
 
+  #----------------------------------------------------------------------------#
   # Set flags
-  flag <- rep("", length(s))
-  flag[big_jump] <- paste0(flag[big_jump], "Sj")
-  flag[low_var] <- paste0(flag[big_jump], "Slv")
+  #----------------------------------------------------------------------------#
+  flag <- rep("", length(x))
+  flag[big_jump] <- paste0(flag[big_jump], "Sj:")
+  flag[low_var] <- paste0(flag[big_jump], "Slv:")
+  flag[low_for_site] <- paste0(flag[low_for_site], "Ssl:")
+  flag[high_for_site] <- paste0(flag[high_for_site], "Ssh:")
 
   return(flag)
 }
+
+
+# Fouling flags for DO Percent Saturation
+#  x : Do Pct. Sat. values
+# site : site code
+# sites : site table
+check_do_pct_sat <- function(x, site, sites) {
+  flag <- rep("", length(x))
+  si <- which(sites$site == site)
+  flag[x < sites$Min_QC_DO_Pct_Sat[si]] <- "Rsl:"
+  flag[x > sites$Max_QC_DO_Pct_Sat[si]] <- "Rsh:"
+  return(flag)
+}
+
 
 has_low_variation <- function(x, max_range = 0.01, n = 5) {
   # Is each value in x part of a low variations streak of at least n values

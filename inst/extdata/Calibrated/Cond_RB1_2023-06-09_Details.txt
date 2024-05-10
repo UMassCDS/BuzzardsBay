@@ -1,0 +1,238 @@
+﻿Details
+Series: Low Range, μS/cm
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+			• Calibration Date: 06/10/19 08:05:26  GMT-04:00
+	Deployment Info
+		• Full Series Name: Conductivity Low Range, μS/cm
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+		• Launching Program: HOBOware Pro-3.7.23_0603_1001_Windows
+	Series Statistics
+		• Samples: 1,025
+		• Max: 33,594.4
+		• Min: 0.0
+		• Avg: 33,072.8
+		• Std Dev (σ): 3,436.6
+		• First Sample Time: 06/02/23 10:00:00  GMT-04:00
+		• Last Sample Time: 06/09/23 12:40:00  GMT-04:00
+Series: High Range, μS/cm
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+			• Calibration Date: 06/10/19 08:05:26  GMT-04:00
+	Deployment Info
+		• Full Series Name: Conductivity High Range, μS/cm
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+		• Launching Program: HOBOware Pro-3.7.23_0603_1001_Windows
+	Series Statistics
+		• Samples: 1,025
+		• Max: 31,036.0
+		• Min: 0.0
+		• Avg: 29,575.5
+		• Std Dev (σ): 2,902.8
+		• First Sample Time: 06/02/23 10:00:00  GMT-04:00
+		• Last Sample Time: 06/09/23 12:40:00  GMT-04:00
+Series: Temp, °C
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+			• Calibration Date: 06/10/19 08:05:26  GMT-04:00
+	Deployment Info
+		• Full Series Name: Temperature U24, °C
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+		• Launching Program: HOBOware Pro-3.7.23_0603_1001_Windows
+	Series Statistics
+		• Samples: 1,025
+		• Max: 31.18
+		• Min: 17.18
+		• Avg: 19.00
+		• Std Dev (σ): 1.68
+		• First Sample Time: 06/02/23 10:00:00  GMT-04:00
+		• Last Sample Time: 06/09/23 12:40:00  GMT-04:00
+Series: Specific Conductance, μS/cm
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+			• Calibration Date: 06/10/19 08:05:26  GMT-04:00
+	Deployment Info
+		• Full Series Name: Specific Conductance, μS/cm
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+		• Launching Program: HOBOware Pro-3.7.23_0603_1001_Windows
+	Series Statistics
+		• Samples: 1,018
+		• Max: 47,680.8
+		• Min: 18,838.1
+		• Avg: 46,212.0
+		• Std Dev (σ): 2,550.7
+		• First Sample Time: 06/02/23 11:10:00  GMT-04:00
+		• Last Sample Time: 06/09/23 12:40:00  GMT-04:00
+	Conductivity Compensation Parameters
+		• Compensation method: Non-linear, Sea Water Compensation
+		• Conductance Calibration Parameters
+		• Calibration points: Start point and End point
+		• Start cal cond = 40768.00 μS/cm
+		• Start cal temp = 21.10 °C
+		• Start cal time = 06/02/23 11:10:00 AM GMT-04:00
+		• End cal cond = 39200.00 μS/cm
+		• End cal temp = 17.80 °C
+		• End cal time = 06/09/23 12:40:00 PM GMT-04:00
+		• Reporting data between selected points only
+Series: Salinity, ppt
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+			• Calibration Date: 06/10/19 08:05:26  GMT-04:00
+	Deployment Info
+		• Full Series Name: Salinity, ppt
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+		• Launching Program: HOBOware Pro-3.7.23_0603_1001_Windows
+	Series Statistics
+		• Samples: 1,018
+		• Max: 31.0412
+		• Min: 11.1648
+		• Avg: 29.9828
+		• Std Dev (σ): 1.7872
+		• First Sample Time: 06/02/23 11:10:00  GMT-04:00
+		• Last Sample Time: 06/09/23 12:40:00  GMT-04:00
+	Conductivity Compensation Parameters
+		• Compensation method: Non-linear, Sea Water Compensation
+		• Conductance Calibration Parameters
+		• Calibration points: Start point and End point
+		• Start cal cond = 40768.00 μS/cm
+		• Start cal temp = 21.10 °C
+		• Start cal time = 06/02/23 11:10:00 AM GMT-04:00
+		• End cal cond = 39200.00 μS/cm
+		• End cal temp = 17.80 °C
+		• End cal time = 06/09/23 12:40:00 PM GMT-04:00
+		• Reporting data between selected points only
+Event Type: Coupler Detached
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+	Deployment Info
+		• Full Series Name: Coupler Detached
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 06/02/23 10:00:00  GMT-04:00
+		• Last Sample Time: 06/02/23 10:00:00  GMT-04:00
+Event Type: Coupler Attached
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+	Deployment Info
+		• Full Series Name: Coupler Attached
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 06/09/23 12:44:21  GMT-04:00
+		• Last Sample Time: 06/09/23 12:44:21  GMT-04:00
+Event Type: Stopped
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+	Deployment Info
+		• Full Series Name: Stopped
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 06/09/23 12:44:24  GMT-04:00
+		• Last Sample Time: 06/09/23 12:44:24  GMT-04:00
+Event Type: End Of File
+	Devices
+		Device Info
+			• Product: HOBO U24-002 Conductivity
+			• Serial Number: 20636185
+			• Version Number: 1.52
+			• Manufacturer: Onset Computer Corporation
+			• Device Memory: 65536
+			• Header Created: 06/10/19 08:05:37  GMT-04:00
+	Deployment Info
+		• Full Series Name: End Of File
+		• Launch Name: BBC3_RB1_20636185
+		• Deployment Number: 24
+		• Launch Time: 06/01/23 14:41:47  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.60 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 06/09/23 12:44:24  GMT-04:00
+		• Last Sample Time: 06/09/23 12:44:24  GMT-04:00

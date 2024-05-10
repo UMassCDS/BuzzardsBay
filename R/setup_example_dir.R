@@ -35,11 +35,23 @@ setup_example_dir <- function(parent_dir = NULL) {
     stop("Example base dir: ", example_base, " already exists.")
 
   source_dir <- system.file("extdata/Calibrated", package = "BuzzardsBay")
-  destination <- file.path(example_base, "2022", "SR4", "2022-07-08")
+  destination <- file.path(example_base, "2023", "RB1", "2023-06-09")
   dir.create(destination, recursive = TRUE)
 
   file.copy(source_dir, destination, recursive = TRUE)
-  return(list(base = file.path(example_base, "BB_Data"),
+
+  # Copy metadata files - sites.csv, placements.csv
+  dest_md_dir <- file.path(example_base, "2023", "Metadata")
+  dir.create(dest_md_dir, recursive = TRUE)
+  sites <-  system.file("extdata/sites.csv", package = "BuzzardsBay")
+  file.copy(sites, dest_md_dir)
+  placements <- system.file("extdata/placements.csv", package = "BuzzardsBay")
+  file.copy(placements, dest_md_dir)
+
+
+
+
+  return(list(base = example_base,
               deployment = destination))
 
 }

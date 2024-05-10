@@ -44,18 +44,26 @@
 #'
 #' @examples
 #'  file <- file <- system.file(
-#'    "extdata/Calibrated/DO_20659181_2022-07-08_cal_Details.txt",
+#'    "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
 #'                      package = "BuzzardsBay")
 #'  hwd <- parse_hoboware_details(file)
 #'  str(hwd, max.level = 2)
 #'
 #'  # These are of particular interest
-#'  hwd$Series_DO_Adj_Conc_mg_per_L$Dissolved_Oxygen_Assistant_Parameters
+#'  hwd$Series_DO_Adj_Conc_mg_per_L$Dissolved_Oxygen_Assistant_Parameters |>
+#'    yaml::as.yaml() |>
+#'    cat()
 #'
 parse_hoboware_details <- function(path) {
 
   # Read file
-  a <- readLines(path)
+  a <- readr::read_file(path)
+
+  # Standardize on "\n" for linebreaks
+  a <- gsub("[\r\n]+", "\n", a)
+
+  # Split into a vector of lines
+  a <- strsplit(a, "\n") |> dplyr::first()
 
   # Format as yaml
   a <- gsub("\t", " ", a)
@@ -63,7 +71,7 @@ parse_hoboware_details <- function(path) {
   a <- gsub("\u2022 ", "- ", a)
   a[is_header] <- gsub(":", "", a[is_header]) # drop internal ":" in header rows
   a[is_header] <- paste0(a[is_header], ":")
-  a <- a[!grepl("^Details:", a)]
+  a <- a[!grepl("^Details", a)]
   # Cleanup sigma "(<sigma>)" (regardless of file encoding)
   a <- gsub("Std Dev [(].[)]", "Std Dev", a)
 
@@ -105,7 +113,7 @@ parse_hoboware_details <- function(path) {
 #'
 #' @examples
 #'  file <- system.file(
-#'    "extdata/Calibrated/DO_20659181_2022-07-08_cal_Details.txt",
+#'    "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
 #'    package = "BuzzardsBay")
 #'  do_cal  <- get_do_details(file)
 #'  cat(yaml::as.yaml(do_cal))
@@ -227,7 +235,7 @@ get_do_details <- function(path) {
 #'
 #' @examples
 #'  file <- system.file(
-#'    "extdata/Calibrated/Sal_20649629_2022-07-08_cal_Details.txt",
+#'    "extdata/Calibrated/Cond_RB1_2023-06-09_Details.txt",
 #'                      package = "BuzzardsBay")
 #'  do_cal  <- get_cond_details(file)
 #'  cat(yaml::as.yaml(do_cal))
@@ -344,6 +352,7 @@ clean_names <- function(x, spaces = 0) {
   n <- gsub("/", "_per_", n) # replace "/" with "_per_"
   n <- gsub("%", "pct", n)  # replace "%" with "_pct"
   n <- gsub("[()\u00B0,]", "", n) # drop these symbols \u00B0 is the deg symbol
+  n <- gsub("_+", "_", n) # drop repeated _
   names(x) <- n
 
   for (i in seq_along(x)) {
