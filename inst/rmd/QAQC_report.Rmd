@@ -1,0 +1,320 @@
+---
+title: "QAQC"
+author: "Tanmay Agrawal"
+date: "`r Sys.Date()`"
+output: html_notebook
+params:
+  data_path: NULL
+  site_path: NULL
+---
+
+
+# QA/QC Module
+
+```{r setup, include=FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readxl)
+library(plotly)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+data_path <-  params$data_path
+site_path <- params$site_path 
+
+if(is.null(data_path)){
+  data_path <- system.file("extdata/qc_example.csv", package = "BuzzardsBay")
+} 
+
+if(is.null(site_path)){
+  site_path <- system.file("extdata/sites.csv", package = "BuzzardsBay")
+} 
+
+
+# Read in data 
+d <- readr::read_csv(data_path, col_types = readr::cols())
+sites <- readr::read_csv(site_path, col_types = readr::cols())
+
+# Reformat to long (dl= data, long)
+data_cols <- c("Temp_DOLog",
+               "Temp_CondLog",
+               "Raw_DO",
+               "DO",
+               "DO_Pct_Sat",
+               "Salinity",
+               "High_Range",
+               "Spec_Cond")
+id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags")
+dl <- tidyr::pivot_longer(d[, c(id_cols, data_cols)], 
+                        cols = data_cols)
+
+# Convert sites to list with just current site
+site <- d$Site[1]
+n_match <- sum(sites$site == site) 
+if(n_match != 1)
+  stop("Expected one and only one site in ", site_path, " to match the current site (", site, ") but found ", n_match)
+
+sites <- sites[sites$site == site, ,drop = FALSE] |> as.list()
+
+
+```
+
+
+# Dissolved Oxygen
+
+```{r echo=FALSE, message=TRUE, warning=TRUE}
+
+# Define what's in this plot
+focal_names <- c("DO", "Raw_DO")
+jump_flags <- c("Dj", "Rj")
+jump_pattern <- paste(jump_flags, collapse = "|")
+related_flag_pattern <- c("D|R")
+plot_focus <- "DO" # used in labeling
+
+# Assemble jump points
+dl$jumped <- grepl(jump_pattern, dl$Flags)
+jump_points <- dl[dl$jumped & dl$name %in% focal_names, , drop = FALSE]
+# jump_points$name <- paste0(jump_points$name, " jump")
+
+
+# Set time of day (background colors)
+tod_colors <- c(rgb(1, 1, 1, .05), rgb(0, 0, 0, .05))
+tod_color_labels <- c("Day", "Night")
+
+# set flag colors 
+flag_colors <- c(rgb(1, 0, 0, .7), rgb(1, 0, 0, .2))
+flag_color_labels <- c(paste0(plot_focus, " Flag"), "Other Flag")
+
+# Set line colors
+line_colors <- c(rgb(0, 0, 0, .9), rgb(0, 0, 1, .9))
+
+
+# https://stackoverflow.com/questions/70658690/change-background-colour-between-day-and-night-in-ggplot2-in-
+
+# Add additional plot related columns to the data
+
+# Time of day background coloration
+dl$hour <- lubridate::hour(lubridate::as_datetime(dl$Date_Time))
+dl$Time_of_Day = ifelse(dl$hour >= 18 | dl$hour <= 6, "Night", "Day")
+dl$tod_color <- ifelse(dl$Time_of_Day == "Day", tod_colors[1], tod_colors[2])
+
+# Flag background coloration 
+dl$Any_Flag <- !is.na(dl$Flags)
+dl$This_Flag <- grepl(related_flag_pattern, dl$Flags)
+dl$flag_col <- NA
+dl$flag_col[dl$Any_Flag] <- flag_colors[2]
+dl$flag_col[dl$This_Flag]  <- flag_colors[1]
+
+
+# Set variables based on range of data
+focal_range <- range(d[, focal_names], na.rm = TRUE)
+x_mid <- mean(range(d$Date_Time))
+
+# If FALSE then thresholds are only plotted (as horizontal lines)
+# if they are exceeded
+always_plot_thresholds <- FALSE
+
+
+# Assemble plot
+p <-  dl |> 
+  dplyr::filter(name %in% focal_names) |>
+  ggplot(aes(x = Date_Time, y = value, color = name)) + 
+
+  # Add Rectangles for night and day
+  geom_rect(aes(xmin = Date_Time, xmax = lead(Date_Time), ymin = -Inf, ymax = Inf,
+                fill = tod_color), inherit.aes = FALSE) + 
+  
+  # Add Rectangles for flags  
+  geom_rect(aes(xmin = Date_Time, xmax = lead(Date_Time), ymin = -Inf, ymax = Inf,
+                fill = flag_col), inherit.aes = FALSE) + 
+
+  ggplot2::scale_fill_identity(name = NULL,
+                               breaks = c(tod_colors, flag_colors), 
+                               labels = c(tod_color_labels, flag_color_labels), 
+                               guide = "legend") +
+  
+
+
+  # Add lines with DO
+  geom_line(size = .35) + 
+  ggplot2::scale_color_manual(values = line_colors, name = NULL) 
+  
+
+  # Add thresholds to plot if they are within the range of the data
+  # These are horizontal lines indicating maximum or minumum value before
+  # a flag is set
+
+  # Maximums 
+  thresholds <- c(bbp$max_raw_do, 
+                  sites$Max_QC_Raw_DO, 
+                  sites$Max_QC_DO)
+  labels <- c("Max Raw DO (Immediate Rejection)", 
+              "Max Site Raw DO (Rsh)", 
+              "Max Site DO (Dsh)")
+  colors <- rep(rgb(1, 0, 0, .8), 3)
+  
+  for(i in seq_along(thresholds)){
+    if(focal_range[2] > thresholds[i] || always_plot_thresholds){
+      p <- p +  geom_hline(yintercept = thresholds[i], color = colors[i]) + 
+        ggplot2::annotate("text", 
+                          x = x_mid, 
+                          y = thresholds[i], 
+                          label = labels[i], 
+                          vjust = -.5, 
+                          color = colors[i])
+    }
+  }
+  
+  # Minimums
+  thresholds <- c(sites$Min_QC_Raw_DO, 
+                  sites$Min_QC_DO)
+  labels <- c("Min Site Raw DO (Rsl)", 
+              "Min Site DO (Dsl)")
+  colors <- rep(rgb(1, 0, 0, .8), 2)
+  
+  for(i in seq_along(thresholds)){
+    if(focal_range[2] < thresholds[i]  || always_plot_thresholds){
+      p <- p +  geom_hline(yintercept = thresholds[i], color = colors[i]) + 
+        ggplot2::annotate("text", 
+                          x = x_mid, 
+                          y = thresholds[i], 
+                          label = labels[i], 
+                          vjust = -.5, 
+                          color = colors[i])
+    }
+  }
+  
+  
+  # Add Jump points
+  if(nrow(jump_points) > 0) {
+      p <- p + geom_point(aes(x = Date_Time, y = value, color = name), 
+                 data = jump_points, 
+                 inherit.aes = FALSE, 
+                 show.legend = FALSE) 
+  }
+  
+  # Title and axis labels
+  p <- p +
+    ggplot2::ggtitle("Dissolved Oxygen") +
+    ggplot2::ylab("Dissolved Oxygen (mg/l)") + 
+    ggplot2::xlab(NULL)
+  
+
+  
+print(p)  
+```
+
+# Interactive Dissolved Oxygen plot
+
+This shows just the calibrated dissolved oxygen. Dissolved oxygen flags
+are shown as vertical red bars.  Dashed horizontal lines indicate the site
+specific thresholds for throwing flags, and may not be visible unless the
+plot is zoomed out. 
+
+```{r DO interactive plot}
+
+# Generate rectangles to represent the currently set flags
+d$current_flag <- grepl("D", d$Flags)
+flag_dt <- d$Date_Time[d$current_flag] # date time of each flag center
+interval <- d$Date_Time[2] - d$Date_Time[1] 
+x0s <- flag_dt - 0.5 * interval # start of each flag
+x1s <- flag_dt + 0.5 * interval # end pf each flag
+shapes <- vector(mode = "list", length = length(x0s))
+for(i in seq_along(x0s)) {
+  shapes[[i]] <- 
+    list(type = "rect", 
+         x0 = x0s[i], 
+         x1 = x1s[i], 
+         y0 = -1000, 
+         y1 = 1000, 
+         fillcolor = "red", 
+         line = list(color = "red"), 
+         opacity = 0.2
+         )
+}
+
+# Determine range of DO and critical thresholds
+yrange <- range(d$DO)
+thresholds <- c(sites$Min_QC_DO, sites$Max_QC_DO)
+threshold_labels <- c("Site Min. DO", "Site Max. DO")
+
+# Interactive plot for Dissolved Oxygen over Time
+p <- plot_ly(d, 
+             x = ~Date_Time, 
+             y = ~DO, type = 'scatter', 
+             mode = 'lines', 
+             name = "DO (mg/l)") 
+
+for(i in seq_along(thresholds)) {
+  p <- p |> 
+    add_trace(y = thresholds[i], 
+              name = threshold_labels[i], 
+              line = list(color = 'red', dash = 'dash'))
+  
+}
+
+p <- p |> 
+  plotly::layout(
+         xaxis = list(title = 'Date/Time'),
+         yaxis = list(title = 'Dissolved Oxygen (mg/l)',
+                      range = yrange),
+         shapes = shapes)
+
+p
+```
+
+
+
+```{r}
+
+
+
+
+ggplot(d, aes(x = Date_Time, y = Raw_DO)) +
+  geom_line(lineend = "round") +
+  geom_hline(yintercept = bbp$max_raw_do , color = "red", linetype = "dashed") +
+  labs(x = "Date/Time", y = "Dissolved Oxygen (mg/l)", title = "Dissolved Oxygen over Time")
+
+ggplot(bbc_data, aes(x = Date_Time, y = Sal_ppt)) +
+  geom_line() + # Plot the salinity over time
+  geom_ribbon(aes(ymin = Min_QC_Sal, ymax = Max_QC_Sal, fill = Stn_ID), alpha = 0.2) + # Add shaded area for salinity range
+  labs(x = "Date/Time", y = "Salinity (ppt)", title = "Salinity over Time with Range by Station") +
+  scale_fill_discrete(name = "Station ID") # Add a legend for the station IDs
+
+ggplot(bbc_data, aes(x = Date_Time, y = Temp_C_DOlogger)) +
+  geom_line() +
+  geom_hline(yintercept = 5, color = "red", linetype = "dashed") +
+  geom_hline(yintercept = 35, color = "red", linetype = "dashed") +
+  labs(x = "Date/Time", y = "Temperature (°C)", title = "Temperature over Time")
+```
+
+## Interactive Plots
+
+```{r}
+# Interactive plot for Dissolved Oxygen over Time
+plot_ly(bbc_data, x = ~Date_Time, y = ~DO_mgl, type = 'scatter', mode = 'lines') %>%
+  add_trace(y = 0.5, name = 'Critical Value', line = list(color = 'red', dash = 'dash')) %>%
+  layout(title = 'Dissolved Oxygen over Time',
+         xaxis = list(title = 'Date/Time'),
+         yaxis = list(title = 'Dissolved Oxygen (mg/l)'))
+
+# Interactive plot for Salinity over Time with Range by Station
+plot_ly(bbc_data, x = ~Date_Time, y = ~Sal_ppt, type = 'scatter', mode = 'lines', color = ~Stn_ID) %>%
+  add_ribbons(ymin = ~Min_QC_Sal, ymax = ~Max_QC_Sal, line = list(color = 'rgba(0,0,0,0)'), fillcolor = 'rgba(0,0,0,0.2)') %>%
+  layout(title = 'Salinity over Time with Range by Station',
+         xaxis = list(title = 'Date/Time'),
+         yaxis = list(title = 'Salinity (ppt)'))
+
+# Interactive plot for Temperature over Time
+plot_ly(bbc_data, x = ~Date_Time, y = ~Temp_C_DOlogger, type = 'scatter', mode = 'lines') %>%
+  add_trace(y = 5, name = 'Critical Value (Low)', line = list(color = 'red', dash = 'dash')) %>%
+  add_trace(y = 35, name = 'Critical Value (High)', line = list(color = 'red', dash = 'dash')) %>%
+  layout(title = 'Temperature over Time',
+         xaxis = list(title = 'Date/Time'),
+         yaxis = list(title = 'Temperature (°C)'))
+```
+
