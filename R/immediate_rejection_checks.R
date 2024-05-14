@@ -12,13 +12,13 @@ ir_check_temperature <- function(t, logger) {
 
   flag <- rep("", length(t))
 
-  sv <- t == -888.88 & !is.na(t) # selection vector
+  sv <- t == bbp$logger_error_value & !is.na(t) # selection vector
   flag[sv] <- paste0(flag[sv], "T", logger, "e:") # sensor error indicated
 
-  sv <- t < 5 & !is.na(t)
+  sv <- t < bbp$min_temp & !is.na(t)
   flag[sv] <- paste0(flag[sv], "T", logger, "l:") # low
 
-  sv <- t > 35  & !is.na(t)
+  sv <- t > bbp$max_temp  & !is.na(t)
   flag[sv] <- paste0(flag[sv], "T", logger, "h:") # high
   return(flag)
 }
@@ -28,13 +28,13 @@ ir_check_temperature <- function(t, logger) {
 ir_check_high_range <- function(c) {
   flag <- rep("", length(c))
 
-  sv <- c == -888.88 & !is.na(c)    # sv = selection vector
+  sv <- c == bbp$logger_error_value & !is.na(c)    # sv = selection vector
   flag[sv]  <- paste0(flag[sv], "He:")  # Error
 
-  sv <- c < 1000 & !is.na(c)
+  sv <- c < bbp$min_hr & !is.na(c)
   flag[sv] <- paste0(flag[sv], "Hl:") # Low
 
-  sv <- c > 55000 & !is.na(c)
+  sv <- c > bbp$max_hr & !is.na(c)
   flag[sv] <- paste0(flag[sv], "Hh:") # High
   return(flag)
 }
@@ -44,10 +44,10 @@ ir_check_high_range <- function(c) {
 ir_check_raw_do <- function(d, interval = 0.25) {
   flag <- rep("", length(d))
 
-  sv <- d == -888.88
+  sv <- d == bbp$logger_error_value
   flag[sv] <- paste0(flag[sv], "Re")
 
-  sv <- d > 20
+  sv <- d > bbp$max_raw_do
   flag[sv] <-  paste0(flag[sv], "Rh")
 
   flag

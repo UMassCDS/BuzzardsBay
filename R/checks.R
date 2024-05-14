@@ -39,9 +39,10 @@ check_raw_do <- function(x, site, sites) {
 check_do <- function(x, interval = 15, site, sites) {
 
   ## Set parameters
-  do_streak_min  <- 0.5 # Flag if DO is below this for more than an hour
-  do_max_jump <- 2 # Flag if DO jumps by more than this between observations
-  do_low_variation_max_range <- 0.01 # Flag if the range of observed values
+#  do_streak_min  <- 0.5 # Flag if DO is below this for more than an hour
+#  do_streak_duration <- 60  # in minutes
+#  do_max_jump <- 2 # Flag if DO jumps by more than this between observations
+#  do_low_variation_max_range <- 0.01 # Flag if the range of observed values
   #  (max - min) stays below this number for an hour
 
 
@@ -49,17 +50,17 @@ check_do <- function(x, interval = 15, site, sites) {
   # Document indicates greater than 1 hour so with 15 minute
   # interval that means 5 observations
   # with 10 minute intervals it will be 7
-  n <- ceiling(60 / interval) + 1
+  n <- ceiling(bbp$do_streak_duration / interval) + 1
 
   #----------------------------------------------------------------------------#
   # Low streak
   # Check for more than an hour below do_streak_min
   #----------------------------------------------------------------------------#
 
-  end_of_streak <- slider::slide_vec(x,
-                                     .before = n - 1,
-                                     .f = function(x) all(x < do_streak_min),
-                                     .complete = TRUE)
+  end_of_streak <-
+    slider::slide_vec(x, .before = n - 1,
+                      .f = function(x) all(x < bbp$do_streak_min),
+                      .complete = TRUE)
 
   # Expand flag to catch all the values that were in the streak
   in_low_streak <- slider::slide_vec(end_of_streak, .after = n - 1, .f = any)
@@ -70,15 +71,15 @@ check_do <- function(x, interval = 15, site, sites) {
   #----------------------------------------------------------------------------#
 
   diff <- x - c(x[-1], NA)
-  start_of_jump <- abs(diff) > do_max_jump & !is.na(diff)
+  start_of_jump <- abs(diff) > bbp$do_max_jump & !is.na(diff)
   # Capture end of jump too:
   big_jump <- start_of_jump | c(FALSE, start_of_jump[-length(start_of_jump)])
 
   #----------------------------------------------------------------------------#
   # Low variation
   #----------------------------------------------------------------------------#
-
-  low_var <- has_low_variation(x, max_range = do_low_variation_max_range, n = n)
+  n <- ceiling(bbp$do_lv_duration / interval) + 1
+  low_var <- has_low_variation(x, max_range = bbp$do_lv_range, n = n)
 
   #----------------------------------------------------------------------------#
   # High or low for site
@@ -109,21 +110,21 @@ check_do <- function(x, interval = 15, site, sites) {
 check_salinity <- function(x, interval = 15, site, sites) {
 
   ## Set parameters
-  salinity_max_jump <- 0.75 # Flag if DO jumps exceed this between observations
-  salinity_low_var_max_range <- 0.01 # Flag if the range of observed
+#  salinity_max_jump <- 0.75 # Flag if DO jumps exceed this between observations
+#  salinity_low_var_max_range <- 0.01 # Flag if the range of observed
   # values (max - min) stays below this number for an hour
 
 
   # Jumps
   diff <- c(x[-1], NA) - x
-  end_of_jump <- abs(diff) > salinity_max_jump & !is.na(diff)
+  end_of_jump <- abs(diff) > bbp$sal_max_jump & !is.na(diff)
   big_jump <- end_of_jump | c(FALSE, end_of_jump[-length(end_of_jump)])
   big_jump
 
   # Low variation
-  n <- ceiling(60 / interval) + 1
+  n <- ceiling(bbp$sal_lv_duration / interval) + 1
   low_var <- has_low_variation(x,
-                               max_range = salinity_low_var_max_range,
+                               max_range = bbp$sal_lv_range,
                                n)
 
 
