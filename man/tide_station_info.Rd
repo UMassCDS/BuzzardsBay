@@ -9,7 +9,7 @@
 
 A data frame with 13 rows and 5 columns:
 \describe{
-\item{name}{Station name. This can be used with \link[rtide:tide_height]{rtide::tide_height}}
+\item{name}{Station name. This can be used with \code{\link[rtide:tide_height]{rtide::tide_height()}}}
 \item{id}{Station ID}
 \item{lat,lon}{Station latitude and longitude}
 \item{predictions}{
