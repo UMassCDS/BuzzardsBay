@@ -4,13 +4,15 @@
 \alias{setup_example_dir}
 \title{Setup an example directory}
 \usage{
-setup_example_dir(parent_dir = NULL)
+setup_example_dir(parent_dir = NULL, delete_old = FALSE)
 }
 \arguments{
 \item{parent_dir}{The directory in which to create the example files tree.
 If left \code{NULL} it will be set to \code{\link[=tempdir]{tempdir()}}. Either way
 an error will be thrown if this a \code{"BB_Data"} folder already exists
 in \code{parent_dir}.}
+
+\item{delete_old}{If \code{TRUE} then preexisting example data is deleted.}
 }
 \value{
 A named list with paths to:

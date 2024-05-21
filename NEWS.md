@@ -6,8 +6,13 @@
   global parameters.
 * Add `tide_station_info` dataset containing locations of NOAA tide stations 
   in Buzzard's bay.
-* Add `inst/rmd/QAQC_report.rmd` based on Tanmay's rnotebook, with significant 
-  changes.
+* Add `inst/rmd/QAQC_report.rmd` with plots and summary information to
+  facilitate quality control and quality assurance.
+* Add `make_deployment_report()` to make QAQC report from data in a deployment
+  directory.
+* `qc_deployment()` now makes the report automatically unless the new `report`
+  argument is set to `FALSE`.
+
 
 # BuzzardsBay 0.1.0.9003
 2024-05-10

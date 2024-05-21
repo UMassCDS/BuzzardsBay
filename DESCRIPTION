@@ -9,9 +9,13 @@ Description: Process and analyze data from the Continuous Oxygen Monitoring in
     Buzzards Bay (COMBB) project. 
 Imports:
     dplyr,
+    ggplot2,
     hms,
     lubridate,
+    plotly,
     readr,
+    rlang,
+    rmarkdown,
     slider,
     yaml
 Encoding: UTF-8

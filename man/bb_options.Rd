@@ -40,7 +40,8 @@ between the maximum and the minimum values in a streak longer than
 (\code{Dlv}) flag is set}
 \item{\code{do_max_jump}}{The maximum difference between consecutive DO
 readings before the jump in dissolved oxygen (\code{Dj}) flag is is set.}
-\item{\code{do_streak_duration}, \code{do_streak_min}}{If DO remains below \code{do_streak_min}
+\item{\code{do_streak_duration}, \code{do_streak_min}}{If DO remains below
+\code{do_streak_min}
 for more than \code{do_streak_duration} than the Dissolved Oxygen low streak
 (\code{Dls}) flag is set.}
 \item{\code{logger_error_value}}{The value that indicates a logger error
@@ -49,10 +50,10 @@ High Range, and Raw DO are all checked for this value.}
 \item{\code{max_hr}, \code{min_hr}}{Thresholds for the high high range (\code{Hh}) and low
 high range (\code{Hl}) flags.}
 \item{\code{max_raw_do}}{Threshold for the high raw DO (\code{Rh}) flag.}
-\item{\code{max_temp}, \code{min_temp}}{Thresholds for the high temperature (\code{TDh}, \code{TCh})
-and low temperature (\code{TDl}, \code{TCl})}
-\item{\code{sal_lv_duration}, \code{sal_lv_range}}{If the difference between the maximum
-and minimum salinity remains below \code{sal_lc_range} for more than
+\item{\code{max_temp}, \code{min_temp}}{Thresholds for the high temperature
+(\code{TDh}, \code{TCh}) and low temperature (\code{TDl}, \code{TCl})}
+\item{\code{sal_lv_duration}, \code{sal_lv_range}}{If the difference between the
+maximum and minimum salinity remains below \code{sal_lc_range} for more than
 \code{sal_lv_duration} minutes than the low variation in salinity (\code{Slv}) flag
 is set.}
 \item{\code{sal_max_jump}}{The maximum difference between successive salinity

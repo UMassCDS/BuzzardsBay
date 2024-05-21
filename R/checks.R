@@ -38,13 +38,6 @@ check_raw_do <- function(x, site, sites) {
 # interval: interval between observations in minutes
 check_do <- function(x, interval = 15, site, sites) {
 
-  ## Set parameters
-#  do_streak_min  <- 0.5 # Flag if DO is below this for more than an hour
-#  do_streak_duration <- 60  # in minutes
-#  do_max_jump <- 2 # Flag if DO jumps by more than this between observations
-#  do_low_variation_max_range <- 0.01 # Flag if the range of observed values
-  #  (max - min) stays below this number for an hour
-
 
   # Set number of sequential observations that are "more than an hour"
   # Document indicates greater than 1 hour so with 15 minute
@@ -109,12 +102,6 @@ check_do <- function(x, interval = 15, site, sites) {
 
 check_salinity <- function(x, interval = 15, site, sites) {
 
-  ## Set parameters
-#  salinity_max_jump <- 0.75 # Flag if DO jumps exceed this between observations
-#  salinity_low_var_max_range <- 0.01 # Flag if the range of observed
-  # values (max - min) stays below this number for an hour
-
-
   # Jumps
   diff <- c(x[-1], NA) - x
   end_of_jump <- abs(diff) > bbp$sal_max_jump & !is.na(diff)
@@ -126,7 +113,6 @@ check_salinity <- function(x, interval = 15, site, sites) {
   low_var <- has_low_variation(x,
                                max_range = bbp$sal_lv_range,
                                n)
-
 
   #----------------------------------------------------------------------------#
   # High or low for site

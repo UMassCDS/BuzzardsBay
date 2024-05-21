@@ -24,4 +24,3 @@ Round Hill Point	8447842	+41.5383	-70.9283	Harmonic"  |>
 names(tide_station_info) <- tolower(names(tide_station_info))
 
 usethis::use_data(tide_station_info, overwrite = TRUE)
-

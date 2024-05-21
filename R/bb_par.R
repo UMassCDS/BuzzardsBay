@@ -36,17 +36,17 @@ bbp$max_raw_do <- 20
 
 default_lv_range <- .01 # default low variation range, used for all variable
 default_lv_duration <- 60 # default duration of low variation streak, note
-  # the streak must be longer than this duration.  Thus setting it to 60 minutes
-  # with an interval of 10 minutes indicates that we'd need 7 consecutive
-  # readings within which the max value - min values is consistently less than
-  # This is based on "Longer than an hour"
+# the streak must be longer than this duration.  Thus setting it to 60 minutes
+# with an interval of 10 minutes indicates that we'd need 7 consecutive
+# readings within which the max value - min values is consistently less than
+# This is based on "Longer than an hour"
 
 
 # Dls (Dissolved oxygen low streak)
 # (Flag if the DO is below the min for at least the length)
 bbp$do_streak_min  <- 0.5 # Streak minimum DO
 bbp$do_streak_duration <- 60  # Minutes, a streak must be longer than this many
-                              # minutes to qualify,
+#                               minutes to qualify,
 
 # Dj  (Dissolved oxygen jump)
 bbp$do_max_jump <- 2 # Flag if DO jumps by more than this between observations
@@ -62,6 +62,3 @@ bbp$sal_max_jump <- 0.75
 # Salinity low variation
 bbp$sal_lv_range <- default_lv_range
 bbp$sal_lv_duration <- default_lv_duration
-
-
-

@@ -1,3 +1,4 @@
+# nolint start: cyclocomp_lintr
 #' Set and retrieve BuzzardsBay package options
 #'
 #' With no arguments all the Buzzards Bay parameters will be returned as a list.
@@ -14,7 +15,8 @@
 #' (`Dlv`) flag is set}
 #' \item{`do_max_jump`}{The maximum difference between consecutive DO
 #' readings before the jump in dissolved oxygen (`Dj`) flag is is set.}
-#' \item{`do_streak_duration`, `do_streak_min`}{If DO remains below `do_streak_min`
+#' \item{`do_streak_duration`, `do_streak_min`}{If DO remains below
+#' `do_streak_min`
 #' for more than `do_streak_duration` than the Dissolved Oxygen low streak
 #' (`Dls`) flag is set.}
 #' \item{`logger_error_value`}{The value that indicates a logger error
@@ -23,10 +25,10 @@
 #' \item{`max_hr`, `min_hr`}{Thresholds for the high high range (`Hh`) and low
 #' high range (`Hl`) flags.}
 #' \item{`max_raw_do`}{Threshold for the high raw DO (`Rh`) flag.}
-#'  \item{`max_temp`, `min_temp`}{Thresholds for the high temperature (`TDh`, `TCh`)
-#'  and low temperature (`TDl`, `TCl`)}
-#'  \item{`sal_lv_duration`, `sal_lv_range`}{If the difference between the maximum
-#'  and minimum salinity remains below `sal_lc_range` for more than
+#'  \item{`max_temp`, `min_temp`}{Thresholds for the high temperature
+#'  (`TDh`, `TCh`) and low temperature (`TDl`, `TCl`)}
+#'  \item{`sal_lv_duration`, `sal_lv_range`}{If the difference between the
+#'  maximum and minimum salinity remains below `sal_lc_range` for more than
 #'  `sal_lv_duration` minutes than the low variation in salinity (`Slv`) flag
 #'  is set.}
 #'   \item{`sal_max_jump`}{The maximum difference between successive salinity
@@ -76,9 +78,8 @@ bb_options <- function(...) {
     if (args[[1]] %in% names(bbp)) {
       return(bbp[[args[[1]]]])
     } else {
-      stop(paste(
-        setdiff(args[[1]], names(bbp)), collapse = ", "),
-        " is not a BirdFlowR configuration option.")
+      stop(paste(setdiff(args[[1]], names(bbp)), collapse = ", "),
+           " is not a BirdFlowR configuration option.")
     }
   }
 
@@ -100,18 +101,19 @@ bb_options <- function(...) {
   }
 
   # Assign named arguments to parameters
-  for(i in seq_along(args)){
+  for (i in seq_along(args)) {
     name <- names(args[i])
     value <- args[[i]]
-    if(length(value) > 1 ) stop("All parameters take a single value")
-    if(is.numeric(bbp[[name]]) & !is.numeric(value))
+    if (length(value) > 1) stop("All parameters take a single value")
+    if (is.numeric(bbp[[name]]) && !is.numeric(value))
       stop("Please assign a numeric value to ", name)
-    if(is.character(bbp[[name]]) & !is.character(value))
+    if (is.character(bbp[[name]]) && !is.character(value))
       stop("Please assign strings to ", name)
-    if(is.na(value) || is.null(value))
+    if (is.na(value) || is.null(value))
       stop("You cannot assign NA or NULL to", name)
     bbp[[name]] <- value
   }
 
 
 }
+# nolint end
