@@ -12,7 +12,8 @@ project](https://www.woodwellclimate.org/project/combb/).
 
 ## Installation
 
-You can install **BuzzardsBay** from [GitHub](https://github.com/) with:
+You can install or update **BuzzardsBay** from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -21,21 +22,31 @@ devtools::install_github("UMassCDS/BuzzardsBay")
 
 ## Usage
 
-Currently the primary function is `qc_deployment()` it reads in
-calibrated data for a deployment and generates files containing merged
-and flagged copies of the data. It assumes [this file structure and
-naming
+The primary function is `qc_deployment()` it reads in calibrated data
+for a deployment and generates files containing merged and flagged
+copies of the data, and an html report with plots of the data.
+
+`qc_deployment()` and the **BuzzardsBay** package in general assume [a
+specific file structure and naming
 convention](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU).
-In particular it expects data for a deployment to have this path
-`/BB_Data/<year>/<site>/<year>-<month>-<day>/` e.g.
-`"~/BB_Data/2022/SR4/2022-07-08"`. It makes no assumption about the path
-to base directory (`"BB_Data"`) itself.  
-Within the deployment directory there should be a “Calibration/”
-sub-directory with the calibrated HOBOware output (ending in `.csv` and
-`Details.txt`) for both dissolved oxygen and conductivity/salinity.
+
+In particular:
+
+- All the data associated with a deployment should be stored in a
+  deployment directory with a path
+  `/BB_Data/<year>/<site>/<year>-<month>-<day>/` e.g.  
+  `"~/BB_Data/2022/SR4/2022-07-08"`.  
+- The path to base directory and it’s name (`"BB_Data"` in example) can
+  be any valid path.
+- Within the deployment directory there should be a “Calibration/”
+  sub-directory with the calibrated HOBOware output (ending in `.csv`
+  and `Details.txt`) for both dissolved oxygen and
+  conductivity/salinity. The dissolved oxygen files should have `DO_` in
+  their name and the salinity files should have `Cond_`, `Con_` or
+  `Sal_` in their name.
 
 Once that’s in place we can process the calibrated data in the
-deployment with the code below.
+deployment and generate the html report with the code below.
 
 ``` r
 library(BuzzardsBay)
@@ -65,13 +76,13 @@ a <- qc_deployment(paths$deployment)
 ```
 
 The code above will only work once as `qc_deployment()` will throw an
-error if the output already exists. To run again delete all the example
-data in `paths$base`.
+error if the output already exists. To run again create a fresh example
+directory with: `setup_example_dir(delete_old = TRUE)`
 
 ### Output
 
-`qc_deployment()` writes two identical CSV files and a metadata file to
-the deployment directory.
+`qc_deployment()` writes two identical CSV files, a metadata file, and
+an HTML report to the deployment directory.
 
 - `Auto_QC_<deployment>.csv` is a permanent record of this state of the
   process and should not be edited.
@@ -80,70 +91,80 @@ the deployment directory.
   complete.
 - `Metadata_<deployment>.yml` contains the metadata written as a YAML
   file.
+- `QC_<deployment>_report.html` contains plots and summary information
+  about the deployment. It is a very large file so should be deleted
+  after the QC is complete. It can be recreated later with
+  `make_deployment_report(deployment_dir)` as long as the Auto QC and
+  metadata files are present.
 
 #### Tabular data
 
 Here are a few lines of the data written to the two CSV files when using
 `setup_example_dir()`.
 
-| Site | Date       | Date_Time           | Gen_QC | Flags | Time     | Time_QC | Temp_DOLog | Temp_DOLog_Flag | Temp_DOLog_QC | Temp_CondLog | Temp_CondLog_Flag | Temp_CondLog_QC | Raw_DO | Raw_DO_Flag | Raw_DO_QC |   DO | DO_Flag | DO_QC | DO_Calibration_QC | DO_Pct_Sat | DO_Pct_Sat_Flag | DO_Pct_Sat_QC | Salinity_DOLog | Salinity_DOLog_Flag | Salinity_DOLog_QC | Salinity | Salinity_Flag | Salinity_QC | Sal_Calibration_QC | High_Range | High_Range_Flag | High_Range_QC | Spec_Cond | Spec_Cond_Flag | Spec_Cond_QC | QA_Comment | Field_Comment |
-|:-----|:-----------|:--------------------|-------:|:------|:---------|:--------|-----------:|:----------------|:--------------|-------------:|:------------------|:----------------|-------:|:------------|:----------|-----:|:--------|:------|:------------------|-----------:|:----------------|:--------------|---------------:|:--------------------|:------------------|---------:|:--------------|:------------|:-------------------|-----------:|:----------------|:--------------|----------:|:---------------|:-------------|:-----------|:--------------|
-| SR4  | 2022-06-09 | 06/09/22 19:00:00.0 |        |       | 19:00:00 |         |      20.38 |                 |               |        20.84 |                   |                 |   9.60 |             |           | 8.10 |         |       |                   |      107.5 |                 |               |        30.7494 |                     |                   |  30.7506 |               |             |                    |    32947.4 |                 |               |   47281.5 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 19:15:00.0 |        |       | 19:15:00 |         |      20.46 |                 |               |        20.88 |                   |                 |   9.70 |             |           | 8.18 |         |       |                   |      108.8 |                 |               |        30.7432 |                     |                   |  30.7444 |               |             |                    |    32967.4 |                 |               |   47273.0 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 19:30:00.0 |        |       | 19:30:00 |         |      20.24 |                 |               |        20.75 |                   |                 |   9.63 |             |           | 8.12 |         |       |                   |      107.6 |                 |               |        30.8474 |                     |                   |  30.8487 |               |             |                    |    32974.9 |                 |               |   47416.3 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 19:45:00.0 |        |       | 19:45:00 |         |      20.28 |                 |               |        20.79 |                   |                 |   9.67 |             |           | 8.15 |         |       |                   |      108.1 |                 |               |        30.7837 |                     |                   |  30.7850 |               |             |                    |    32939.9 |                 |               |   47328.8 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 20:00:00.0 |        |       | 20:00:00 |         |      20.36 |                 |               |        20.88 |                   |                 |   9.84 |             |           | 8.30 |         |       |                   |      110.2 |                 |               |        30.7465 |                     |                   |  30.7478 |               |             |                    |    32964.9 |                 |               |   47277.6 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 20:15:00.0 |        |       | 20:15:00 |         |      20.60 |                 |               |        21.06 |                   |                 |   9.61 |             |           | 8.12 |         |       |                   |      108.1 |                 |               |        30.6133 |                     |                   |  30.6146 |               |             |                    |    32959.9 |                 |               |   47094.5 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 20:30:00.0 |        |       | 20:30:00 |         |      20.64 |                 |               |        21.21 |                   |                 |   9.43 |             |           | 7.98 |         |       |                   |      106.2 |                 |               |        30.3891 |                     |                   |  30.3905 |               |             |                    |    32845.2 |                 |               |   46786.1 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 20:45:00.0 |        |       | 20:45:00 |         |      20.70 |                 |               |        21.28 |                   |                 |   9.02 |             |           | 7.64 |         |       |                   |      101.7 |                 |               |        30.1322 |                     |                   |  30.1336 |               |             |                    |    32642.3 |                 |               |   46432.0 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 21:00:00.0 |        |       | 21:00:00 |         |      20.76 |                 |               |        21.42 |                   |                 |   8.88 |             |           | 7.53 |         |       |                   |      100.2 |                 |               |        29.9624 |                     |                   |  29.9638 |               |             |                    |    32571.0 |                 |               |   46197.8 |                |              |            |               |
-| SR4  | 2022-06-09 | 06/09/22 21:15:00.0 |        |       | 21:15:00 |         |      20.96 |                 |               |        21.56 |                   |                 |   8.73 |             |           | 7.41 |         |       |                   |       98.9 |                 |               |        29.7539 |                     |                   |  29.7554 |               |             |                    |    32460.9 |                 |               |   45910.1 |                |              |            |               |
+| Site | Date       | Date_Time           | Gen_QC | Flags | Time     | Time_QC | Temp_DOLog | Temp_DOLog_QC | Temp_CondLog | Temp_CondLog_QC | Raw_DO | Raw_DO_QC |   DO | DO_QC | DO_Calibration_QC | DO_Pct_Sat | DO_Pct_Sat_QC | Salinity | Salinity_QC | Sal_Calibration_QC | High_Range | High_Range_QC | Spec_Cond | Spec_Cond_QC | Cal | QA_Comment | Field_Comment |
+|:-----|:-----------|:--------------------|-------:|:------|:---------|:--------|-----------:|:--------------|-------------:|:----------------|-------:|:----------|-----:|:------|:------------------|-----------:|:--------------|---------:|:------------|:-------------------|-----------:|:--------------|----------:|:-------------|----:|:-----------|:--------------|
+| RB1  | 2023-06-02 | 2023-06-02 17:50:00 |        |       | 17:50:00 |         |      21.32 |               |        22.29 |                 |   7.33 |           | 6.33 |       |                   |       84.8 |               |  29.2351 |             |                    |    30864.7 |               |   45190.4 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:00:00 |        |       | 18:00:00 |         |      21.30 |               |        22.32 |                 |   7.53 |           | 6.51 |       |                   |       87.1 |               |  29.1925 |             |                    |    30844.4 |               |   45131.4 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:10:00 |        |       | 18:10:00 |         |      21.36 |               |        22.38 |                 |   7.66 |           | 6.62 |       |                   |       88.7 |               |  29.1753 |             |                    |    30867.3 |               |   45107.6 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:20:00 |        |       | 18:20:00 |         |      21.32 |               |        22.29 |                 |   7.75 |           | 6.70 |       |                   |       89.7 |               |  29.2189 |             |                    |    30852.0 |               |   45168.0 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:30:00 |        |       | 18:30:00 |         |      21.32 |               |        22.32 |                 |   7.70 |           | 6.65 |       |                   |       89.1 |               |  29.2059 |             |                    |    30859.7 |               |   45149.9 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:40:00 |        |       | 18:40:00 |         |      21.38 |               |        22.39 |                 |   7.75 |           | 6.70 |       |                   |       89.8 |               |  29.1873 |             |                    |    30887.7 |               |   45124.3 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 18:50:00 |        |       | 18:50:00 |         |      21.42 |               |        22.46 |                 |   7.82 |           | 6.76 |       |                   |       90.6 |               |  29.1716 |             |                    |    30918.3 |               |   45102.4 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 19:00:00 |        |       | 19:00:00 |         |      21.44 |               |        22.46 |                 |   7.82 |           | 6.76 |       |                   |       90.7 |               |  29.1868 |             |                    |    30933.6 |               |   45123.5 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 19:10:00 |        |       | 19:10:00 |         |      21.40 |               |        22.42 |                 |   7.71 |           | 6.66 |       |                   |       89.3 |               |  29.1832 |             |                    |    30905.5 |               |   45118.5 |              |     |            |               |
+| RB1  | 2023-06-02 | 2023-06-02 19:20:00 |        |       | 19:20:00 |         |      21.48 |               |        22.55 |                 |   7.98 |           | 6.90 |       |                   |       92.6 |               |  29.1648 |             |                    |    30971.9 |               |   45093.0 |              |     |            |               |
 
 #### Metadata
 
 This is the metadata derived from the example.
 
-- site: SR4
-- deployment: SR4_2022-07-08
-- auto_qc_date: 2024-04-26
-- logging_interval_min: 15
+- site: RB1
+- deployment: RB1_2023-06-09
+- deployment_date: 2023-06-09
+- calibration_start: 2023-06-02 11:10:00
+- calibration_end: 2023-06-09 12:40:00
+- pct_calibrated: 99.3171
+- n_records: 1018
+- pct_immediate_rejection: 0
+- pct_flagged_for_review: 3.54
+- logging_interval_min: 10
 - timezone: GMT-04:00
+- auto_qc_date: 2024-05-21
 - do_calibration:
-  - start_time: 06/09/22 12:00:00 PM GMT-04:00
-  - start_do_conc: 7.8
-  - start_temperature_c: 20.38
-  - start_salinity_ppt: 29.61
-  - start_meter_titration_value_mg_l: 6.62
-  - start_salinity_correction: 0.8402
-  - end_time: 06/21/22 11:15:00 PM GMT-04:00
-  - end_do_conc: 5.02
-  - end_temperature_c: 21.7
-  - end_meter_titration_value_mg_l: 4.32
+  - start_do_conc: 7.37
+  - start_temperature_c: 22
+  - start_salinity_ppt: 28.47
+  - start_meter_titration_value_mg_l: 6.41
+  - start_salinity_correction: 0.8475
+  - end_do_conc: 9.12
+  - end_temperature_c: 18.1
+  - end_meter_titration_value_mg_l: 7.62
+  - start_ratio: 0.869742198100407
+  - end_ratio: 0.835526315789474
 - do_deployment:
-  - full_series_name: DO Adj Conc, mg/L
-  - launch_name: BBC1_SR4_20659181
-  - launch_time: 06/08/22 11:01:41 GMT-04:00
-  - calibration_date: 05/16/22 18:17:04 GMT-04:00
-  - calibration_gain: 1.04263
-  - calibration_offset: 0
+  - full_series_name: DO Adj Conc , mg/L
+  - launch_name: BBC3_RB1_20659182
+  - launch_time: 2023-06-01 14:16:43
+  - calibration_date: 2023-05-16 17:04:40
+  - calibration_gain: 1.07718
+  - calibration_offset: -0.02045
 - do_device:
   - product: HOBO U26-001 Dissolved Oxygen
-  - serial_number: 20659181
+  - serial_number: 20659182
   - version_number: 1.08
-  - header_created: 03/02/12 14:19:05 GMT-04:00
+  - header_created: 2012-03-02 14:19:05
 - cond_calibration:
-  - start_cal_cond: 41877
-  - start_cal_temp: 20.7
-  - start_cal_time: 06/09/22 12:00:00 GMT-04:00
-  - end_cal_cond: 45762
-  - end_cal_temp: 22.2
-  - end_cal_time: 06/21/22 23:15:00 GMT-04:00
+  - start_cal_cond: 40768
+  - start_cal_temp: 21.1
+  - end_cal_cond: 39200
+  - end_cal_temp: 17.8
 - cond_deployment:
   - full_series_name: Salinity, ppt
-  - launch_name: BBC1_SR4_20649629
-  - launch_time: 06/08/22 11:05:29 GMT-04:00
+  - launch_name: BBC3_RB1_20636185
+  - launch_time: 2023-06-01 14:41:47
 - cond_device:
   - product: HOBO U24-002 Conductivity
-  - serial_number: 20649629
+  - serial_number: 20636185
   - version_number: 1.52
-  - header_created: 06/26/19 07:42:02 GMT-04:00
+  - header_created: 2019-06-10 08:05:37

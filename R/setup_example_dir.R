@@ -11,6 +11,8 @@
 #' an error will be thrown if this a `"BB_Data"` folder already exists
 #' in `parent_dir`.
 #'
+#' @param delete_old If `TRUE` then preexisting example data is deleted.
+#'
 #' @return A named list with paths to:
 #' \item{base_dir}{The path to the newly created example
 #' base directory (`"BB_Data"`).}
@@ -22,15 +24,20 @@
 #' \dontrun{
 #' setup_example()
 #' }
-setup_example_dir <- function(parent_dir = NULL) {
+setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE) {
   if (is.null(parent_dir)) {
     parent_dir <- tempdir(check = TRUE)
   }
-
   if (!file.exists(parent_dir))
     dir.create(parent_dir)
 
   example_base <- file.path(parent_dir, "BB_Data")
+
+  if (file.exists(example_base)  && delete_old) {
+    unlink(example_base, recursive = TRUE)
+    Sys.sleep(.1)
+  }
+
   if (file.exists(example_base))
     stop("Example base dir: ", example_base, " already exists.")
 

@@ -1,0 +1,272 @@
+---
+output: html_document
+params:
+  data_path: NULL
+  sites_path: NULL
+  metadata_path: NULL
+---
+
+```{r setup, include=FALSE}
+library(BuzzardsBay)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(plotly)
+knitr::opts_chunk$set(echo = FALSE, out.width = "100%")
+```
+
+
+```{r preprocess data, include=FALSE}
+
+data_path <-  params$data_path
+sites_path <- params$sites_path
+metadata_path <- params$metadata_path
+
+
+# If all parameters are null substitute paths to example files
+# (for testing and debugging)
+n_null <- sum(is.null(data_path), is.null(sites_path), is.null(metadata_path))
+if (! n_null %in% c(0, 3))
+  stop("Either all parameters should be set or none (to use example files)")
+if (n_null == 3) {
+  message("Running with example files from package.")
+
+  data_path <- system.file("extdata/qc_example.csv", package = "BuzzardsBay",
+                           mustWork = TRUE)
+  sites_path <- system.file("extdata/sites.csv", package = "BuzzardsBay",
+                            mustWork = TRUE)
+  metadata_path <- system.file("extdata/qc_example.yml",
+                               package = "BuzzardsBay",
+                               mustWork = TRUE)
+}
+
+# Set flag  when using example data
+using_example <- data_path == system.file("extdata/qc_example.csv",
+                                          package = "BuzzardsBay")
+
+
+# Read data
+d <- readr::read_csv(data_path, col_types = readr::cols())
+sites <- readr::read_csv(sites_path, col_types = readr::cols())
+md <- yaml::read_yaml(metadata_path)
+
+
+# Reformat to long (dl is for data, long)
+data_cols <- c("Temp_DOLog",
+               "Temp_CondLog",
+               "Raw_DO",
+               "DO",
+               "DO_Pct_Sat",
+               "Salinity",
+               "High_Range",
+               "Spec_Cond")
+id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags")
+
+dl <- select(d, all_of(c(id_cols, data_cols))) |>
+  tidyr::pivot_longer(cols = all_of(data_cols))
+
+# Convert sites to list with just current site
+site <- md$site
+n_match <- sum(sites$site == site)
+if (n_match != 1)
+  stop("Expected one and only one site in ", sites_path, " 
+       to match the current site (", site, ") but found ", n_match)
+
+if (!site == d$Site[1])
+  stop("Metadata site (", site, ") does not match data site (", d$Site[1], ")")
+
+sites <- sites[sites$site == site, , drop = FALSE] |> as.list()
+
+# Make local copy of parameters
+bbp <- bb_options()
+
+example_warning_text <-
+  ifelse(using_example,
+         "## <span style = \"color:red\"> Using package example data</span>",
+         "")
+
+# Record counts
+n_ir <- sum(d$Gen_QC == 9, na.rm = TRUE) # immediate rejection
+n_to_review <- sum(d$Gen_QC == 9999, na.rm = TRUE)
+
+```
+
+---
+title: "`r site`, `r md$deployment_date`"
+---
+## Quality assessment report
+### [Continuous Oxygen Monitoring in Buzzards Bay (COMBB) project](https://www.woodwellclimate.org/project/combb/)
+
+`r example_warning_text`
+
+________________________________________________________________________________
+
+## Deployment info
+
+Report date: `r lubridate::today()`  
+Site: `r md$site`  
+Deployment: `r md$deployment_date`  
+Records: `r nrow(d)`  
+Calibration start: `r md$calibration_start`
+Calibration end : `r md$calibration_end`  
+Percent calibrated: `r round(md$pct_calibrated, 2)`  
+Percent (and number) immediate rejection: `r md$pct_immediate_rejection`
+(`r n_ir`)  
+Percent (and number) flagged for review: `r md$pct_flagged_for_review`
+(`r n_to_review`)  
+DO calibration ratios (start, end): 
+`r round(md$do_calibration$start_ratio, 3)`, 
+`r round(md$do_calibration$end_ratio, 3)`   
+Input path: `r data_path`  
+
+## Dissolved Oxygen
+
+### Raw and calibrated dissolved oxygen (mg/l)
+
+Vertical rectangles indicate flags, red for dissolved oxygen (DO),
+orange for other flags.  
+When the data exceeds thresholds ,they are indicated with horizontal lines.  
+Dots mark both ends of jumps that are greater than`r bbp$do_max_jump`.  
+
+```{r DO static plot, echo=FALSE, message=TRUE, warning=TRUE}
+
+
+p <- bb_plot(d, dl,
+             focal_column = c("DO", "Raw_DO"),
+             jump_pattern = "Dj|Rj",
+             focal_flag_pattern = "D|R",
+             plot_label = "Dissolved Oxygen",
+             focal_flag_label = "DO",
+             y_label = "Dissolved Oxygen (mg/l)",
+             threshold_values = c(bbp$max_raw_do,
+                                  sites$Max_QC_Raw_DO,
+                                  sites$Max_QC_DO,
+                                  sites$Min_QC_Raw_DO,
+                                  sites$Min_QC_DO),
+             threshold_labels = c("Max Raw DO (Immediate Rejection)",
+                                  "Max Site Raw DO (Rsh)",
+                                  "Max Site DO (Dsh)",
+                                  "Min Site Raw DO (Rsl)",
+                                  "Min Site DO (Dsl)"),
+             threshold_colors = rgb(1, 0, 0, .8))
+
+
+suppress_specific_warnings(print(p))
+
+```
+
+### Calibrated dissolved oxygen (mg/l), interactive plot
+
+Vertical rectangles indicate flags, red for dissolved oxygen orange for other
+flags.  
+Dashed horizontal lines are plotted for site specific thresholds but 
+may not be visible until the plot is zoomed out.  
+
+
+```{r DO interactive plot}
+
+bb_interactive_plot(d, dl,
+                    focal_column = c("DO"),
+                    jump_pattern = "Dj",
+                    focal_flag_pattern = "D",
+                    plot_label = "Dissolved Oxygen",
+                    focal_flag_label = "DO",
+                    y_label = "Dissolved Oxygen (mg/l)",
+                    threshold_values = c(sites$Max_QC_DO,
+                                         sites$Min_QC_DO),
+                    threshold_labels = c("Max Site DO (Dsh)",
+                                         "Min Site DO (Dsl)"),
+                    threshold_colors = c("purple", "purple"))
+
+
+```
+
+
+## Salinity
+
+### Calibrated salinity (ppt)
+
+```{r salinity static plot }
+
+p <- bb_plot(d, dl,
+             focal_column = "Salinity",
+             jump_pattern = "Sj",
+             focal_flag_pattern = "S",
+             plot_label = "Salinity",
+             y_label = "Salinity (ppt)",
+             threshold_values = c(sites$Max_QC_Sal, sites$Min_QC_Sal),
+             threshold_labels = c("Max Site Salinity (Ssh)",
+                                  "Min Site Salinity (Ssl)"),
+             threshold_colors = rgb(1, 0, 0, .8))
+suppress_specific_warnings(print(p))
+
+```
+
+### Calibrated salinity (ppt), interactive plot
+
+```{r salinit interactive plot}
+
+bb_interactive_plot(d, dl,
+                    focal_column = "Salinity",
+                    jump_pattern = "Sj",
+                    focal_flag_pattern = "S",
+                    plot_label = "Salinity",
+                    y_label = "Salinity (ppt)",
+                    threshold_values = c(sites$Max_QC_Sal, sites$Min_QC_Sal),
+                    threshold_labels = c("Max Site Salinity (Ssh)",
+                                         "Min Site Salinity (Ssl)"),
+                    threshold_colors = c("purple", "purple"))
+
+
+```
+
+
+
+## Temperature
+
+### Temperature from Conductivity and DO loggers (Deg. C)
+
+```{r temp static plot}
+
+
+p <- bb_plot(d, dl,
+             focal_column = c("Temp_DOLog", "Temp_CondLog"),
+             jump_pattern = "TDj|TCj",
+             focal_flag_pattern = "TD|RC",
+             plot_label = "Temperature",
+             y_label = "Temperature (C)",
+             threshold_values = c(sites$Max_QC_Temp,
+                                  sites$Min_QC_Temp,
+                                  bbp$max_temp,
+                                  bbp$min_temp),
+             threshold_labels = c("Max Site Temp (TDsh, TCsh)",
+                                  "Min Site Temp (TDsl, TCsl)",
+                                  "Max Temp (TDh, TCh)",
+                                  "Min Temp (TDl, TCl)"),
+             threshold_colors = rgb(1, 0, 0, .8))
+
+suppress_specific_warnings(print(p))
+
+```
+
+### Temperature from DO logger (Deg C.), interactive plot
+
+```{r temp interactive plot}
+
+bb_interactive_plot(d, dl,
+                    focal_column = c("Temp_DOLog"),
+                    jump_pattern = "TDj|TCj",
+                    focal_flag_pattern = "TD|RC",
+                    plot_label = "Temperature",
+                    y_label = "Temperature (C)",
+                    threshold_values = c(sites$Max_QC_Temp,
+                                         sites$Min_QC_Temp,
+                                         bbp$max_temp,
+                                         bbp$min_temp),
+                    threshold_labels = c("Max Site Temp (TDsh, TCsh)",
+                                         "Min Site Temp (TDsl, TCsl)",
+                                         "Max Temp (TDh, TCh)",
+                                         "Min Temp (TDl, TCl)"),
+                    threshold_colors = c("purple", "purple", "red", "red"))
+```
