@@ -4,17 +4,29 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r setup, include = FALSE}
+```{r setup2, include = FALSE}
+library(BuzzardsBay)
+library(knitr)
+
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  warning = FALSE
 )
 
-library(BuzzardsBay)
-library(knitr)
-knitr::opts_chunk$set(warning = FALSE) 
+
+
+# Delete preexisting example directory
+  parent_dir <- tempdir(check = TRUE)
+  example_base <- file.path(parent_dir, "BB_Data")
+  if (file.exists(example_base)) {
+    unlink(example_base, recursive = TRUE)
+    Sys.sleep(.1)
+  }
+  rm(parent_dir, example_base)
 
 ```
 
@@ -27,7 +39,7 @@ The goal of **BuzzardsBay** (R package) is to process and analyze data for the [
 
 ## Installation
 
-You can install **BuzzardsBay** from [GitHub](https://github.com/) with:
+You can install or update **BuzzardsBay** from [GitHub](https://github.com/) with:
 
 ```{r install, eval=FALSE}
 # install.packages("devtools")
@@ -36,25 +48,33 @@ devtools::install_github("UMassCDS/BuzzardsBay")
 
 ## Usage
 
-Currently the primary function is `qc_deployment()` it reads in calibrated 
+The primary function is `qc_deployment()` it reads in calibrated 
 data for a deployment and generates files containing merged and flagged copies
-of the data.  It assumes [this file structure and naming convention](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU).
-In particular it expects data for a deployment to have this path `/BB_Data/<year>/<site>/<year>-<month>-<day>/`  e.g.
-`"~/BB_Data/2022/SR4/2022-07-08"`.  It makes no assumption about the path to 
-base directory (`"BB_Data"`) itself.  
-Within the deployment directory there should be a "Calibration/" sub-directory
-with the calibrated HOBOware output (ending in `.csv` and `Details.txt`) for 
-both dissolved oxygen and conductivity/salinity.
+of the data, and an html report with plots of the data.
 
-Once that's in place we can process the calibrated data in the deployment with
-the code below.
+`qc_deployment()` and the **BuzzardsBay** package in general assume 
+[a specific file structure and naming convention](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU).
+
+In particular:
+
+  * All the data associated with a deployment should be stored in a deployment
+  directory with a path `/BB_Data/<year>/<site>/<year>-<month>-<day>/`  e.g.   
+  `"~/BB_Data/2022/SR4/2022-07-08"`.  
+* The path to base directory  and it's name (`"BB_Data"` in example) can be any
+  valid path. 
+* Within the deployment directory there should be a "Calibration/" sub-directory
+  with the calibrated HOBOware output (ending in `.csv` and `Details.txt`) for 
+  both dissolved oxygen and conductivity/salinity. The dissolved oxygen files 
+  should have `DO_` in their name and the salinity files should have
+  `Cond_`, `Con_` or `Sal_`  in their name.
+
+Once that's in place we can process the calibrated data in the deployment and
+generate the html report with the code below.
 
 ```{r run, eval = FALSE }
 library(BuzzardsBay)
 deployment_dir <- ""  # Provide full path here. Don't include `Calibration/`
 qc_deployment(deployment_dir)
-
-
 ```
 
 ## Running on example data
@@ -63,6 +83,8 @@ Create an example data folder structure and deployment with `setup_example_dir()
 If you specify a path with the `parent_dir` argument the example will be created 
 there. Otherwise, as in the example below, it creates the example files within
 the location specified by `tempdir()`. 
+
+
 ```{r run_example, echo = TRUE, results = "hide"}
 paths <- setup_example_dir()  
 print(paths)
@@ -72,24 +94,30 @@ With that in place we can then call `qc_deployment()` on the example
 deployment stored in `paths$deployment` which will also be where the output
 files are created.
 
-```{r qc_deployment, echo = TRUE, results = "hide"}
+```{r qc_deployment, echo=TRUE, message=FALSE, results=FALSE}
 a <- qc_deployment(paths$deployment)
 
 ```
 The code above will only work once as `qc_deployment()` will throw an error if
-the output already exists. To run again delete all the example data in 
-`paths$base`.
+the output already exists. To run again create a fresh example directory with: 
+`setup_example_dir(delete_old = TRUE)`
 
 ### Output
 
-`qc_deployment()` writes two identical CSV files and a metadata file to the
-deployment directory. 
+`qc_deployment()` writes two identical CSV files, a metadata file, and an 
+HTML report to the deployment directory. 
 
 * `Auto_QC_<deployment>.csv` is a permanent record of this state of the process 
 and should not be edited.
 *  `Preliminary_QC_<deployment>.csv` is for subsequent review and editing. 
 `Preliminary_` should be dropped from the name when review is complete.
 * `Metadata_<deployment>.yml` contains the metadata written as a YAML file.
+* `QC_<deployment>_report.html` contains plots and summary information about the
+deployment. It is a very large file so should be deleted after the QC is
+complete.  It can be recreated later with 
+`make_deployment_report(deployment_dir)` as long as the Auto QC and metadata
+files are present.
+
 
 #### Tabular data 
 
