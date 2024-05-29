@@ -1,3 +1,16 @@
+# BuzzardsBay 0.1.0.9006
+
+* Add 2024 example data - so now there are two example datasets.
+* `setup_example_dir()` return list has new item `deployments` which is a vector
+ of deployment directories.  The `deployment` item still exists and is the
+ first item. It also sets up both deployment directories and metadatfiles for
+ each year.
+* Fixed bug in the QAQC report code that caused temperature flags from the 
+DO logger to be considered both temperature and DO flags when plotting.
+* Updated `qc_deployment()` and helper functions to handle changes in 
+CSV file column names between 2023 and 2024 example data.  
+It will now work with both formats.
+
 # BuzzardsBay 0.1.0.9005
 
 * Minor edits to README 

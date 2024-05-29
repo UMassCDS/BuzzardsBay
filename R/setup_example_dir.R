@@ -16,8 +16,9 @@
 #' @return A named list with paths to:
 #' \item{base_dir}{The path to the newly created example
 #' base directory (`"BB_Data"`).}
-#' \item{deployment_dir}{The path to the example deployment folder within
+#' \item{deployment_dir}{The path to the default deployment folder within
 #' `base_dir`.}
+#' \item{deployment_dirs}{A vector of paths to example deployment directories.}
 #' @export
 #'
 #' @examples
@@ -41,24 +42,39 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE) {
   if (file.exists(example_base))
     stop("Example base dir: ", example_base, " already exists.")
 
+  destinations <- character(0)
+
+  # 2023 calibrated data
   source_dir <- system.file("extdata/Calibrated", package = "BuzzardsBay")
   destination <- file.path(example_base, "2023", "RB1", "2023-06-09")
   dir.create(destination, recursive = TRUE)
-
   file.copy(source_dir, destination, recursive = TRUE)
+  destinations <- c(destinations, destination)
+  # 2024  calibrated data
+  source_dir <- system.file("extdata/Calibrated_2024", package = "BuzzardsBay")
+  source_files <- list.files(source_dir, full.names = TRUE)
+  destination <- file.path(example_base, "2024", "OB9", "2024-05-15", "Calibrated")
+  dir.create(destination, recursive = TRUE)
+  file.copy(source_files, destination)
+  destinations <- c(destinations, gsub("[/\\\\]Calibrated$", "", destination))
 
-  # Copy metadata files - sites.csv, placements.csv
-  dest_md_dir <- file.path(example_base, "2023", "Metadata")
-  dir.create(dest_md_dir, recursive = TRUE)
-  sites <-  system.file("extdata/sites.csv", package = "BuzzardsBay")
-  file.copy(sites, dest_md_dir)
-  placements <- system.file("extdata/placements.csv", package = "BuzzardsBay")
-  file.copy(placements, dest_md_dir)
+  # Copy metadata files - sites.csv, placements.csv to metadata folders for
+  # each year
+  years <- c(2023, 2024)
+  for (year in years) {
+    dest_md_dir <- file.path(example_base, year, "Metadata")
+    dir.create(dest_md_dir, recursive = TRUE)
+    sites <-  system.file("extdata/sites.csv", package = "BuzzardsBay")
+    file.copy(sites, dest_md_dir)
+    placements <- system.file("extdata/placements.csv", package = "BuzzardsBay")
+    file.copy(placements, dest_md_dir)
 
+}
 
 
 
   return(list(base = example_base,
-              deployment = destination))
+              deployment = destinations[1],
+              deployments = destinations))
 
 }

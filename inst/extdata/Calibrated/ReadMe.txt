@@ -1,4 +1,5 @@
 ﻿These files were emailed by Lara Gulmann 2024-04-16 
+They are example data from 2023.
 
 I renamed them from:
 RB1_AdjDO_6_9_2023_lkg.csv

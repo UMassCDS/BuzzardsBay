@@ -4,10 +4,12 @@
 \alias{make_deployment_report}
 \title{Make QAQC report for a deployment}
 \usage{
-make_deployment_report(dir)
+make_deployment_report(dir, quiet = FALSE)
 }
 \arguments{
 \item{dir}{A deployment directory}
+
+\item{quiet}{Set to \code{TRUE} for less chatter. Passed to \code{\link[rmarkdown:render]{rmarkdown::render()}}.}
 }
 \value{
 Invisibly returns the path the the QC report
