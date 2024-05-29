@@ -38,7 +38,7 @@ In particular:
   `"~/BB_Data/2022/SR4/2022-07-08"`.  
 - The path to base directory and it’s name (`"BB_Data"` in example) can
   be any valid path.
-- Within the deployment directory there should be a “Calibration/”
+- Within the deployment directory there should be a “Calibrated/”
   sub-directory with the calibrated HOBOware output (ending in `.csv`
   and `Details.txt`) for both dissolved oxygen and
   conductivity/salinity. The dissolved oxygen files should have `DO_` in
@@ -130,7 +130,7 @@ This is the metadata derived from the example.
 - pct_flagged_for_review: 3.54
 - logging_interval_min: 10
 - timezone: GMT-04:00
-- auto_qc_date: 2024-05-21
+- auto_qc_date: 2024-05-29
 - do_calibration:
   - start_do_conc: 7.37
   - start_temperature_c: 22

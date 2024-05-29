@@ -131,11 +131,24 @@ get_do_details <- function(path) {
   # Dissolved Oxygen Assistant Parameters
   #----------------------------------------------------------------------------#
 
-  doap <- d$Series_DO_Adj_Conc_mg_per_L$Dissolved_Oxygen_Assistant_Parameters
+  # Now allowing the first level in the list to include _Conc_ or not.
+  do_series_name <- grep(pattern = "Series_DO_Adj_[Conc_]*mg_per_L", x = names(d), value = TRUE)
+  if(is.null(do_series_name)) {
+    stop("Couldn't find a \"Series_Do_Adj_mg_per_L\" item in DO_details file.")
+  }
+
+  doap_name <- "Dissolved_Oxygen_Assistant_Parameters"
+  if (!doap_name %in% names(d[[do_series_name]])) {
+    stop("Couldn't find \"", doap_name, "\" in the \"",
+         do_series_name, "\" section of the DO details file." )
+  }
+
+  doap <- d[[do_series_name]][[doap_name]]
 
   if (is.null(doap)) {
     stop("HOBOware Dissolved oxygen details file (", path, ")",
-         " was not parsed properly or does not have the expected contents.")
+         " was not parsed properly or doesn't have the expected contents.
+         Could not find the dissolved oxygen assistant parameters.")
   }
 
   # Dissolved Oxygen Assistant Parameters to keep:
@@ -163,8 +176,14 @@ get_do_details <- function(path) {
   #----------------------------------------------------------------------------#
   # Deployment info
   #----------------------------------------------------------------------------#
+  dep_info_name <- "Deployment_Info"
 
-  dep <- d$Series_DO_Adj_Conc_mg_per_L$Deployment_Info
+  if (! dep_info_name %in% names(d[[do_series_name]])) {
+    stop("Could not find \"", dep_info_name, "\" in the \"", do_series_name,
+         "\" section of the DO details file.")
+  }
+
+  dep <- d[[do_series_name]][[dep_info_name]]
 
   dep_targets <- c("Full_Series_Name",
                    "Launch_Name",
@@ -195,7 +214,11 @@ get_do_details <- function(path) {
   # Device info
   #----------------------------------------------------------------------------#
 
-  dev <- d$Series_DO_Adj_Conc_mg_per_L$Devices$Device_Info
+
+  dev <- d[[do_series_name]]$Devices$Device_Info
+  if (is.null(dev))
+    stop("Expected to find \"", do_series_name, " - Devices - Device_Info\" ",
+         "section in DO Details file.")
   dev_targets <- c("Product",
                    "Serial_Number",
                    "Version_Number",
@@ -253,10 +276,17 @@ get_cond_details <- function(path) {
   #----------------------------------------------------------------------------#
 
   # Extract
-  ccp  <- d$Series_Salinity_ppt$Conductivity_Compensation_Parameters
+  salinity_series_name <- grep("Series_Salinity.*_ppt", names(d), value = TRUE)
+
+  if (length(salinity_series_name) != 1)
+    stop("Couldn't identify a Salinity Series in Conductivity/Salinity Details file")
+
+  ccp  <- d[[salinity_series_name]]$Conductivity_Compensation_Parameters
   if (is.null(ccp)) {
     stop("HOBOware conductivity details file (", path, ")",
-         " was not parsed properly or does not have the expected contents.")
+         " was not parsed properly or does not have the expected contents.",
+         "Could not find \"Conductivity_Compenstation_Parameters\" section",
+         "within \"", salinity_series_name, "\"")
   }
 
   # Conductivity Compensation Parameters to keep:
@@ -268,9 +298,16 @@ get_cond_details <- function(path) {
       "End_cal_temp",
       "End_cal_time")
 
-  if (!all(ccp_targets %in% names(ccp)))
+  miss <- ccp_targets[!ccp_targets %in% names(ccp)]
+
+  if (!length(miss) == 0)
     stop("The Conductivity details file from HOBOware was parsed wrong ",
-         "or is missing expected calibration information.")
+         "or is missing expected calibration information.",
+         "Could not find \"",
+         paste(miss, collapse = "\", \""),
+         " in the conductivity compensation parameters.")
+
+
 
   ccp <- ccp[ccp_targets]
 
@@ -292,16 +329,30 @@ get_cond_details <- function(path) {
   # Deployment info
   #----------------------------------------------------------------------------#
 
-  dep <- d$Series_Salinity_ppt$Deployment_Info
+  dep <- d[[salinity_series_name]]$Deployment_Info
+
+  if(is.null(dep))
+    stop("HOBOware conductivity details file (", path, ")",
+         " was not parsed properly or does not have the expected contents. ",
+         "Could not find \"Deployment_Info\" section",
+         "within \"", salinity_series_name, "\"")
+
+
 
   dep_targets <- c("Full_Series_Name",
                    "Launch_Name",
                    "Launch_Time",
                    "Logging_Interval")
 
-  if (!all(dep_targets %in% names(dep)))
-    stop("The DO details file from HOBOware was parsed wrong or is missing ",
-         "expected deployment information.")
+  miss <- setdiff(dep_targets, names(dep))
+
+  if (!length(miss) == 0)
+    stop("The Conductivity details file from HOBOware was parsed wrong ",
+         "or is missing expected calibration information.",
+         "Could not find \"",
+         paste(miss, collapse = "\", \""),
+         " in the Salinity series deployment infomation.")
+
   dep <- dep[dep_targets]
   names(dep) <- tolower(names(dep))
 
@@ -321,16 +372,30 @@ get_cond_details <- function(path) {
   # Device info
   #----------------------------------------------------------------------------#
 
-  dev <- d$Series_Salinity_ppt$Devices$Device_Info
+  dev <- d[[salinity_series_name]]$Devices$Device_Info
+
+  if(is.null(dev))
+    stop("HOBOware conductivity details file (", path, ")",
+         " was not parsed properly or does not have the expected contents. ",
+         "Could not find \"Devices\" - \"Device_Info\" section",
+         "within \"", salinity_series_name, "\"")
+
   dev_targets <- c("Product",
                    "Serial_Number",
                    "Version_Number",
                    # "Manufacturer",
                    # "Device_Memory",
                    "Header_Created")
-  if (!all(dev_targets %in% names(dev)))
-    stop("The calibraion details file from HOBOware was parsed wrong or is ",
-         " missing expected device information.")
+
+  miss <- setdiff(dev_targets, names(dev))
+
+  if (!length(miss) == 0)
+    stop("The Conductivity details file from HOBOware was parsed wrong ",
+         "or is missing expected calibration information.",
+         "Could not find \"",
+         paste(miss, collapse = "\", \""),
+         " in the Salinity series device infomation.")
+
   dev <- dev[dev_targets]
   names(dev) <- tolower(names(dev))
 

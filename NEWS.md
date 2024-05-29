@@ -1,3 +1,17 @@
+# BuzzardsBay 0.1.0.9005
+
+* Minor edits to README 
+* Updated `parse_do_details()` and `parse_cond_details()` 
+    * Work with new 2024 example files 
+    * Have greater flexibility in identifying series names in each file.
+      * in the conductivity ffile the site id and a number were added to the 
+      series name. 
+      * in the DO file "Conc" was dropped from the series name that is now: 
+      "Series: DO Adj, mg/L""
+    * For both types of files the old and new versions should both be processed
+    correctly with the updated code.
+    
+    
 # BuzzardsBay 0.1.0.9004
 
 * Add `bb_options()` for setting and retrieving global parameters which are
