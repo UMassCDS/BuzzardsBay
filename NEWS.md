@@ -1,3 +1,30 @@
+# BuzzardsBay 0.1.0.9006
+
+* Add 2024 example data - so now there are two example datasets.
+* `setup_example_dir()` return list has new item `deployments` which is a vector
+ of deployment directories.  The `deployment` item still exists and is the
+ first item. It also sets up both deployment directories and metadatfiles for
+ each year.
+* Fixed bug in the QAQC report code that caused temperature flags from the 
+DO logger to be considered both temperature and DO flags when plotting.
+* Updated `qc_deployment()` and helper functions to handle changes in 
+CSV file column names between 2023 and 2024 example data.  
+It will now work with both formats.
+
+# BuzzardsBay 0.1.0.9005
+
+* Minor edits to README 
+* Updated `parse_do_details()` and `parse_cond_details()` 
+    * Work with new 2024 example files 
+    * Have greater flexibility in identifying series names in each file.
+      * in the conductivity ffile the site id and a number were added to the 
+      series name. 
+      * in the DO file "Conc" was dropped from the series name that is now: 
+      "Series: DO Adj, mg/L""
+    * For both types of files the old and new versions should both be processed
+    correctly with the updated code.
+    
+    
 # BuzzardsBay 0.1.0.9004
 
 * Add `bb_options()` for setting and retrieving global parameters which are

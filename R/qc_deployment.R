@@ -377,8 +377,21 @@ qc_deployment <- function(dir, report = TRUE) {
 
   # Rename identical columns to avoid name collisions
   do <- dplyr::rename(do, Temp_DOLog = "Temp", Salinity_DOLog = "Salinity")
-  cond <- dplyr::rename(cond, Temp_CondLog = "Temp",
-                        Salinity = "Salinity")
+  cond <- dplyr::rename(cond, Temp_CondLog = "Temp")
+
+  # Drop site and sn from salinity column
+  # In 2024 example data the salinity column includes <site>_<sn>
+  # without "#" before <sn>  this renames to just Salinity
+  salinity_col <- grep("^Salinity", names(cond), value = TRUE)
+  if(length(salinity_col) == 0)
+    stop("Could not find a salinity column in ", input_paths$cond)
+
+  if(length(salinity_col) > 1)
+    stop("Found multiple salinity columns in ", input_paths$cond)
+
+  names(cond)[names(cond) == salinity_col] <- "Salinity"
+
+
 
   # rename "DO_Pct" to "DO_Pct_Sat"
   # The 2022 data had "Sat" 2023 did not.  I want to work with both
@@ -436,8 +449,6 @@ qc_deployment <- function(dir, report = TRUE) {
 
   # Set site
   d$Site <- site
-
-
 
   #============================================================================#
   # Drop heads and tails (before and after calibration)

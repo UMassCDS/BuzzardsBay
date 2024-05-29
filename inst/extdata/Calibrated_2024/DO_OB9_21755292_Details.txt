@@ -1,0 +1,250 @@
+﻿Details
+Series: DO conc, mg/L
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 13:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: Dissolved Oxygen Concentration, mg/L
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 16:33:32  GMT-04:00
+		• Calibration Gain: 1.11355
+		• Calibration Offset: -0.05158
+	Series Statistics
+		• Samples: 1,179
+		• Max: 12.79
+		• Min: 7.63
+		• Avg: 11.06
+		• Std Dev (σ): 0.64
+		• First Sample Time: 05/07/24 09:00:00  GMT-04:00
+		• Last Sample Time: 05/15/24 13:20:00  GMT-04:00
+Series: Temp, °C
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 13:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: Temperature U26, °C
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+	Series Statistics
+		• Samples: 1,179
+		• Max: 25.80
+		• Min: 10.28
+		• Avg: 12.53
+		• Std Dev (σ): 1.65
+		• First Sample Time: 05/07/24 09:00:00  GMT-04:00
+		• Last Sample Time: 05/15/24 13:20:00  GMT-04:00
+Series: DO Adj, mg/L
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 13:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: DO Adj, mg/L
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 16:33:32  GMT-04:00
+		• Calibration Gain: 1.11355
+		• Calibration Offset: -0.05158
+	Series Statistics
+		• Samples: 1,155
+		• Max: 10.93
+		• Min: 7.94
+		• Avg: 9.37
+		• Std Dev (σ): 0.50
+		• First Sample Time: 05/07/24 13:00:00  GMT-04:00
+		• Last Sample Time: 05/15/24 13:20:00  GMT-04:00
+	Dissolved Oxygen Assistant Parameters
+		• Performing Field Calibration
+		• Using start cal point
+		• Start time: 05/07/24 13:00:00  GMT-04:00
+		• Start DO conc: 10.40
+		• Start temperature (C): 14.60
+		• Start salinity (ppt): 30.15
+		• Start meter/titration value (mg/L): 9.15
+		• Start salinity correction: 0.8307
+		• Using end cal point
+		• End time: 05/15/24 13:20:00  GMT-04:00
+		• End DO conc: 10.92
+		• End temperature (C): 15.62
+		• End salinity (ppt): 30.15
+		• End meter/titration value (mg/L): 8.99
+		• End salinity correction: 0.8320
+		• Adjust for Salinity selected
+		• Salinity datafile: C:\Users\Gulmann\Desktop\BB_Data\2024\OB9\OB9_CT_5_15_24_21742584.txt
+		• Overlap mode: Option 1
+		• Barometric Pressure selected
+		• Pressure value (atm): 1.00000
+		• Elevation (m): 0.00
+		• Reporting data between selected points only
+		• Start: Field cal reference start
+		• End: Field cal reference end
+Series: DO Percent, %
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 13:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: DO Percent, %
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 16:33:32  GMT-04:00
+		• Calibration Gain: 1.11355
+		• Calibration Offset: -0.05158
+	Series Statistics
+		• Samples: 1,155
+		• Max: 124.0
+		• Min: 89.0
+		• Avg: 106.4
+		• Std Dev (σ): 5.7
+		• First Sample Time: 05/07/24 13:00:00  GMT-04:00
+		• Last Sample Time: 05/15/24 13:20:00  GMT-04:00
+	Dissolved Oxygen Assistant Parameters
+		• Performing Field Calibration
+		• Using start cal point
+		• Start time: 05/07/24 13:00:00  GMT-04:00
+		• Start DO conc: 10.40
+		• Start temperature (C): 14.60
+		• Start salinity (ppt): 30.15
+		• Start meter/titration value (mg/L): 9.15
+		• Start salinity correction: 0.8307
+		• Using end cal point
+		• End time: 05/15/24 13:20:00  GMT-04:00
+		• End DO conc: 10.92
+		• End temperature (C): 15.62
+		• End salinity (ppt): 30.15
+		• End meter/titration value (mg/L): 8.99
+		• End salinity correction: 0.8320
+		• Adjust for Salinity selected
+		• Salinity datafile: C:\Users\Gulmann\Desktop\BB_Data\2024\OB9\OB9_CT_5_15_24_21742584.txt
+		• Overlap mode: Option 1
+		• Barometric Pressure selected
+		• Pressure value (atm): 1.00000
+		• Elevation (m): 0.00
+		• Reporting data between selected points only
+		• Start: Field cal reference start
+		• End: Field cal reference end
+Series: Salinity, ppt
+	Devices
+		Device Info
+			• Product: 
+			• Serial Number: 
+			• Version Number: 0.00
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: Unknown
+			• Header Created: 05/07/24 13:00:00  GMT-04:00
+	Deployment Info
+		• Full Series Name: Salinity_OB1_21958393, ppt
+		• Launch Name: 
+		• Deployment Number: Unknown
+		• Launch Time: 05/07/24 13:00:00  GMT-04:00
+		• Logging Interval: Unknown
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: Unknown
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+	Series Statistics
+		• Samples: 1,155
+		• Max: 31.7997
+		• Min: 29.2779
+		• Avg: 30.9566
+		• Std Dev (σ): 0.4389
+		• First Sample Time: 05/07/24 13:00:00  GMT-04:00
+		• Last Sample Time: 05/15/24 13:20:00  GMT-04:00
+Event Type: Coupler Attached
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 14:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: Coupler Attached
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 05/15/24 13:26:02  GMT-04:00
+		• Last Sample Time: 05/15/24 13:26:02  GMT-04:00
+Event Type: Stopped
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 14:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: Stopped
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 05/15/24 13:26:13  GMT-04:00
+		• Last Sample Time: 05/15/24 13:26:13  GMT-04:00
+Event Type: End Of File
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21755292
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 14:19:05  GMT-04:00
+	Deployment Info
+		• Full Series Name: End Of File
+		• Launch Name: BBC19_21755292
+		• Deployment Number: 11
+		• Launch Time: 05/06/24 15:49:00  GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.54 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 05/15/24 13:26:13  GMT-04:00
+		• Last Sample Time: 05/15/24 13:26:13  GMT-04:00

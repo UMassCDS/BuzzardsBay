@@ -48,6 +48,7 @@ total.
 \dontrun{
   paths <- setup_example_dir()
   a <- qc_deployment(paths$deployment)
+
 }
 
 }

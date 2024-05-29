@@ -126,16 +126,16 @@ Input path: `r data_path`
 
 Vertical rectangles indicate flags, red for dissolved oxygen (DO),
 orange for other flags.  
-When the data exceeds thresholds ,they are indicated with horizontal lines.  
-Dots mark both ends of jumps that are greater than`r bbp$do_max_jump`.  
+Thresholds are shown as horizontal lines if they are exceeded by the data.  
+Dots mark both ends of jumps that are greater than `r bbp$do_max_jump`.  
 
 ```{r DO static plot, echo=FALSE, message=TRUE, warning=TRUE}
 
 
 p <- bb_plot(d, dl,
              focal_column = c("DO", "Raw_DO"),
-             jump_pattern = "Dj|Rj",
-             focal_flag_pattern = "D|R",
+             jump_pattern = "[:^]Dj|Rj",
+             focal_flag_pattern = "[:^]D|R",
              plot_label = "Dissolved Oxygen",
              focal_flag_label = "DO",
              y_label = "Dissolved Oxygen (mg/l)",
@@ -149,7 +149,10 @@ p <- bb_plot(d, dl,
                                   "Max Site DO (Dsh)",
                                   "Min Site Raw DO (Rsl)",
                                   "Min Site DO (Dsl)"),
-             threshold_colors = rgb(1, 0, 0, .8))
+             threshold_colors = rgb(1, 0, 0, .8),
+             lat = sites$latitude,
+             lon = sites$longitude)
+  
 
 
 suppress_specific_warnings(print(p))
@@ -168,8 +171,8 @@ may not be visible until the plot is zoomed out.
 
 bb_interactive_plot(d, dl,
                     focal_column = c("DO"),
-                    jump_pattern = "Dj",
-                    focal_flag_pattern = "D",
+                    jump_pattern = "[:^]Dj",
+                    focal_flag_pattern = "[:^]D",
                     plot_label = "Dissolved Oxygen",
                     focal_flag_label = "DO",
                     y_label = "Dissolved Oxygen (mg/l)",

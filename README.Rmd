@@ -62,7 +62,7 @@ In particular:
   `"~/BB_Data/2022/SR4/2022-07-08"`.  
 * The path to base directory  and it's name (`"BB_Data"` in example) can be any
   valid path. 
-* Within the deployment directory there should be a "Calibration/" sub-directory
+* Within the deployment directory there should be a "Calibrated/" sub-directory
   with the calibrated HOBOware output (ending in `.csv` and `Details.txt`) for 
   both dissolved oxygen and conductivity/salinity. The dissolved oxygen files 
   should have `DO_` in their name and the salinity files should have
@@ -125,8 +125,8 @@ Here are a few lines of the data written to the two CSV files when using
 `setup_example_dir()`.
 
 ```{r table, echo = FALSE}
-  options(knitr.kable.NA = '')
-  knitr::kable(a$d[41:50, ], row.names = FALSE, format.args = ) 
+options(knitr.kable.NA = '')
+knitr::kable(a$d[41:50, ], row.names = FALSE) 
 
 
 ```

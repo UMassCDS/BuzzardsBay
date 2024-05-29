@@ -18,8 +18,9 @@ in \code{parent_dir}.}
 A named list with paths to:
 \item{base_dir}{The path to the newly created example
 base directory (\code{"BB_Data"}).}
-\item{deployment_dir}{The path to the example deployment folder within
+\item{deployment_dir}{The path to the default deployment folder within
 \code{base_dir}.}
+\item{deployment_dirs}{A vector of paths to example deployment directories.}
 }
 \description{
 Setup an example directory for testing and demonstrating the \strong{BuzzardsBay}
