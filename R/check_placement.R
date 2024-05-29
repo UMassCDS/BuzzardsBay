@@ -14,22 +14,25 @@
 #' @return An informative error is thrown if something is wrong.
 #' Nothing is returned.
 check_placement <- function(sn, type, placements, deployment_date, site) {
-
+  placements$start_date <- format_csv_date(placements$start_date) |>
+    lubridate::as_date()
+  placements$end_date <- format_csv_date(placements$end_date)|>
+    lubridate::as_date()
   names(placements) <- tolower(names(placements))
   type <- tolower(type)
   placements$type <- tolower(placements$type)
-  placements$start_date <- lubridate::as_date(placements$start_date)
-  placements$end_date <- lubridate::as_date(placements$end_date)
   deployment_date <- lubridate::as_date(deployment_date)
 
+
   timing_ok <- placements$start_date < deployment_date &
+    !is.na(placements$start_date) &
     (is.na(placements$end_date) | placements$end_date > deployment_date)
 
   # Filter to just placements with appropriate timing
   placements <- placements[timing_ok, , drop = FALSE]
 
   # Filter to current SN
-  placements <- placements[placements$sn == sn, , drop = FALSE]
+  placements <- placements[placements$sn %in% sn, , drop = FALSE]
 
   if (nrow(placements) == 0)
     stop("SN ", sn, " does not appear in the placment table on ",

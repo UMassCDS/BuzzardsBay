@@ -1,3 +1,11 @@
+# BuzzardsBay 0.1.0.9007
+
+* Allow dates in placements.csv to be either month/day/year or year-month-day
+* New internal function `format_csv_date()` takes text dates in either
+month/day/year or year-month-day and converts to year-month-day text. This is
+intended for using eith dates from .csv files that might have been edited with
+excel which messes with dates.
+
 # BuzzardsBay 0.1.0.9006
 
 * Add 2024 example data - so now there are two example datasets.
