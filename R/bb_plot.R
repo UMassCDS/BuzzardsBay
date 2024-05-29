@@ -24,7 +24,8 @@
 #' one per `threshold_value`.
 #' @param threshold_colors The color to use for the threshold lines, can be
 #' one color or a color for each `threshold_value`.
-#'
+#' @param lat,lon The latitude and longitude of the site, used to calculate
+#'                sunrise and sunset times.
 #' @return A ggplot plot object. Use `print()` to turn it into a plot/
 #' @importFrom rlang .data
 #' @importFrom grDevices rgb
@@ -39,7 +40,9 @@ bb_plot <- function(d,
                     y_label,
                     threshold_values,
                     threshold_labels,
-                    threshold_colors) {
+                    threshold_colors,
+                    lat = NULL,
+                    lon = NULL) {
 
   #----------------------------------------------------------------------------#
   # Hard coded variables

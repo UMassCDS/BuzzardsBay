@@ -15,7 +15,9 @@ bb_plot(
   y_label,
   threshold_values,
   threshold_labels,
-  threshold_colors
+  threshold_colors,
+  lat = NULL,
+  lon = NULL
 )
 }
 \arguments{
@@ -46,6 +48,9 @@ one per \code{threshold_value}.}
 
 \item{threshold_colors}{The color to use for the threshold lines, can be
 one color or a color for each \code{threshold_value}.}
+
+\item{lat, lon}{The latitude and longitude of the site, used to calculate
+sunrise and sunset times.}
 }
 \value{
 A ggplot plot object. Use \code{print()} to turn it into a plot/
