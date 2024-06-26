@@ -44,23 +44,32 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE) {
 
   destinations <- character(0)
 
-  # 2023 calibrated data
-  source_dir <- system.file("extdata/Calibrated", package = "BuzzardsBay")
-  destination <- file.path(example_base, "2023", "RB1", "2023-06-09")
-  dir.create(destination, recursive = TRUE)
-  file.copy(source_dir, destination, recursive = TRUE)
-  destinations <- c(destinations, destination)
-  # 2024  calibrated data
-  source_dir <- system.file("extdata/Calibrated_2024", package = "BuzzardsBay")
-  source_files <- list.files(source_dir, full.names = TRUE)
-  destination <- file.path(example_base, "2024", "OB9", "2024-05-15", "Calibrated")
-  dir.create(destination, recursive = TRUE)
-  file.copy(source_files, destination)
-  destinations <- c(destinations, gsub("[/\\\\]Calibrated$", "", destination))
+
+  extdata <- system.file("extdata", package = "BuzzardsBay")
+  years <- list.files(extdata, pattern = "^[[:digit:]]{4}$")
+
+  deployment_dirs <- character(0)
+
+  # Copy over deployment data from year folders
+  for(year in years) {
+    year_dir <- file.path(extdata, year)
+    files <- list.files(year_dir, recursive = TRUE)
+    deployments <-
+      gsub("(^[^/]+/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}).*$",
+           "\\1", files, perl = TRUE) |> unique()
+    source_files <- file.path(year_dir, files)
+    dest_year_dir <- file.path(example_base, year)
+    dir.create(dest_year_dir, showWarnings = FALSE)
+    dest_files <- file.path(dest_year_dir, files)
+    dest_dirs <- dirname(dest_files) |> unique()
+    sapply(dest_dirs, dir.create, recursive = TRUE, showWarnings = FALSE)
+    file.copy(source_files, dest_files)
+    deployment_dirs <- c(deployment_dirs,
+                         file.path(dest_year_dir, deployments))
+  }
 
   # Copy metadata files - sites.csv, placements.csv to metadata folders for
   # each year
-  years <- c(2023, 2024)
   for (year in years) {
     dest_md_dir <- file.path(example_base, year, "Metadata")
     dir.create(dest_md_dir, recursive = TRUE)
@@ -68,13 +77,10 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE) {
     file.copy(sites, dest_md_dir)
     placements <- system.file("extdata/placements.csv", package = "BuzzardsBay")
     file.copy(placements, dest_md_dir)
-
-}
-
-
+  }
 
   return(list(base = example_base,
-              deployment = destinations[1],
-              deployments = destinations))
+              deployment = deployment_dirs[1],
+              deployments = deployment_dirs))
 
 }

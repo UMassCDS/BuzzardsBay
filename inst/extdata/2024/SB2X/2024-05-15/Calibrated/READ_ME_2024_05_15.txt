@@ -1,0 +1,1 @@
+SB2X 5/15/24Conductivity sensor seems to have taken hours to adjust after put in the field (air bubble over the sensor? 2-point calibration made C/T data weird, so only the end point calibration was used. 2-point calibration was used for DO data. Recommend truncating dataset and throwing out the initial several hours of deployment. Ð Kristin Huizenga 6/7/24
