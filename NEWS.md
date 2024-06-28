@@ -1,3 +1,40 @@
+
+# BuzzardsBay 0.1.0.9008
+
+## Completed
+
+* Additional test data 
+* `qc_deployment()` now works when  conductivity is calibrated with a single
+calibration point.
+* Add "calibration_points"  to metadata for conductivity.
+* Delete duplicated "High Range" in column heading.
+ The BD1 sensor is labeling the column "High Range High Range (μS/cm)" 
+  The duplicate "High Range" is now removed for any sensor that has it.
+
+## Pending tasks:
+
+* Update DO calibration to allow end point only calibration and capture 
+calibration_points.
+
+
+* Placement Dates
+
+   A sensor was swapped out and it's creating issues with identifying placement
+dates.
+
+   From Kristin 2024-06-25
+
+   One more thing I ran into today. I was running the QC module for OB1. We switched a sensor in between one of the deployments, so I have two separate lines in the "placements" file for the conductivity sensor. First, the final deployment for the first sensor didn't work unless I set the last date it was deployed to be one day after we actually took it in from the field (I assume so that the program did not cut off the data the second the new day turned around). Next, I couldn't run the following deployments through the QC module because it said the serial number didn't match. Here is the error message:
+    Error in if (cond_sn != md$cond_device$serial_number) stop("Cond Serial number in csv does not match serial number in ",  : missing value where TRUE/FALSE needed
+
+   So adding another line for one station with new dates and a new serial number doesn't seem to work seamlessly. Is there a better way I should do it? Also is there a way that we can make the code work for that transitory day where sensors are swapped? Do we need to add a time element to the date?
+  Examples for this transition are in the OB1 date 2024-05-21 and 2024-05-31. I'm happy to answer any more questions about the swap too.
+
+
+
+
+
+
 # BuzzardsBay 0.1.0.9007
 
 * Allow dates in placements.csv to be either month/day/year or year-month-day

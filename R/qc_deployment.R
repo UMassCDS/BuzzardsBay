@@ -257,19 +257,30 @@ qc_deployment <- function(dir, report = TRUE) {
   md$auto_qc_date <- lubridate::today() |> as.character()
 
 
-  # Check for identical  calibration start and end times
-  if(md$do_calibration$start_time != md$cond_calibration$start_cal_time)
+  # Process calibration start times
+  # Note one but not both calibration times might be NA due to single point
+  # calibration
+  ds <- md$do_calibration$start_time
+  cs <- md$cond_calibration$start_cal_time
+  # Check for consistancy
+  if(!is.na(ds) && !is.na(cs)  && ds != cs)
     stop("Calibration start times don't match in details files.")
-  if(md$do_calibration$end_time != md$cond_calibration$end_cal_time)
-    stop("Calibration end times don't match in details files.")
-
-  # Consolidate calibration date time items
-  md$calibration_start <-  md$do_calibration$start_time
-  md$calibration_end <- md$do_calibration$end_time
+  # Consolidate start time - using whichever value isn't NA (if one is)
+  md$calibration_start <- ifelse(is.na(ds), cs, ds)
   md$do_calibration$start_time <- NULL
-  md$do_calibration$end_time <- NULL
   md$cond_calibration$start_cal_time <- NULL
+  rm(ds, cs)
+
+  # Process calibration end times
+  de <- md$do_calibration$end_time
+  ce <- md$cond_calibration$end_cal_time
+  if(!is.na(de) && !is.na(ce) && de != ce)
+    stop("Calibration end times don't match in details files.")
+  # Consolidate end time - using whichever value isn't NA (if one is)
+  md$calibration_end <- ifelse(is.na(de), ce, de)
+  md$do_calibration$end_time <- NULL
   md$cond_calibration$end_cal_time <- NULL
+  rm(de, ce)
 
   # Reformat date time items in dt to <year>-<month>-<day> h:m:s
   dt_items <- list(

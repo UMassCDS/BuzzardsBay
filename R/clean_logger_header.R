@@ -14,6 +14,12 @@ clean_logger_header <- function(x) {
   n <- gsub("_*$", "", n)  # Drop trailing _
   n <- gsub("_+", "_", n) # drop duplicate _
 
+  # BD1 conductive sensor is duplicating "High Range" in the output
+  # This cleans it up.
+  # Example in Cond .csv file in extdata/2024/BD1/2024-006-21/Calibrated
+  n <- gsub("High_Range_High_Range", "High_Range", n)
+
+
   names(x) <- n
 
   return(x)

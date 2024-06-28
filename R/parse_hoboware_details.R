@@ -291,7 +291,8 @@ get_cond_details <- function(path) {
 
   # Conductivity Compensation Parameters to keep:
   ccp_targets <-
-    c("Start_cal_cond",
+    c("Calibration_points",
+      "Start_cal_cond",
       "Start_cal_temp",
       "Start_cal_time",
       "End_cal_cond",
@@ -300,7 +301,7 @@ get_cond_details <- function(path) {
 
   miss <- ccp_targets[!ccp_targets %in% names(ccp)]
 
-  if (!length(miss) == 0)
+  if (!length(miss) %in% c(0, 3))  # allowed to be missing one of start or end
     stop("The Conductivity details file from HOBOware was parsed wrong ",
          "or is missing expected calibration information.",
          "Could not find \"",
@@ -308,12 +309,21 @@ get_cond_details <- function(path) {
          " in the conductivity compensation parameters.")
 
 
+  # Replace missing elements with NA's
+  if(length(miss) > 0){
+    l <- vector(mode = "list", length = length(miss))
+    names(l) <- miss
+    for(i in seq_along(l))
+      l[[i]] <- NA
+    ccp <- c(ccp, l)
+  }
+
 
   ccp <- ccp[ccp_targets]
 
   # Separate units from numbers in value fields
   # e.g `Start_cal_cond = "41877.00 μS/cm"`  to `Start_cal_cond = 41877.00`
-  problem_fields <- ccp_targets[!grepl("time", ccp_targets)] # Leave time out
+  problem_fields <- ccp_targets[!grepl("time|points", ccp_targets)] # Leave time and calibration points out
   for (field in problem_fields) {
     a <- ccp[[field]]
     a <- gsub("[^-.[:digit:]]", "", a) # drop non-number characters
