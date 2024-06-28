@@ -6,12 +6,13 @@
 #' @param subdir The name of a subdirectory to build the example within.
 #' @param env Leave this argument alone.
 #' @inherit setup_example_dir returns
-local_example_dir <- function(subdir = "bb_test", env = parent.frame()) {
+#' @inheritDotParams setup_example_dir
+local_example_dir <- function(subdir = "bb_test", env = parent.frame(), ...) {
   test_dir <- file.path(tempdir(), subdir)
   if (file.exists(test_dir))
     unlink(test_dir, recursive = TRUE)
   dir.create(test_dir)
-  paths <- setup_example_dir(test_dir)
+  paths <- setup_example_dir(test_dir, ...)
   withr::defer(unlink(test_dir, recursive = TRUE), envir = env)
   return(paths)
 }

@@ -4,23 +4,40 @@
 \alias{setup_example_dir}
 \title{Setup an example directory}
 \usage{
-setup_example_dir(parent_dir = NULL, delete_old = FALSE)
+setup_example_dir(
+  parent_dir = NULL,
+  delete_old = FALSE,
+  year_filter = NULL,
+  site_filter = NULL,
+  deployment_filter = NULL
+)
 }
 \arguments{
 \item{parent_dir}{The directory in which to create the example files tree.
 If left \code{NULL} it will be set to \code{\link[=tempdir]{tempdir()}}. Either way
 an error will be thrown if this a \code{"BB_Data"} folder already exists
-in \code{parent_dir}.}
+in \code{parent_dir} - unless \code{delete_old} is \code{TRUE}/}
 
 \item{delete_old}{If \code{TRUE} then preexisting example data is deleted.}
+
+\item{year_filter}{Optional, if specified only example data from
+deployments from the specified year will be copied over.}
+
+\item{site_filter}{Optional if specified only example data from the
+specified site will be copied over.}
+
+\item{deployment_filter}{Optional, if specified only example data from
+the given deployment will be copied over. Should be a deployment date
+e.g. \verb{"2023-06-09}.}
 }
 \value{
 A named list with paths to:
 \item{base_dir}{The path to the newly created example
 base directory (\code{"BB_Data"}).}
-\item{deployment_dir}{The path to the default deployment folder within
+\item{deployment_dir}{The path to the first deployment folder within
 \code{base_dir}.}
-\item{deployment_dirs}{A vector of paths to example deployment directories.}
+\item{deployment_dirs}{A vector of paths to all the example deployment
+directories created }
 }
 \description{
 Setup an example directory for testing and demonstrating the \strong{BuzzardsBay}
@@ -29,6 +46,32 @@ and will contain example calibrated data files for a single deployment as
 well as some of project level metadata.  The files are bundled with the
 package and can be found in the source within \verb{inst/extdata/}.
 }
+\section{Example data sets}{
+
+\subsection{2023}{
+\itemize{
+\item \strong{RB1 2023-06-09} The original example data used to developing the
+package.
+}
+}
+
+\subsection{2024}{
+
+These were generally added to resolve errors that came up.
+\itemize{
+\item \strong{OB9} The first 2024 data set added tp documents some changes from
+2023 but otherwise is fairly standard.
+\item \strong{OB1 2024-05-21, 2024-05-31}  Added to resolve an issue where a sensor
+was swapped and placements.csv updated to indicate the swap, BUT the QC
+module was still throwing errors.
+\item \strong{SB2X 2024-05-15, 2024-06-10} Conductivity was calibrated with a single
+point calibration for these two deployments.
+\item \strong{BD1 2024-06-21} One of the calibrated conductivity columns is
+weird in this data set has "High Range High Range"  instead of "High Range".
+}
+}
+}
+
 \examples{
 \dontrun{
 setup_example()
