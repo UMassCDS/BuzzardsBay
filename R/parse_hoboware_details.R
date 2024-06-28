@@ -43,8 +43,8 @@
 #' @export
 #'
 #' @examples
-#'  file <- file <- system.file(
-#'    "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
+#'  file <- system.file(
+#'    "extdata/2023/RB1/2023-06-09/Calibrated/DO_RB1_2023-06-09_Details.txt",
 #'                      package = "BuzzardsBay")
 #'  hwd <- parse_hoboware_details(file)
 #'  str(hwd, max.level = 2)
@@ -113,8 +113,8 @@ parse_hoboware_details <- function(path) {
 #'
 #' @examples
 #'  file <- system.file(
-#'    "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
-#'    package = "BuzzardsBay")
+#'    "extdata/2023/RB1/2023-06-09/Calibrated/DO_RB1_2023-06-09_Details.txt",
+#'                      package = "BuzzardsBay")
 #'  do_cal  <- get_do_details(file)
 #'  cat(yaml::as.yaml(do_cal))
 #'
@@ -132,15 +132,16 @@ get_do_details <- function(path) {
   #----------------------------------------------------------------------------#
 
   # Now allowing the first level in the list to include _Conc_ or not.
-  do_series_name <- grep(pattern = "Series_DO_Adj_[Conc_]*mg_per_L", x = names(d), value = TRUE)
-  if(is.null(do_series_name)) {
+  do_series_name <- grep(pattern = "Series_DO_Adj_[Conc_]*mg_per_L",
+                         x = names(d), value = TRUE)
+  if (is.null(do_series_name)) {
     stop("Couldn't find a \"Series_Do_Adj_mg_per_L\" item in DO_details file.")
   }
 
   doap_name <- "Dissolved_Oxygen_Assistant_Parameters"
   if (!doap_name %in% names(d[[do_series_name]])) {
     stop("Couldn't find \"", doap_name, "\" in the \"",
-         do_series_name, "\" section of the DO details file." )
+         do_series_name, "\" section of the DO details file.")
   }
 
   doap <- d[[do_series_name]][[doap_name]]
@@ -258,7 +259,7 @@ get_do_details <- function(path) {
 #'
 #' @examples
 #'  file <- system.file(
-#'    "extdata/Calibrated/Cond_RB1_2023-06-09_Details.txt",
+#'    "extdata/2023/RB1/2023-06-09/Calibrated/Cond_RB1_2023-06-09_Details.txt",
 #'                      package = "BuzzardsBay")
 #'  do_cal  <- get_cond_details(file)
 #'  cat(yaml::as.yaml(do_cal))
@@ -279,7 +280,8 @@ get_cond_details <- function(path) {
   salinity_series_name <- grep("Series_Salinity.*_ppt", names(d), value = TRUE)
 
   if (length(salinity_series_name) != 1)
-    stop("Couldn't identify a Salinity Series in Conductivity/Salinity Details file")
+    stop("Couldn't identify a Salinity Series in Conductivity/Salinity ",
+         "details file")
 
   ccp  <- d[[salinity_series_name]]$Conductivity_Compensation_Parameters
   if (is.null(ccp)) {
@@ -310,11 +312,12 @@ get_cond_details <- function(path) {
 
 
   # Replace missing elements with NA's
-  if(length(miss) > 0){
+  if (length(miss) > 0) {
     l <- vector(mode = "list", length = length(miss))
     names(l) <- miss
-    for(i in seq_along(l))
+    for (i in seq_along(l)) {
       l[[i]] <- NA
+    }
     ccp <- c(ccp, l)
   }
 
@@ -323,7 +326,9 @@ get_cond_details <- function(path) {
 
   # Separate units from numbers in value fields
   # e.g `Start_cal_cond = "41877.00 μS/cm"`  to `Start_cal_cond = 41877.00`
-  problem_fields <- ccp_targets[!grepl("time|points", ccp_targets)] # Leave time and calibration points out
+
+  # Leave time and calibration points out
+  problem_fields <- ccp_targets[!grepl("time|points", ccp_targets)]
   for (field in problem_fields) {
     a <- ccp[[field]]
     a <- gsub("[^-.[:digit:]]", "", a) # drop non-number characters
@@ -341,7 +346,7 @@ get_cond_details <- function(path) {
 
   dep <- d[[salinity_series_name]]$Deployment_Info
 
-  if(is.null(dep))
+  if (is.null(dep))
     stop("HOBOware conductivity details file (", path, ")",
          " was not parsed properly or does not have the expected contents. ",
          "Could not find \"Deployment_Info\" section",
@@ -384,7 +389,7 @@ get_cond_details <- function(path) {
 
   dev <- d[[salinity_series_name]]$Devices$Device_Info
 
-  if(is.null(dev))
+  if (is.null(dev))
     stop("HOBOware conductivity details file (", path, ")",
          " was not parsed properly or does not have the expected contents. ",
          "Could not find \"Devices\" - \"Device_Info\" section",

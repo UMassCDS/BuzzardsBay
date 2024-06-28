@@ -331,7 +331,7 @@ qc_deployment <- function(dir, report = TRUE) {
                 "cond_deployment",
                 "cond_device")
 
-  # Create placeholder columns which will be filled in later
+  # Create placeholder items which will be filled in later
   md$pct_calibrated <- NA
   md$pct_immediate_rejection <- NA
   md$pct_flagged_for_review <- NA
@@ -339,8 +339,6 @@ qc_deployment <- function(dir, report = TRUE) {
   stopifnot(all(md_order %in% names(md)))
 
   md <- md[md_order]
-
-
 
 
   # For debugging: cat(yaml::as.yaml(md))
@@ -360,6 +358,11 @@ qc_deployment <- function(dir, report = TRUE) {
   # Extract serial number
   do_sn <- get_logger_sn(do)
   cond_sn <- get_logger_sn(cond)
+
+  # Note some files don't have SN in the column heading anymore
+  # First noticed with "OB1/2024-05-31 Cond file
+  if(is.na(do_sn)) do_sn <- md$do_device$serial_number
+  if(is.na(cond_sn)) cond_sn <- md$cond_device$serial_number
 
   # Verify serial numbers
   if(do_sn != md$do_device$serial_number)
@@ -477,8 +480,8 @@ qc_deployment <- function(dir, report = TRUE) {
   md$pct_calibrated <- round(sum(sv) / length(sv)*100, 4)
   min_calibrated_pct <- 95
   if(md$pct_calibrated < 95) {
-    warning(md$pct_calibrated, " of the data is calibrated. ",
-    " This is lower than the warning threshold of ", min_calibrated_pct)
+    warning(md$pct_calibrated, "% of the data is calibrated. ",
+    " This is lower than the warning threshold of ", min_calibrated_pct, ".")
   }
 
   # Update calibration column

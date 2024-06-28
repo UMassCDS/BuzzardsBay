@@ -50,8 +50,8 @@ in \code{\link[=get_do_details]{get_do_details()}} or \code{\link[=get_cond_deta
 \code{parse_hoboware_details()} is primarily intended for internal package use
 }
 \examples{
- file <- file <- system.file(
-   "extdata/Calibrated/DO_RB1_2023-06-09_Details.txt",
+ file <- system.file(
+   "extdata/2023/RB1/2023-06-09/Calibrated/DO_RB1_2023-06-09_Details.txt",
                      package = "BuzzardsBay")
  hwd <- parse_hoboware_details(file)
  str(hwd, max.level = 2)

@@ -17,7 +17,16 @@ clean_logger_header <- function(x) {
   # BD1 conductive sensor is duplicating "High Range" in the output
   # This cleans it up.
   # Example in Cond .csv file in extdata/2024/BD1/2024-006-21/Calibrated
-  n <- gsub("High_Range_High_Range", "High_Range", n)
+  n <- gsub("High_Range_High_Range", "High_Range", n, ignore.case = TRUE)
+
+  # Ob1/2024-05-31 Conductivity has different columns than previous calibrated
+  # conductivity files.
+  # Raw header:
+  # Date Time,high range High Range (μS/cm),temperature Temp (°C),
+  # Specific Conductance (μS/cm),Salinity (ppt)
+  #
+  # Clean up extra "temperature":
+  n <- gsub("temperature_Temp", "Temp", n, ignore.case = TRUE)
 
 
   names(x) <- n

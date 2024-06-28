@@ -39,11 +39,11 @@
 #'
 #' These were generally added to resolve errors that came up.
 #'
-#' * **OB9** The first 2024 data set added tp documents some changes from
+#' * **OB9** The first 2024 data set. Added to document changes from
 #' 2023 but otherwise is fairly standard.
 #'
 #' * **OB1 2024-05-21, 2024-05-31**  Added to resolve an issue where a sensor
-#' was swapped and placements.csv updated to indicate the swap, BUT the QC
+#' was swapped and `placements.csv` updated to indicate the swap, BUT the QC
 #' module was still throwing errors.
 #'
 #' * **SB2X 2024-05-15, 2024-06-10** Conductivity was calibrated with a single
@@ -81,9 +81,9 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
 
   extdata <- system.file("extdata", package = "BuzzardsBay")
   years <- list.files(extdata, pattern = "^[[:digit:]]{4}$")
-  if(!is.null(year_filter)){
+  if (!is.null(year_filter)) {
     years <- intersect(years, as.character(year_filter))
-    if(length(years) == 0)
+    if (length(years) == 0)
       stop("No year_filter years are in the example data")
   }
 
@@ -91,12 +91,12 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
   deployment_dirs <- character(0)
 
   # Copy over deployment data from year folders
-  for(year in years) {
+  for (year in years) {
     year_dir <- file.path(extdata, year)
     sites <- setdiff(list.dirs(year_dir, full.names = FALSE,
-                               recursive = FALSE), "" )
-    for(site in sites){
-      if(!is.null(site_filter) && !site %in% site_filter){
+                               recursive = FALSE), "")
+    for (site in sites){
+      if (!is.null(site_filter) && !site %in% site_filter) {
         next
       }
       site_dir <- file.path(year_dir, site)
@@ -104,9 +104,9 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
       files <- list.files(site_dir, recursive = TRUE, full.names = FALSE)
 
 
-      if(!is.null(deployment_filter)){
+      if (!is.null(deployment_filter)) {
         files <- grep(deployment_filter, files, value = TRUE)
-        if(length(files) == 0)
+        if (length(files) == 0)
           stop("All deployments were filtered out.")
       }
 

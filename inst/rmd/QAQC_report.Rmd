@@ -150,7 +150,6 @@ p <- bb_plot(d, dl,
                                   "Min Site Raw DO (Rsl)",
                                   "Min Site DO (Dsl)"),
              threshold_colors = rgb(1, 0, 0, .8))
-  
 
 
 suppress_specific_warnings(print(p))

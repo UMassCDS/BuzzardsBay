@@ -59,10 +59,10 @@ package.
 
 These were generally added to resolve errors that came up.
 \itemize{
-\item \strong{OB9} The first 2024 data set added tp documents some changes from
+\item \strong{OB9} The first 2024 data set. Added to document changes from
 2023 but otherwise is fairly standard.
 \item \strong{OB1 2024-05-21, 2024-05-31}  Added to resolve an issue where a sensor
-was swapped and placements.csv updated to indicate the swap, BUT the QC
+was swapped and \code{placements.csv} updated to indicate the swap, BUT the QC
 module was still throwing errors.
 \item \strong{SB2X 2024-05-15, 2024-06-10} Conductivity was calibrated with a single
 point calibration for these two deployments.

@@ -16,7 +16,7 @@
 check_placement <- function(sn, type, placements, deployment_date, site) {
   placements$start_date <- format_csv_date(placements$start_date) |>
     lubridate::as_date()
-  placements$end_date <- format_csv_date(placements$end_date)|>
+  placements$end_date <- format_csv_date(placements$end_date) |>
     lubridate::as_date()
   names(placements) <- tolower(names(placements))
   type <- tolower(type)
@@ -24,9 +24,9 @@ check_placement <- function(sn, type, placements, deployment_date, site) {
   deployment_date <- lubridate::as_date(deployment_date)
 
 
-  timing_ok <- placements$start_date < deployment_date &
+  timing_ok <- placements$start_date <= deployment_date &
     !is.na(placements$start_date) &
-    (is.na(placements$end_date) | placements$end_date > deployment_date)
+    (is.na(placements$end_date) | placements$end_date >= deployment_date)
 
   # Filter to just placements with appropriate timing
   placements <- placements[timing_ok, , drop = FALSE]
@@ -35,11 +35,11 @@ check_placement <- function(sn, type, placements, deployment_date, site) {
   placements <- placements[placements$sn %in% sn, , drop = FALSE]
 
   if (nrow(placements) == 0)
-    stop("SN ", sn, " does not appear in the placment table on ",
+    stop("SN ", sn, " does not appear in the placement table on ",
          deployment_date, "\n")
 
   if (nrow(placements) > 1)
-    stop("SN ", sn, " appears multiple times in the placment table on ",
+    stop("SN ", sn, " appears multiple times in the placement table on ",
          deployment_date, "\n")
 
   if (!placements$site %in% site)

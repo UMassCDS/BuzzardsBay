@@ -1,46 +1,48 @@
-
-# BuzzardsBay 0.1.0.9008
-
-## Completed
-
-* Additional test data 
-* `qc_deployment()` now works when  conductivity is calibrated with a single
-calibration point.
-* Add "calibration_points"  to metadata for conductivity.
-* Delete duplicated "High Range" in column heading.
- The BD1 sensor is labeling the column "High Range High Range (μS/cm)" 
-  The duplicate "High Range" is now removed for any sensor that has it.
-
 ## Pending tasks:
 
 * Update DO calibration to allow end point only calibration and capture 
-calibration_points.
+calibration_points? 
+* Allow single point calibration with DO.
+* Figure out what to do if both DO and Cond have single point calibration - 
+in which case either the start or the end of the calibration window will be
+missing.
+* Calculate conductivity calibration ratio - pulling from raw data.
+* Update plotting:
+    * Use sunrise and sunset to determine day and night hours.
+    * Add tide plot.
+* Create PDF output.
 
 
-* Placement Dates
+# BuzzardsBay 0.1.0.9008
 
-   A sensor was swapped out and it's creating issues with identifying placement
-dates.
-
-   From Kristin 2024-06-25
-
-   One more thing I ran into today. I was running the QC module for OB1. We switched a sensor in between one of the deployments, so I have two separate lines in the "placements" file for the conductivity sensor. First, the final deployment for the first sensor didn't work unless I set the last date it was deployed to be one day after we actually took it in from the field (I assume so that the program did not cut off the data the second the new day turned around). Next, I couldn't run the following deployments through the QC module because it said the serial number didn't match. Here is the error message:
-    Error in if (cond_sn != md$cond_device$serial_number) stop("Cond Serial number in csv does not match serial number in ",  : missing value where TRUE/FALSE needed
-
-   So adding another line for one station with new dates and a new serial number doesn't seem to work seamlessly. Is there a better way I should do it? Also is there a way that we can make the code work for that transitory day where sensors are swapped? Do we need to add a time element to the date?
-  Examples for this transition are in the OB1 date 2024-05-21 and 2024-05-31. I'm happy to answer any more questions about the swap too.
-
-
-
-
+* Add a bunch more test data see `setup_example_dir()` for a description 
+of the test data files and why they were added.
+* Update `setup_example_dir()` so that a subset of the data can be specified,
+in which case only that data is copied into the example directory.
+* `qc_deployment()` now works when  conductivity is calibrated with a single
+calibration point.  DO is not set up this way yet, and there is a conceptual
+problem that if both DO and Cond. use single point calibration than 
+`qc_deployment()` cannot determine the start and end of the calibration window.
+* Add "calibration_points"  to metadata for conductivity.
+* Delete duplicated "High Range" in conductivity column heading if present.
+ The BD1 sensor is generating a "High Range High Range (μS/cm)" column.
+* Fix bug that caused sensor swaps to result in rejected placements due 
+to overly strict data comparison with placements table.
+* Replace "temperature Temp" in calibrated CSV headings with "Temp" similar to
+the "High Range" issue this appears in some of the calibrated files for example
+in Ob1/2024-05-31 and subsequent deployments in the conductivity file.
+* Allow serial numbers to be missing from calibrated file headings.  Again
+as in OB1/2024-05-31 calibrated conductivity. If they are missing then the
+SN is pulled from the details file to populate the metadata and the two are 
+not checked against each other.
 
 
 # BuzzardsBay 0.1.0.9007
 
-* Allow dates in placements.csv to be either month/day/year or year-month-day
+* Allow dates in `placements.csv` to be either month/day/year or year-month-day
 * New internal function `format_csv_date()` takes text dates in either
 month/day/year or year-month-day and converts to year-month-day text. This is
-intended for using eith dates from .csv files that might have been edited with
+intended for using with dates from CSV files that might have been edited with
 excel which messes with dates.
 
 # BuzzardsBay 0.1.0.9006
@@ -48,7 +50,7 @@ excel which messes with dates.
 * Add 2024 example data - so now there are two example datasets.
 * `setup_example_dir()` return list has new item `deployments` which is a vector
  of deployment directories.  The `deployment` item still exists and is the
- first item. It also sets up both deployment directories and metadatfiles for
+ first item. It also sets up both deployment directories and metadata files for
  each year.
 * Fixed bug in the QAQC report code that caused temperature flags from the 
 DO logger to be considered both temperature and DO flags when plotting.
@@ -62,7 +64,7 @@ It will now work with both formats.
 * Updated `parse_do_details()` and `parse_cond_details()` 
     * Work with new 2024 example files 
     * Have greater flexibility in identifying series names in each file.
-      * in the conductivity ffile the site id and a number were added to the 
+      * in the conductivity file the site id and a number were added to the 
       series name. 
       * in the DO file "Conc" was dropped from the series name that is now: 
       "Series: DO Adj, mg/L""

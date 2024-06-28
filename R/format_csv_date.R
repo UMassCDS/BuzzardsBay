@@ -3,7 +3,7 @@
 #'
 #' Excel with US localization will automatically convert dates from
 #' year-month-day to month/day/year.  Thus whenever a date is read from a
-#' csv that might have been edited with Excel I'm going to check for slashes
+#' CSV that might have been edited with Excel I'm going to check for slashes
 #' and assume month/day/year if they are present.
 #'
 #' @param x Dates as character month/day/year or year-month-day can be
