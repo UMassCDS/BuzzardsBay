@@ -1,3 +1,4 @@
+# nolint start: cyclocomp_linter
 #' Setup an example directory
 #'
 #' Setup an example directory for testing and demonstrating the **BuzzardsBay**
@@ -144,3 +145,4 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
               deployments = deployment_dirs))
 
 }
+#nolint end: cyclocomp_linter

@@ -30,6 +30,9 @@
 #'   relative to Mean Lower Low Water (MLLW), the standard chart datum for the
 #'   U.S. coastline.}
 #'
+#' \item{used}{Indicates whether the station is in `sites.csv`}
+#' \item{rtide_name}{The name for the station as used by **rtide** package}
 #' }
 #' @source <"https://tidesandcurrents.noaa.gov/tide_predictions.html?gid=1403">
+#' @export
 "tide_station_info"

@@ -3,7 +3,8 @@
 \name{get_tide_height}
 \alias{get_tide_height}
 \title{Get the tide height at a particular station corresponding to a series
-of date, times.}
+of date, times. Note due to limitations in the \strong{rtide} package this
+only works for about a third of the Buzzards Bay NOAA tide stations.}
 \usage{
 get_tide_height(dt, station)
 }

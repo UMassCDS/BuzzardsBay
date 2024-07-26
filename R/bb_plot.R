@@ -49,7 +49,7 @@ bb_plot <- function(d,
   #----------------------------------------------------------------------------#
 
   # Set time of day (background colors)
-  tod_colors <- c(rgb(1, 1, 1, .03), rgb(0, 0, 0, .03))
+  tod_colors <- c(rgb(1, 1, 1, .8), rgb(0, 0, 0, .04))
   tod_color_labels <- c("Day", "Night")
 
   # set flag colors
@@ -80,10 +80,8 @@ bb_plot <- function(d,
   dl$jumped <- grepl(jump_pattern, dl$Flags)
   jump_points <- dl[dl$jumped & dl$name %in% focal_columns, , drop = FALSE]
 
-  # Add time of day color column
-  dl$hour <- lubridate::hour(lubridate::as_datetime(dl$Date_Time))
-  dl$Time_of_Day <- ifelse(dl$hour >= 18 | dl$hour <= 6, "Night", "Day")
-  dl$tod_color <- ifelse(dl$Time_of_Day == "Day", tod_colors[1], tod_colors[2])
+  d$Time_of_Day <- ifelse(d$daylight, "Day", "Night")
+  d$tod_color <- ifelse(d$Time_of_Day == "Day", tod_colors[1], tod_colors[2])
 
   # Add flag color column
   dl$Any_Flag <- !is.na(dl$Flags)
@@ -105,7 +103,8 @@ bb_plot <- function(d,
   # Add Rectangles for night and day
   suppressWarnings({  # lead() creates NA resulting in warning
     p <- p +
-      ggplot2::geom_rect(ggplot2::aes(xmin = .data$Date_Time,
+      ggplot2::geom_rect(data = d,
+                         ggplot2::aes(xmin = .data$Date_Time,
                                       xmax = dplyr::lead(.data$Date_Time),
                                       ymin = -Inf,
                                       ymax = Inf,
@@ -121,21 +120,19 @@ bb_plot <- function(d,
                          inherit.aes = FALSE)
   })
 
-  p <- p +
-    ggplot2::scale_fill_identity(name = NULL,
-                                 breaks = c(tod_colors, flag_colors),
-                                 labels = c(tod_color_labels,
-                                            flag_color_labels),
-                                 guide = "legend") +
+  background_cols <- c(tod_colors, flag_colors)
+  background_labels <- c(tod_color_labels, flag_color_labels)
 
-    # Add lines with DO
-    ggplot2::geom_line(size = .35) +
+  # Add lines with DO
+  p <- p + ggplot2::geom_line(size = .35) +
     ggplot2::scale_color_manual(values = line_colors, name = NULL)
 
 
   # Add thresholds to plot if they are within the range of the data
   # These are horizontal lines indicating maximum or minimum value before
   # a flag is set
+
+
 
 
   for (i in seq_along(threshold_values)) {
@@ -164,6 +161,39 @@ bb_plot <- function(d,
                                  inherit.aes = FALSE,
                                  show.legend = FALSE)
   }
+
+  # Indicate end of prior deployment
+  if (any(dl$Prior_Dep)) {
+
+
+    last_prior <- max(d$Date_Time[d$Prior_Dep]) # end of prior deployment
+    first <- min(d$Date_Time[!d$Prior_Dep])  # beginning of current deployment
+
+    sv <- dl$Date_Time %in% c(last_prior, first) & dl$name %in% focal_columns
+    cp <- dl[sv, , drop = FALSE]
+
+
+    p <- p + ggplot2::geom_point(data = cp,
+                                 ggplot2::aes(x = .data$Date_Time,
+                                              y = .data$value),
+                                 inherit.aes = FALSE,
+                                 show.legend = FALSE,
+                                 size = 2.25,
+                                 shape = 1,
+                                 color = "red")
+
+
+  }
+
+  # This adds the background color boxes to the legend
+  p <- p +
+    ggplot2::scale_fill_identity(name = NULL,
+                                 breaks = background_cols,
+                                 labels = background_labels,
+                                 guide = "legend")
+
+
+
 
   # Title and axis labels
   p <- p +

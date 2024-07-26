@@ -12,6 +12,29 @@ missing.
     * Add tide plot.
 * Create PDF output.
 
+# BuzzardsBay 0.1.0.9009 
+
+* New `convert_to_utc()` allows converting the local date times to UTC
+utilizing the GMT offset that HOBOware uses in place of a timezone. 
+
+* New function `is_daylight()` returns TRUE for date-times that
+correspond to daylight.
+
+* Update day and night plotting in reports to reflect actual sunrise and 
+sunset time and increase contrast between day and night shading.  
+
+* Add functions for estimating and plotting tide height:  `get_tideheight()` and
+`plot_tide_sun()` NOTE, however, that due to limitation in the **rtide** 
+package it doesn't work for most of the tide stations in Buzzards Bay and tide
+height has not been added to the reports.
+
+* Reports now include any portion of the prior deployment that is within six
+hours of the current deployment.  In the static plots the last observation of
+the preceding deployment and the first of the current are both highlighted with
+a red circle.
+
+
+
 
 # BuzzardsBay 0.1.0.9008
 

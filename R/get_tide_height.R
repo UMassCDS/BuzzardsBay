@@ -1,7 +1,8 @@
 
-
+# nolint start: line_length_linter
 #' Get the tide height at a particular station corresponding to a series
-#' of date, times.
+#' of date, times. Note due to limitations in the **rtide** package this
+#' only works for about a third of the Buzzards Bay NOAA tide stations.
 #'
 #' `get_tide_height()` is a wrapper to [rtide::tide_height()] that works
 #' with a date time vector and also checks the station against
@@ -22,7 +23,7 @@
 #' [PENIKESE ISLAND MA](https://tidesandcurrents.noaa.gov/datums.html?id=8448248),
 #' which states "NOTICE: All data values are relative to the MLLW.".
 #'
-#'
+# nolint end: line_length_linter
 get_tide_height <- function(dt, station) {
 
   if (!inherits(dt, "POSIXct"))
@@ -40,7 +41,8 @@ get_tide_height <- function(dt, station) {
     station <- tsi$id[tsi$name == station]
   }
   if (!station %in% tsi$id) {
-    stop("Station ", station, " is not a station id or name in tide_station_info")
+    stop("Station ", station,
+         " is not a station id or name in tide_station_info")
   }
   station
   station_name <- tsi$name[tsi$id == station]
@@ -50,11 +52,12 @@ get_tide_height <- function(dt, station) {
 
   tide <- rtide::tide_height(stations = station_name, from = from_day,
                              to = to_day, tz = tz, minutes = interval)
-  tide <- tide[ , c("DateTime", "TideHeight")]
+  tide <- tide[, c("DateTime", "TideHeight")]
   names(tide) <- c("Date_Time", "Tide_Height")
 
-  stopifnot(all(dt %in% tide$DateTime))
-  res <- dplyr::left_join(data_frame(Date_Time = dt), tide)
+  stopifnot(all(dt %in% tide$Date_Time))
+  res <- dplyr::left_join(data.frame(Date_Time = dt), tide,
+                          by = dplyr::join_by("Date_Time"))
   stopifnot(all(res$Date_Time == dt))
   return(res$Tide_Height)
 }

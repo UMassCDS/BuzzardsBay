@@ -308,9 +308,8 @@ qc_deployment <- function(dir, report = TRUE) {
     md$do_calibration$end_meter_titration_value_mg_l /
     md$do_calibration$end_do_conc
 
-  # Cond Ratio
-  warning("Conductivity calibration ratios have not been calculated yet (need to update code)")
-
+  # Conductivity Ratio
+  # NOTE: Conductivity calibration ratios have not been calculated yet!!!
 
   md_order <- c("site",
                 "deployment",
@@ -352,8 +351,10 @@ qc_deployment <- function(dir, report = TRUE) {
   #----------------------------------------------------------------------------#
 
   # Read tabular data
-  do <- readr::read_csv(input_paths$do, col_types = readr::cols())
-  cond <- readr::read_csv(input_paths$cond, col_types = readr::cols())
+  do <- readr::read_csv(input_paths$do, col_types = readr::cols(),
+                        show_col_types = FALSE)
+  cond <- readr::read_csv(input_paths$cond, col_types = readr::cols(),
+                          show_col_types = FALSE)
 
   # Extract serial number
   do_sn <- get_logger_sn(do)
@@ -373,12 +374,14 @@ qc_deployment <- function(dir, report = TRUE) {
 
   # Check against placements table
   placements <- readr::read_csv(input_paths$placements,
-                                col_types = readr::cols())
+                                col_types = readr::cols(),
+                                show_col_types = FALSE)
   check_placement(do_sn, type = "DO", placements, deployment_date, site)
   check_placement(cond_sn, type = "Cond", placements, deployment_date, site)
 
   # Check that site is in sites table
-  sites <- readr::read_csv(input_paths$sites, col_types = readr::cols())
+  sites <- readr::read_csv(input_paths$sites, col_types = readr::cols(),
+                           show_col_types = FALSE)
   if(!site %in% sites$site){
     stop("Site code from file path (", site, ") is not in the sites table: ",
          input_paths$sites, sep = "")

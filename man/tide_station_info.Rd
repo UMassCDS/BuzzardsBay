@@ -35,6 +35,8 @@ allow for the generation of high/low tide predictions, and heights will be
 relative to Mean Lower Low Water (MLLW), the standard chart datum for the
 U.S. coastline.}
 
+\item{used}{Indicates whether the station is in \code{sites.csv}}
+\item{rtide_name}{The name for the station as used by \strong{rtide} package}
 }
 }
 }

@@ -4,6 +4,7 @@ params:
   data_path: NULL
   sites_path: NULL
   metadata_path: NULL
+  preceding_data_path: NULL
 ---
 
 ```{r setup, include=FALSE}
@@ -22,12 +23,12 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "100%")
 data_path <-  params$data_path
 sites_path <- params$sites_path
 metadata_path <- params$metadata_path
-
+preceding_data_path <- params$preceding_data_path
 
 # If all parameters are null substitute paths to example files
 # (for testing and debugging)
 n_null <- sum(is.null(data_path), is.null(sites_path), is.null(metadata_path))
-if (! n_null %in% c(0, 3))
+if (! n_null %in% c(0, 4))
   stop("Either all parameters should be set or none (to use example files)")
 if (n_null == 3) {
   message("Running with example files from package.")
@@ -39,11 +40,11 @@ if (n_null == 3) {
   metadata_path <- system.file("extdata/qc_example.yml",
                                package = "BuzzardsBay",
                                mustWork = TRUE)
+  preceding_data_path <- NA
 }
 
-# Set flag  when using example data
-using_example <- data_path == system.file("extdata/qc_example.csv",
-                                          package = "BuzzardsBay")
+has_preceding_data <- !is.null(preceding_data_path)  &&
+  !is.na(preceding_data_path)
 
 
 # Read data
@@ -52,19 +53,6 @@ sites <- readr::read_csv(sites_path, col_types = readr::cols())
 md <- yaml::read_yaml(metadata_path)
 
 
-# Reformat to long (dl is for data, long)
-data_cols <- c("Temp_DOLog",
-               "Temp_CondLog",
-               "Raw_DO",
-               "DO",
-               "DO_Pct_Sat",
-               "Salinity",
-               "High_Range",
-               "Spec_Cond")
-id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags")
-
-dl <- select(d, all_of(c(id_cols, data_cols))) |>
-  tidyr::pivot_longer(cols = all_of(data_cols))
 
 # Convert sites to list with just current site
 site <- md$site
@@ -78,17 +66,64 @@ if (!site == d$Site[1])
 
 sites <- sites[sites$site == site, , drop = FALSE] |> as.list()
 
+# Add daylight info to d
+
+d$daylight <- is_daylight(d$Date_Time,
+                          lat = sites$latitude,
+                          lon = sites$longitude,
+                          tz = md$timezone)
+
+
+d$Prior_Dep <- FALSE
+
+prior_deployment_desc_text <- ""
+if (has_preceding_data) {
+  pd <- readr::read_csv(preceding_data_path, show_col_types = FALSE)
+
+  inclusion_lag <- lubridate::make_difftime(6 * 60^2) # 6 hours
+  start <- min(d$Date_Time)
+  sv <- pd$Date_Time > (start - inclusion_lag) & pd$Date_Time < start
+  if (sum(sv) == 0) {
+    has_preceding_data <- FALSE
+  } else {
+    pd <- pd[sv, , drop = FALSE]
+    pd$daylight <-  is_daylight(pd$Date_Time,
+                                lat = sites$latitude,
+                                lon = sites$longitude,
+                                tz = md$timezone)
+    pd$Prior_Dep <- TRUE
+
+    d <- rbind(pd, d)
+  }
+  prior_deployment_desc_text <-
+    paste0("Red circles surround the location of the last observation in the ",
+           "prior deployment and the first observation in the current ",
+           "deployment.")
+}
+
+
+# Reformat to long (dl is for data, long)
+data_cols <- c("Temp_DOLog",
+               "Temp_CondLog",
+               "Raw_DO",
+               "DO",
+               "DO_Pct_Sat",
+               "Salinity",
+               "High_Range",
+               "Spec_Cond")
+id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags", "Prior_Dep")
+
+dl <- select(d, all_of(c(id_cols, data_cols))) |>
+  tidyr::pivot_longer(cols = all_of(data_cols))
+
+
 # Make local copy of parameters
 bbp <- bb_options()
 
-example_warning_text <-
-  ifelse(using_example,
-         "## <span style = \"color:red\"> Using package example data</span>",
-         "")
 
 # Record counts
-n_ir <- sum(d$Gen_QC == 9, na.rm = TRUE) # immediate rejection
-n_to_review <- sum(d$Gen_QC == 9999, na.rm = TRUE)
+n_ir <- sum(d$Gen_QC == 9 & !d$Prior_Dep, na.rm = TRUE) # immediate rejection
+n_to_review <- sum(d$Gen_QC == 9999 & !d$Prior_Dep, na.rm = TRUE)
 
 ```
 
@@ -97,8 +132,6 @@ title: "`r site`, `r md$deployment_date`"
 ---
 ## Quality assessment report
 ### [Continuous Oxygen Monitoring in Buzzards Bay (COMBB) project](https://www.woodwellclimate.org/project/combb/)
-
-`r example_warning_text`
 
 ________________________________________________________________________________
 
@@ -128,12 +161,13 @@ Vertical rectangles indicate flags, red for dissolved oxygen (DO),
 orange for other flags.  
 Thresholds are shown as horizontal lines if they are exceeded by the data.  
 Dots mark both ends of jumps that are greater than `r bbp$do_max_jump`.  
+`r prior_deployment_desc_text`
 
 ```{r DO static plot, echo=FALSE, message=TRUE, warning=TRUE}
 
 
 p <- bb_plot(d, dl,
-             focal_column = c("DO", "Raw_DO"),
+             focal_columns = c("DO", "Raw_DO"),
              jump_pattern = "[:^]Dj|Rj",
              focal_flag_pattern = "[:^]D|R",
              plot_label = "Dissolved Oxygen",

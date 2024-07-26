@@ -61,3 +61,19 @@ test_that("qc_deployment() works after a sensor has been swapped out", {
   qc_deployment(deployment)
 
 })
+
+
+test_that("qc_deployment() works with a preceeding deployment", {
+
+  paths <- local_example_dir(site_filter = "OB1")
+
+
+  # Process "prior" deployment to make data for it
+  suppressWarnings(qc_deployment(paths$deployments[1]))
+
+  # Process current deployment - plots should include prior
+  expect_no_error(qc_deployment(paths$deployments[2]))
+
+
+
+})

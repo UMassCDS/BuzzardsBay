@@ -51,6 +51,36 @@ make_deployment_report <- function(dir, quiet = FALSE) {
   site <- dirs[length(dirs) - 1]
   rm(dirs)
 
+  # Get path of an immediate preceding deployment data - NULL if none
+  site_dir <- file.path(year_dir, site)
+  deps <- list.files(site_dir,
+                     pattern =
+                       "^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$")
+  other_deps <- setdiff(deps, deployment_date) |>
+    lubridate::as_date()
+  preceding_deps <-
+    other_deps[other_deps < lubridate::as_date(deployment_date)]
+  if (length(preceding_deps > 0)) {
+    preceding_dep <-  max(preceding_deps)
+    preceding_dep_dir <- file.path(site_dir, preceding_dep)
+    # data_names are possible files for the preceding deployment
+    data_names <- paste0(c("QC", "Auto_QC"),
+                         "_", site, "_",
+                         preceding_dep, ".csv")
+    data_paths <- file.path(preceding_dep_dir, data_names)
+
+    preceding_data_path <- data_paths[file.exists(data_paths)][1]
+
+    rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
+  } else {
+    preceding_data_path <- NA
+  }
+  rm(deps, other_deps, preceding_deps)
+
+
+
+
+
   paths <- c(paths, list(
     auto_qc = file.path(dir, paste0("Auto_QC_", site, "_",
                                     deployment_date, ".csv")),
@@ -61,12 +91,14 @@ make_deployment_report <- function(dir, quiet = FALSE) {
     metadata = file.path(dir, paste0("Metadata_", site, "_",
                                      deployment_date, ".yml")),
     report = file.path(dir, paste0("QC_", site, "_", deployment_date,
-                                   "_report.html"))
+                                   "_report.html")),
+    preceding_data = preceding_data_path
   ))
 
-  required <- c("final_qc", "sites", "metadata")
+
+  required <- c("auto_qc", "sites", "metadata")
   for (i in seq_along(required)) {
-    if (!file.exists(paths[[i]]))
+    if (!file.exists(paths[[required[i]]]))
       stop("Required ", required[i], " file is missing.  Expected at: ",
            paths[[required[i]]])
   }
@@ -78,9 +110,19 @@ make_deployment_report <- function(dir, quiet = FALSE) {
                     output_file = paths$report,
                     params = list(data_path = paths$auto_qc,
                                   metadata_path = paths$metadata,
-                                  sites_path = paths$sites),
+                                  sites_path = paths$sites,
+                                  preceding_data_path = paths$preceding_data),
                     quiet = quiet)
 
+  if (FALSE) {
+    # Run this manually to step through QAQC_report.Rmd
+    # nolint start: object_usage_linter
+    data_path <-  paths$auto_qc
+    sites_path <- paths$sites
+    metadata_path <- paths$metadata
+    preceding_data_path <- paths$preceding_data
+    # nolint end: object_usage_linter
+  }
 
   return(invisible(paths$repor))
 
