@@ -1,18 +1,16 @@
-## Pending tasks:
+## Wish list:
 
-* Update DO calibration to allow end point only calibration and capture 
-calibration_points? 
-* Allow single point calibration with DO.
 * Figure out what to do if both DO and Cond have single point calibration - 
 in which case either the start or the end of the calibration window will be
 missing.
 * Calculate conductivity calibration ratio - pulling from raw data.
-* Update plotting:
-    * Use sunrise and sunset to determine day and night hours.
-    * Add tide plot.
-* Create PDF output.
+* Add tide height plots?
 
-# BuzzardsBay 0.1.0.9009 
+# BuzzardsBay 0.1.0.9010
+
+* Fix namespace bug.  `tide_station_info` is a dataset included in the package but was erroneously listed as an exported object. This caused the package to fail to install cleanly. 
+
+# BuzzardsBay 0.1.0.9009
 
 * New `convert_to_utc()` allows converting the local date times to UTC
 utilizing the GMT offset that HOBOware uses in place of a timezone. 
@@ -32,8 +30,6 @@ height has not been added to the reports.
 hours of the current deployment.  In the static plots the last observation of
 the preceding deployment and the first of the current are both highlighted with
 a red circle.
-
-
 
 
 # BuzzardsBay 0.1.0.9008

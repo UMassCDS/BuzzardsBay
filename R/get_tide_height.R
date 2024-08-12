@@ -35,7 +35,7 @@ get_tide_height <- function(dt, station) {
   interval <- difftime(dt[2], dt[1], units = "mins") |> as.numeric()
 
 
-  tsi <- tide_station_info
+  tsi <- BuzzardsBay::tide_station_info
   stopifnot(length(station) == 1)
   if (station %in% tsi$name) {
     station <- tsi$id[tsi$name == station]

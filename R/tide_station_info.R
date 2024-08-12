@@ -34,5 +34,4 @@
 #' \item{rtide_name}{The name for the station as used by **rtide** package}
 #' }
 #' @source <"https://tidesandcurrents.noaa.gov/tide_predictions.html?gid=1403">
-#' @export
 "tide_station_info"
