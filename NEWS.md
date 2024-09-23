@@ -6,6 +6,19 @@ missing.
 * Calculate conductivity calibration ratio - pulling from raw data.
 * Add tide height plots?
 
+# BuzzardsBay 0.1.0.9011
+
+* Fix bug with date times in prior deployment.
+Problem was that excel is changing the date format for the prior deployment 
+which when read to add to report plots resulted in an error.
+
+  * Add example data BD1/2024-09-23 (target) and BD1/2024-09-17 (prior deployment)
+  * Add test to reproduce bug
+  * Add new function `format_csv_date_time()` used to cleanup date time data
+   that is either in the expected format or in the format excel changes it to.
+   This is similar to `format_csv_date()` but works for date-time columns.
+  
+
 # BuzzardsBay 0.1.0.9010
 
 * Fix namespace bug.  `tide_station_info` is a dataset included in the package but was erroneously listed as an exported object. This caused the package to fail to install cleanly. 

@@ -51,7 +51,7 @@ has_preceding_data <- !is.null(preceding_data_path)  &&
 d <- readr::read_csv(data_path, col_types = readr::cols())
 sites <- readr::read_csv(sites_path, col_types = readr::cols())
 md <- yaml::read_yaml(metadata_path)
-
+d$Date_Time <- format_csv_date_time(d$Date_Time) 
 
 
 # Convert sites to list with just current site
@@ -79,10 +79,13 @@ d$Prior_Dep <- FALSE
 prior_deployment_desc_text <- ""
 if (has_preceding_data) {
   pd <- readr::read_csv(preceding_data_path, show_col_types = FALSE)
-
+  pd$Date_Time <- format_csv_date_time(pd$Date_Time) 
+  
   inclusion_lag <- lubridate::make_difftime(6 * 60^2) # 6 hours
-  start <- min(d$Date_Time)
-  sv <- pd$Date_Time > (start - inclusion_lag) & pd$Date_Time < start
+  start <- min(lubridate::as_datetime(d$Date_Time), na.rm = TRUE)
+
+  dt <- lubridate::as_datetime(pd$Date_Time)
+  sv <- dt > (start - inclusion_lag) & dt < start
   if (sum(sv) == 0) {
     has_preceding_data <- FALSE
   } else {

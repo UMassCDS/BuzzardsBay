@@ -74,6 +74,10 @@ test_that("qc_deployment() works with a preceeding deployment", {
   # Process current deployment - plots should include prior
   expect_no_error(qc_deployment(paths$deployments[2]))
 
+})
 
-
+test_that("qc_deploytment() date time bug is fixed", {
+  paths <- local_example_dir(site_filter = "BD1", year_filter = 2024)
+  deployment <- paths$deployments[grep("2024-09-23", paths$deployments)]
+  expect_no_error(qc_deployment(deployment))
 })
