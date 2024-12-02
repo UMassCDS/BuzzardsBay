@@ -1,7 +1,17 @@
 test_that("qc_deployment() works", {
 
-  paths <- local_example_dir(year_filter = 2023)
-  expect_no_error(d <- qc_deployment(paths$deployment))
+  example_paths <- local_example_dir(year_filter = 2023)
+  expect_no_error(l <- qc_deployment(example_paths$deployment))
+
+  paths <- lookup_paths(deployment_dir  = example_paths$deployment)
+
+  expect_true(all(label = file.exists(paths$deployment_auto_qc,
+                                      paths$deployment_prelim_qc,
+                                      paths$deployment_report)))
+  d <- readr::read_csv(paths$deployment_auto_qc, show_col_types = FALSE)
+  expect_equal(names(d), expected_column_names$qc_final)
+
+  expect_snapshot(head(d) |> as.data.frame())
 
 })
 
@@ -33,7 +43,7 @@ test_that("qc_deployment() works after a sensor has been swapped out", {
 
   deployment  <- paths$deployment
   placements_path <- file.path(paths$base, "2024", "Metadata", "placements.csv")
-  placements <- readr::read_csv(placements_path)
+  placements <- read_and_format_placements(placements_path)
 
   # Check 2024-05-21, last before swap
   sn <- 21415528
@@ -50,7 +60,7 @@ test_that("qc_deployment() works after a sensor has been swapped out", {
 
   deployment  <- paths$deployment
   placements_path <- file.path(paths$base, "2024", "Metadata", "placements.csv")
-  placements <- readr::read_csv(placements_path)
+  placements <- read_and_format_placements(placements_path)
 
 
   sn <- 20882470
@@ -65,19 +75,34 @@ test_that("qc_deployment() works after a sensor has been swapped out", {
 
 test_that("qc_deployment() works with a preceeding deployment", {
 
-  paths <- local_example_dir(site_filter = "OB1")
+  # Data from previous deployment is incorporated into report
 
+  example_paths <- local_example_dir(site_filter = "OB1")
+
+  paths <- lookup_paths(deployment_dir =
+                          example_paths$deployment)
 
   # Process "prior" deployment to make data for it
-  suppressWarnings(qc_deployment(paths$deployments[1]))
+  suppressWarnings(qc_deployment(example_paths$deployments[1]))
 
   # Process current deployment - plots should include prior
-  expect_no_error(qc_deployment(paths$deployments[2]))
+  expect_no_error(qc_deployment(example_paths$deployments[2]))
 
 })
 
-test_that("qc_deploytment() date time bug is fixed", {
+test_that("qc_deployment() date time bug is fixed", {
   paths <- local_example_dir(site_filter = "BD1", year_filter = 2024)
   deployment <- paths$deployments[grep("2024-09-23", paths$deployments)]
   expect_no_error(qc_deployment(deployment))
+})
+
+test_that("qc_deployment() plot range with error codes in data", {
+  # The sensors record -888.88 when there is an error we
+  # don't want this to affect plotting.
+  example_paths <- local_example_dir(site_filter = "OB9",
+                                     deployment_filter = "2024-07-23")
+
+  paths <- lookup_paths(deployment_dir = example_paths$deployment)
+  qc_deployment(example_paths$deployment)
+
 })

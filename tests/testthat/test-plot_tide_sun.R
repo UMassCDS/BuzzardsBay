@@ -15,4 +15,6 @@ test_that("plot_tide_sun() works", {
   expect_no_error(is_daylight(d$Date_Time, lat, lon, tz))
 
   expect_no_error(plot_tide_sun(d = d, station, lat = lat, lon = lon, tz))
+
+
 })

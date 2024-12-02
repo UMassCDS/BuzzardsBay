@@ -19,9 +19,16 @@
 #' `do_streak_min`
 #' for more than `do_streak_duration` than the Dissolved Oxygen low streak
 #' (`Dls`) flag is set.}
-#' \item{`logger_error_value`}{The value that indicates a logger error
-#' (`TDe`, `TCe`, `He`, or`Re`).  Temperature (from both loggers),
-#' High Range, and Raw DO are all checked for this value.}
+#' \item{`logger_error_values`}{One or more values that indicate a logger
+#'  error.  If setting multiple values in a YAML file use indented lines
+#'  with a dash for each value:
+#'  ```
+#'  logger_error_values:
+#'    - -888.88
+#'    - 9999
+#'  ```
+#'  Temperature (from both loggers), High Range, and Raw DO are all checked
+#'  for this value. Flags: `TDe`, `TCe`, `He`, and `Re`.}
 #' \item{`max_hr`, `min_hr`}{Thresholds for the high high range (`Hh`) and low
 #' high range (`Hl`) flags.}
 #' \item{`max_raw_do`}{Threshold for the high raw DO (`Rh`) flag.}

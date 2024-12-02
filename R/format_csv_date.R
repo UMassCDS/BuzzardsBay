@@ -53,15 +53,16 @@ format_csv_date <- function(x) {
 #' @keywords internal
 format_csv_date_time <- function(x, format = "datetime") {
 
-  if(inherits(x, "POSIXct"))
+  if (inherits(x, "POSIXct"))
     return(x)
 
   # Selection vectors for date formats
+  # nolint start: line_length_linter
   mdy_hm_sv <- !is.na(x) & grepl("^[[:digit:]]+/[[:digit:]]+/[[:digit:]]+[[:blank:]]+[[:digit:]]+:[[:digit:]]+$", x)
   ymd_hm_sv  <- !is.na(x) & grepl("^[[:digit:]]+-[[:digit:]]+-[[:digit:]]+[[:blank:]]+[[:digit:]]+:[[:digit:]]+$", x)
   mdy_hms_sv <- !is.na(x) & grepl("^[[:digit:]]+/[[:digit:]]+/[[:digit:]]+[[:blank:]]+[[:digit:]]+:[[:digit:]]+:[[:digit:]]+$", x)
   ymd_hms_sv  <- !is.na(x) & grepl("^[[:digit:]]+-[[:digit:]]+-[[:digit:]]+[[:blank:]]+[[:digit:]]+:[[:digit:]]+:[[:digit:]]+$", x)
-
+  # nolint end: line_length_linter
   if (any(!is.na(x) & !mdy_hm_sv & !ymd_hm_sv & !mdy_hms_sv & !ymd_hms_sv))
     stop("Some date times weren't parsed properly")
 
@@ -76,10 +77,9 @@ format_csv_date_time <- function(x, format = "datetime") {
   if (any(mdy_hms_sv))
     dates[mdy_hms_sv] <- lubridate::mdy_hms(x[mdy_hms_sv])
 
-  if(format == "datetime")
+  if (format == "datetime")
     return(dates)
-  if(format == "character")
+  if (format == "character")
     return(as.character(dates))
   stop("Unrecognized format argument")
 }
-

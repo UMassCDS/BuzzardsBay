@@ -15,6 +15,9 @@
 #'                     focal columns.
 #' @param focal_flag_pattern Regular expression to identify all flags for
 #'                      the focal columns
+#' @param err_pattern Regular expression to identify flags that indicate a
+#' sensor error code (typically value of -888.88) these values will be excluded
+#' when setting the y axis range.
 #' @param plot_label  Label for the plot.
 #' @param focal_flag_label  Label for the focal flag, " Flag" will be appended.
 #' @param y_label Y axis label.
@@ -26,6 +29,8 @@
 #' one color or a color for each `threshold_value`.
 #' @param lat,lon The latitude and longitude of the site, used to calculate
 #'                sunrise and sunset times.
+#' @param range_limit The plot range will never exceed this range - it can
+#' be more restricted.
 #' @return A ggplot plot object. Use `print()` to turn it into a plot/
 #' @importFrom rlang .data
 #' @importFrom grDevices rgb
@@ -35,6 +40,7 @@ bb_plot <- function(d,
                     focal_columns,
                     jump_pattern,
                     focal_flag_pattern,
+                    err_pattern,
                     plot_label,
                     focal_flag_label = plot_label,
                     y_label,
@@ -42,7 +48,8 @@ bb_plot <- function(d,
                     threshold_labels,
                     threshold_colors,
                     lat = NULL,
-                    lon = NULL) {
+                    lon = NULL,
+                    range_limit = c(NA, NA)) {
 
   #----------------------------------------------------------------------------#
   # Hard coded variables
@@ -59,8 +66,7 @@ bb_plot <- function(d,
   # Set line colors
   line_colors <- c(rgb(0, 0, 0, .9), rgb(0, 0, 1, .9))
 
-  # Set variables based on range of data
-  focal_range <- range(d[, focal_columns], na.rm = TRUE)
+  # Middle of x range
   x_mid <- mean(range(d$Date_Time))
 
   # If FALSE then thresholds are only plotted (as horizontal lines)
@@ -90,12 +96,25 @@ bb_plot <- function(d,
   dl$flag_col[dl$Any_Flag] <- flag_colors[2]
   dl$flag_col[dl$This_Flag]  <- flag_colors[1]
 
+
+  # Drop rows not associated with current data columns
+  dl <- dplyr::filter(dl, .data$name %in% focal_columns)
+
+  # Add error column for rows that had a sensor error
+  dl$sensor_error <- grepl(err_pattern, dl$Flags)
+
+  # Calculate range of data (excluding errors)
+  focal_range <- range(dl$value[!dl$sensor_error])
+
+  # Constrain to range limit
+  focal_range[1] <- max(focal_range[1], range_limit[1], na.rm =  TRUE)
+  focal_range[2] <- min(focal_range[2], range_limit[2], na.rm = TRUE)
+
   #----------------------------------------------------------------------------#
   # Assemble plot
   #----------------------------------------------------------------------------#
 
   p <-  dl |>
-    dplyr::filter(.data$name %in% focal_columns) |>
     ggplot2::ggplot(ggplot2::aes(x = .data$Date_Time,
                                  y = .data$value,
                                  color = .data$name))
@@ -200,6 +219,9 @@ bb_plot <- function(d,
     ggplot2::ggtitle(plot_label) +
     ggplot2::ylab(y_label) +
     ggplot2::xlab(NULL)
+
+  # Limit y axis without dropping data
+  p <- p + ggplot2::coord_cartesian(ylim = focal_range)
 
   return(p)
 }

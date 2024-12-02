@@ -1,10 +1,7 @@
 ---
 output: html_document
 params:
-  data_path: NULL
-  sites_path: NULL
-  metadata_path: NULL
-  preceding_data_path: NULL
+  paths: NULL
 ---
 
 ```{r setup, include=FALSE}
@@ -20,38 +17,60 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "100%")
 
 ```{r preprocess data, include=FALSE}
 
-data_path <-  params$data_path
-sites_path <- params$sites_path
-metadata_path <- params$metadata_path
-preceding_data_path <- params$preceding_data_path
+
+data_path <-  params$paths$data_path
+sites_path <- params$paths$sites_path
+metadata_path <- params$paths$metadata_path
+preceding_data_path <- params$paths$preceding_data_path
+paths <- params$paths
+
+using_example_data <- FALSE
+
 
 # If all parameters are null substitute paths to example files
 # (for testing and debugging)
-n_null <- sum(is.null(data_path), is.null(sites_path), is.null(metadata_path))
+n_null <- sum(is.null(data_path), is.null(sites_path),
+              is.null(metadata_path), is.null(preceding_data_path))
 if (! n_null %in% c(0, 4))
-  stop("Either all parameters should be set or none (to use example files)")
-if (n_null == 3) {
+  stop("Either all required paths should be set or none (to use example files)")
+if (n_null == 4) {
   message("Running with example files from package.")
 
-  data_path <- system.file("extdata/qc_example.csv", package = "BuzzardsBay",
-                           mustWork = TRUE)
-  sites_path <- system.file("extdata/sites.csv", package = "BuzzardsBay",
-                            mustWork = TRUE)
-  metadata_path <- system.file("extdata/qc_example.yml",
-                               package = "BuzzardsBay",
-                               mustWork = TRUE)
-  preceding_data_path <- NA
+  paths <- list()
+
+  paths$data_path <- system.file("extdata/qc_example.csv",
+                                 package = "BuzzardsBay",
+                                 mustWork = TRUE)
+  paths$sites_path <- system.file("extdata/sites.csv",
+                                  package = "BuzzardsBay",
+                                  mustWork = TRUE)
+  paths$metadata_path <- system.file("extdata/qc_example.yml",
+                                     package = "BuzzardsBay",
+                                     mustWork = TRUE)
+  paths$global_parameters <- system.file("extdata/bb_parameters.yml",
+                                         package = "BuzzardsBay",
+                                         mustWork = TRUE)
+
+  paths$preceding_data_path <- NA
+  paths$site_parameters <- NA
+  using_example_data <- TRUE
+
+
+
 }
 
-has_preceding_data <- !is.null(preceding_data_path)  &&
-  !is.na(preceding_data_path)
+
+update_bb_parameters(paths)
+
+has_preceding_data <- "preceding_data_path" %in% names(paths) &&
+  !is.na(paths$preceding_data_path)
 
 
 # Read data
 d <- readr::read_csv(data_path, col_types = readr::cols())
 sites <- readr::read_csv(sites_path, col_types = readr::cols())
 md <- yaml::read_yaml(metadata_path)
-d$Date_Time <- format_csv_date_time(d$Date_Time) 
+d$Date_Time <- format_csv_date_time(d$Date_Time)
 
 
 # Convert sites to list with just current site
@@ -79,8 +98,8 @@ d$Prior_Dep <- FALSE
 prior_deployment_desc_text <- ""
 if (has_preceding_data) {
   pd <- readr::read_csv(preceding_data_path, show_col_types = FALSE)
-  pd$Date_Time <- format_csv_date_time(pd$Date_Time) 
-  
+  pd$Date_Time <- format_csv_date_time(pd$Date_Time)
+
   inclusion_lag <- lubridate::make_difftime(6 * 60^2) # 6 hours
   start <- min(lubridate::as_datetime(d$Date_Time), na.rm = TRUE)
 
@@ -119,8 +138,19 @@ id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags", "Prior_Dep")
 dl <- select(d, all_of(c(id_cols, data_cols))) |>
   tidyr::pivot_longer(cols = all_of(data_cols))
 
+# Aggregate parameters
 
+# With real data, update parameter based on global and site parameters
+if (!using_example_data) {
+  # The example data files for the markdown report are not nested in
+  # a file hierarchy, so the parameter files aren't in the right relative
+  # locations.
+  update_bb_parameters(paths =
+                         lookup_paths(deployment_dir = dirname(data_path)))
+}
 # Make local copy of parameters
+# Necessary because bbp isn't exported from package and I like the shorthand
+# way of referencing it
 bbp <- bb_options()
 
 
@@ -168,11 +198,13 @@ Dots mark both ends of jumps that are greater than `r bbp$do_max_jump`.
 
 ```{r DO static plot, echo=FALSE, message=TRUE, warning=TRUE}
 
-
-p <- bb_plot(d, dl,
+# Loggical indicating sensor error value was detected
+p <- bb_plot(d,
+             dl,
              focal_columns = c("DO", "Raw_DO"),
              jump_pattern = "[:^]Dj|Rj",
              focal_flag_pattern = "[:^]D|R",
+             err_pattern = "De",
              plot_label = "Dissolved Oxygen",
              focal_flag_label = "DO",
              y_label = "Dissolved Oxygen (mg/l)",
@@ -186,7 +218,9 @@ p <- bb_plot(d, dl,
                                   "Max Site DO (Dsh)",
                                   "Min Site Raw DO (Rsl)",
                                   "Min Site DO (Dsl)"),
-             threshold_colors = rgb(1, 0, 0, .8))
+             threshold_colors = rgb(1, 0, 0, .8),
+             range_limit = c(0, bb_options("max_raw_do"))
+)
 
 
 suppress_specific_warnings(print(p))
@@ -230,6 +264,7 @@ p <- bb_plot(d, dl,
              focal_column = "Salinity",
              jump_pattern = "Sj",
              focal_flag_pattern = "S",
+             err_pattern = "Se",
              plot_label = "Salinity",
              y_label = "Salinity (ppt)",
              threshold_values = c(sites$Max_QC_Sal, sites$Min_QC_Sal),
@@ -271,6 +306,7 @@ p <- bb_plot(d, dl,
              focal_column = c("Temp_DOLog", "Temp_CondLog"),
              jump_pattern = "TDj|TCj",
              focal_flag_pattern = "TD|RC",
+             err_pattern = "TDe|RCe",
              plot_label = "Temperature",
              y_label = "Temperature (C)",
              threshold_values = c(sites$Max_QC_Temp,

@@ -9,7 +9,7 @@ only works for about a third of the Buzzards Bay NOAA tide stations.}
 get_tide_height(dt, station)
 }
 \arguments{
-\item{dt}{Series of date-time values as POSIXct. The time zone must be
+\item{dt}{Series of date-time values as POSIXct. The timezone must be
 properly set.}
 
 \item{station}{A station name or station ID as it appears in

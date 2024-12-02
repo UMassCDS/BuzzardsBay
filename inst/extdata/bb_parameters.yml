@@ -1,0 +1,15 @@
+max_hr: 55000.0
+do_streak_min: 0.5
+sal_lv_range: 0.01
+max_temp: 35.0
+max_raw_do: 20.0
+logger_error_values: -888.88
+sal_max_jump: 0.75
+min_temp: 5.0
+min_hr: 1000.0
+do_streak_duration: 60.0
+do_max_jump: 2.0
+do_lv_duration: 60.0
+do_lv_range: 0.01
+sal_lv_duration: 60.0
+

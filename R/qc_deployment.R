@@ -50,98 +50,49 @@ qc_deployment <- function(dir, report = TRUE) {
   # Set Paths                                                               ####
   #----------------------------------------------------------------------------#
 
-  # Standardize slashes
-  dir <- gsub("[/\\\\]+", .Platform$file.sep, dir)
-  dir <- gsub("[/\\\\]$", "", dir) # drop trailing /
+  paths <- lookup_paths(deployment_dir = dir)
+  deployment_date <- paths$deployment_date
+  site <- paths$site
 
-  # Directory paths
-  base_dir <- cut_path_items(dir, 3)
-  year_dir <- cut_path_items(dir, 2)
-  site_dir <- cut_path_items(dir, 1)
-  md_dir <- file.path(year_dir, "Metadata")
-  cal_dir <- file.path(dir, "Calibrated")
+  #----------------------------------------------------------------------------#
+  # Read parameter and metadata files
+  #----------------------------------------------------------------------------#
+
+  # This reads both the global and site specific (later takes precedence)
+  # parameter files into bbp, an environment within the package.
+  update_bb_parameters(paths)
+
+  # Read placements file
+  placements <- read_and_format_placements(paths$placements)
+
+  # Lookup device models
+  devices <- lookup_devices(site, deployment_date, placements)
+
+  # Read site table
+  sites <- readr::read_csv(paths$sites, col_types = readr::cols(),
+                           show_col_types = FALSE)
+
+
+  # Check that site is in sites table
+  if(!site %in% sites$site){
+    stop("Site code from file path (", site, ") is not in the sites table: ",
+         paths$sites, sep = "")
+  }
+
 
   if(!file.exists(dir))
     stop("Input deployment directory: ", dir, " does not exist.")
 
-  if(!dir.exists(cal_dir))
-    stop("Expected to find calibration directory:", cal_dir, "\n")
-
-  # Set input calibration data paths
-  l <- list.files(cal_dir, full.names = TRUE)
-  l <- gsub("[/\\\\]+", .Platform$file.sep, l)
-  input_paths = list(
-    do = grep("DO_[^/]*\\.csv$", l, value = TRUE, ignore.case = TRUE),
-    cond = grep("(Cond*|Sal)_[^/]*\\.csv$", l, value = TRUE, ignore.case = TRUE),
-    do_details = grep("DO_[^/]*details\\.txt$", l, value = TRUE,
-                      ignore.case = TRUE),
-    cond_details = grep("(Cond*|Sal)_[^/]*details\\.txt$", l, value = TRUE,
-                        ignore.case = TRUE))
-
-  # Check that we found 1 and only 1 of each type of file in the calibration dir
-  has_one <- sapply(input_paths, length) == 1
-  if(!all(has_one)){
-    stop("Couldn't find required files in calibration dir: ",
-         paste(names(input_paths)[!has_one], collapse = ", "))
-  }
-
-  # Add year specific metadata file paths to input paths
-  input_paths <- c(input_paths, list(
-    sites = file.path(md_dir, "sites.csv"),
-    placements = file.path(md_dir, "placements.csv")
-  ))
-
-  # Print input paths:
-
-  # Convert input files to relative paths (for printing)
-  relative_paths  <- input_paths |> unlist() |> as.character()
-  relative_paths <- gsub(paste0("^", base_dir, "[/\\\\]*"), "",
-                         relative_paths, ignore.case = TRUE)
-
-  cat("Buzzards Bay base directory:\n\t",
-      base_dir, "\n")
-
-  cat("Using these input files (relative to base dir):\n\t",
-      paste(names(input_paths), " = ", relative_paths, collapse = "\n\t"),
-      "\n", sep = "")
-
-  miss <- !sapply(input_paths, file.exists)
-  if(any(miss)){
-    stop("Missing input files:\n",
-         paste(names(input_paths[miss]), " = ", relative_paths[miss],
-               collapse = "\n\t"), sep = "")
-  }
-
-
-  # get deployment date date (defined as the end of deployment)
-  # and site name
-  # Assuming this structure
-  # /<base_dir>/<year>/<site>/<year>-<month>-<day>/
-  dirs <- strsplit(dir, "[/\\\\]+")[[1]]
-  deployment_date <- dirs[length(dirs)]
-  site <- dirs[length(dirs) - 1]
-  rm(dirs)
-
-  # Check for proper format (and padding) of deployment date
-  if(!grepl("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$", deployment_date)){
-    stop("The deployment folder (", deployment_date,
-         ") does not meet the expected dddd-dd-dd format (where d is a digit).",
-         " It should represent year-month-day with four digits for year and ",
-         "2 digits for both month and day." )
-  }
+  if(!dir.exists(paths$deployment_cal_dir))
+    stop("Expected to find calibration directory:", paths$cal_dir, "\n")
 
   # Set output paths
   out_paths <- list(
-    auto_qc = file.path(dir, paste0("Auto_QC_", site, "_",
-                                    deployment_date, ".csv")),
-    prelim_qc = file.path(dir, paste0("Preliminary_QC_", site, "_",
-                                      deployment_date, ".csv")),
-    final_qc =  file.path(dir, paste0("QC_", site, "_",
-                                      deployment_date, ".csv")),
-    metadata = file.path(dir, paste0("Metadata_", site, "_",
-                                     deployment_date, ".yml")),
-    report = file.path(dir, paste0("QC_", site, "_", deployment_date,
-                                   "_report.html"))
+    auto_qc = paths$deployment_auto_qc,
+    prelim_qc = paths$deployment_prelim_qc,
+    final_qc =  paths$deployment_final_qc,
+    metadata = paths$deployment_metadata,
+    report = paths$deployment_report
   )
 
   # Check for prexisting output
@@ -152,315 +103,36 @@ qc_deployment <- function(dir, report = TRUE) {
   }
 
   #----------------------------------------------------------------------------#
-  # Set Column names                                                        ####
+  # Import data
   #----------------------------------------------------------------------------#
-
-  # Expected column names in the merged logger data (after cleanup)
-  expected_logger_cols <- c(
-    "Date_Time",
-    "Raw_DO",
-    "Temp_DOLog",
-    "DO",
-    "DO_Pct_Sat",
-    "Salinity_DOLog",
-    "High_Range",
-    "Temp_CondLog",
-    "Spec_Cond",
-    "Salinity",
-    "Time")
-
-  # Intermediate columns names this is a superset of the final column names
-
-  intermediate_cols <- c(
-    "Site",
-    "Date",
-    "Date_Time",
-    "Gen_QC",
-    "Flags",
-    "Time",
-    "Time_QC",
-    "Temp_DOLog",
-    "Temp_DOLog_Flag",
-    "Temp_DOLog_QC",
-    "Temp_CondLog",
-    "Temp_CondLog_Flag",
-    "Temp_CondLog_QC",
-    "Raw_DO",
-    "Raw_DO_Flag",
-    "Raw_DO_QC",
-    "DO",
-    "DO_Flag",
-    "DO_QC",
-    "DO_Calibration_QC",
-    "DO_Pct_Sat",
-    "DO_Pct_Sat_Flag",
-    "DO_Pct_Sat_QC",
-    "Salinity_DOLog",
-    "Salinity_DOLog_Flag",
-    "Salinity_DOLog_QC",
-    "Salinity",
-    "Salinity_Flag",
-    "Salinity_QC",
-    "Sal_Calibration_QC",
-    "High_Range",
-    "High_Range_Flag",
-    "High_Range_QC",
-    "Spec_Cond",
-    "Spec_Cond_Flag",
-    "Spec_Cond_QC",
-    "Cal",
-    "QA_Comment",
-    "Field_Comment")
-
-  # Set final data columns
-  #  - Drop data specific flag columns, and
-  #  - DOLog salinity columns
-  final_cols <- intermediate_cols[!grepl("_Flag|Salinity_DOLog",
-                                         intermediate_cols,
-                                         ignore.case = TRUE)]
-
-  #============================================================================#
-  # Process Metadata                                                        ####
-  #============================================================================#
-
-  # From HOBOware Details.txt files
-  md <- c(get_do_details(input_paths$do_details),
-          get_cond_details(input_paths$cond_details))
-
-  # Consolidate information from the two devices
-
-  # Format timezone
-  a <- md$do_device$header_created
-  do_tz <- gsub("^.*(GMT-[[:digit:]]+:[[:digit:]])", "\\1", a)
-  a <- md$cond_device$header_created
-  cond_tz <-  gsub("^.*(GMT-[[:digit:]]+:[[:digit:]])", "\\1", a)
-  stopifnot(do_tz == cond_tz)
-  md$timezone <- do_tz
-  rm(a, cond_tz, do_tz)
-
-  # Deployment interval (minutes)
-  do_interval <- md$do_deployment$logging_interval_min
-  cond_interval <- md$cond_deployment$logging_interval_min
-  if(!do_interval == cond_interval)
-    stop("The logging interval for the two devices does not match. DO: ",
-         do_interval, " min, Cond: ", cond_interval, sep = " min")
-  md$logging_interval_min <- do_interval
-  md$do_deployment$logging_interval <- NULL
-  md$do_deployment$logging_interval_min <- NULL
-  md$cond_deployment$logging_interval <- NULL
-  md$cond_deployment$logging_interval_min <- NULL
-
-  # Other information
-  md$site <- site
-  md$deployment <- paste0(site, "_", deployment_date)
-  md$deployment_date <- as.character(deployment_date)
-  md$auto_qc_date <- lubridate::today() |> as.character()
-
-
-  # Process calibration start times
-  # Note one but not both calibration times might be NA due to single point
-  # calibration
-  ds <- md$do_calibration$start_time
-  cs <- md$cond_calibration$start_cal_time
-  # Check for consistancy
-  if(!is.na(ds) && !is.na(cs)  && ds != cs)
-    stop("Calibration start times don't match in details files.")
-  # Consolidate start time - using whichever value isn't NA (if one is)
-  md$calibration_start <- ifelse(is.na(ds), cs, ds)
-  md$do_calibration$start_time <- NULL
-  md$cond_calibration$start_cal_time <- NULL
-  rm(ds, cs)
-
-  # Process calibration end times
-  de <- md$do_calibration$end_time
-  ce <- md$cond_calibration$end_cal_time
-  if(!is.na(de) && !is.na(ce) && de != ce)
-    stop("Calibration end times don't match in details files.")
-  # Consolidate end time - using whichever value isn't NA (if one is)
-  md$calibration_end <- ifelse(is.na(de), ce, de)
-  md$do_calibration$end_time <- NULL
-  md$cond_calibration$end_cal_time <- NULL
-  rm(de, ce)
-
-  # Reformat date time items in dt to <year>-<month>-<day> h:m:s
-  dt_items <- list(
-    c("calibration_start"),
-    c("calibration_end"),
-    c("do_deployment", "launch_time"),
-    c("do_deployment", "calibration_date"),
-    c("do_device", "header_created"),
-    c("cond_deployment", "launch_time"),
-    c("cond_device", "header_created")
-  )
-  for(item in dt_items){
-    md[[item]] <- format_date_time(md[[item]])
-  }
-
-  # Calculate the ratio between calibrartion value from YSI ("TRUTH") to
-  #  the uncalibrated logger value
-
-  # DO Ratio
-  md$do_calibration$start_ratio <-
-    md$do_calibration$start_meter_titration_value_mg_l /
-    md$do_calibration$start_do_conc
-
-  md$do_calibration$end_ratio <-
-    md$do_calibration$end_meter_titration_value_mg_l /
-    md$do_calibration$end_do_conc
-
-  # Conductivity Ratio
-  # NOTE: Conductivity calibration ratios have not been calculated yet!!!
-
-  md_order <- c("site",
-                "deployment",
-                "deployment_date",
-                "calibration_start",
-                "calibration_end",
-                "pct_calibrated",
-                "n_records",
-                "pct_immediate_rejection",
-                "pct_flagged_for_review",
-                "logging_interval_min",
-                "timezone",
-                "auto_qc_date",
-                "do_calibration",
-                "do_deployment",
-                "do_device",
-                "cond_calibration",
-                "cond_deployment",
-                "cond_device")
-
-  # Create placeholder items which will be filled in later
-  md$pct_calibrated <- NA
-  md$pct_immediate_rejection <- NA
-  md$pct_flagged_for_review <- NA
-  md$n_records <- NA
-  stopifnot(all(md_order %in% names(md)))
-
-  md <- md[md_order]
-
-
-  # For debugging: cat(yaml::as.yaml(md))
-
-  #============================================================================#
-  # Process data
-  #============================================================================#
-
-  #----------------------------------------------------------------------------#
-  # Read and Process Calibrated DO and Conductivity Tables                  ####
-  #----------------------------------------------------------------------------#
-
-  # Read tabular data
-  do <- readr::read_csv(input_paths$do, col_types = readr::cols(),
-                        show_col_types = FALSE)
-  cond <- readr::read_csv(input_paths$cond, col_types = readr::cols(),
-                          show_col_types = FALSE)
-
-  # Extract serial number
-  do_sn <- get_logger_sn(do)
-  cond_sn <- get_logger_sn(cond)
-
-  # Note some files don't have SN in the column heading anymore
-  # First noticed with "OB1/2024-05-31 Cond file
-  if(is.na(do_sn)) do_sn <- md$do_device$serial_number
-  if(is.na(cond_sn)) cond_sn <- md$cond_device$serial_number
-
-  # Verify serial numbers
-  if(do_sn != md$do_device$serial_number)
-    stop("DO Serial number in csv does not match serial number in Details.txt")
-  if(cond_sn != md$cond_device$serial_number)
-    stop("Cond Serial number in csv does not match serial number in ",
-         "Details.txt")
-
-  # Check against placements table
-  placements <- readr::read_csv(input_paths$placements,
-                                col_types = readr::cols(),
-                                show_col_types = FALSE)
-  check_placement(do_sn, type = "DO", placements, deployment_date, site)
-  check_placement(cond_sn, type = "Cond", placements, deployment_date, site)
-
-  # Check that site is in sites table
-  sites <- readr::read_csv(input_paths$sites, col_types = readr::cols(),
-                           show_col_types = FALSE)
-  if(!site %in% sites$site){
-    stop("Site code from file path (", site, ") is not in the sites table: ",
-         input_paths$sites, sep = "")
-  }
-
-
-  # Preliminary column name cleanup
-  do <- clean_logger_header(do)
-  cond <- clean_logger_header(cond)
-
-  # Rename identical columns to avoid name collisions
-  do <- dplyr::rename(do, Temp_DOLog = "Temp", Salinity_DOLog = "Salinity")
-  cond <- dplyr::rename(cond, Temp_CondLog = "Temp")
-
-  # Drop site and sn from salinity column
-  # In 2024 example data the salinity column includes <site>_<sn>
-  # without "#" before <sn>  this renames to just Salinity
-  salinity_col <- grep("^Salinity", names(cond), value = TRUE)
-  if(length(salinity_col) == 0)
-    stop("Could not find a salinity column in ", input_paths$cond)
-
-  if(length(salinity_col) > 1)
-    stop("Found multiple salinity columns in ", input_paths$cond)
-
-  names(cond)[names(cond) == salinity_col] <- "Salinity"
-
-
-
-  # rename "DO_Pct" to "DO_Pct_Sat"
-  # The 2022 data had "Sat" 2023 did not.  I want to work with both
-  names(do)[names(do) == "DO_Pct"] <- "DO_Pct_Sat"
-
-  # Merge
-  d <- dplyr::full_join(do, cond, by = "Date_Time")
-
-  # Verify that the two Salinities are identical
-  if(!all(d$Salinity == d$Salinity_DOLog | is.na(d$Salinity)))
-    stop("The salinity column from the calibrated DO CSV file should ",
-         "match the salinity column from the calibrated Conductivity file, but they don't.")
+  l <- import_calibrated_data(paths, devices)
+  d <- l$d  # merged calibrated data
+  md <- l$md # deployment and calibration metadata
+  rm(l)
 
 
   #----------------------------------------------------------------------------#
   # Reformat - add and rename columns
   #----------------------------------------------------------------------------#
 
-  #  "DO" to "Raw_DO", and "DO_Adj" to "DO"
-  names(d)[names(d) == "DO"] <- "Raw_DO"
-  names(d)[names(d) == "DO_Adj"] <- "DO"
-
-  # Convert Date_Time to POSIXct date time class
-  d$Date_Time <- lubridate::mdy_hms(d$Date_Time)
 
   # Add Date column (as Year-Month-Day text)
-  d$Date <- d$Date_Time |> lubridate::as_date() |> format(format =  "%Y-%m-%d")
+  d$Date <- d$Date_Time |>
+    lubridate::as_datetime() |>
+    lubridate::as_date() |>
+    format(format =  "%Y-%m-%d")
 
-
-  # Add time column
-  d$Time <- hms::as_hms(d$Date_Time)
-
-  # Format Date_Time as text
-  d$Date_Time <- format(d$Date_Time, format = "%Y-%m-%d %H:%M:%S")
-
+  # Add time column  h:m:s
+  d$Time <- d$Date_Time |>
+    lubridate::as_datetime() |>
+    hms::as_hms()
 
   # Check for missing columns
-  missing_cols <- setdiff(expected_logger_cols, names(d))
-  if(length(missing_cols) > 0)
-    stop("The calibration data data is missing some expected columns: \"",
-         paste(missing_cols, collapse = "\", \""), "\"", sep = "")
-
-  # Check for extra columns
-  extra_cols <- setdiff(names(d), intermediate_cols)
-  if(length(extra_cols) > 0)
-    stop("There are unexpected extra columns in the calibrated logger data: \"",
-         paste(extra_cols, collapse = "\", \""), "\"", sep = "")
-
   # Construct full data frame with all the expected columns in proper order
-  full <- matrix(nrow = nrow(d), ncol = length(intermediate_cols),
-                 dimnames = list(NULL, intermediate_cols)
-                 ) |> as.data.frame()
+  # This inserts lots of additional columns that initially have NA
+  full <- matrix(nrow = nrow(d), ncol = length(expected_column_names$intermediate),
+                 dimnames = list(NULL, expected_column_names$intermediate)
+  ) |> as.data.frame()
   full[, names(d)] <- d
   d <- full
 
@@ -484,12 +156,12 @@ qc_deployment <- function(dir, report = TRUE) {
   min_calibrated_pct <- 95
   if(md$pct_calibrated < 95) {
     warning(md$pct_calibrated, "% of the data is calibrated. ",
-    " This is lower than the warning threshold of ", min_calibrated_pct, ".")
+            " This is lower than the warning threshold of ", min_calibrated_pct, ".")
   }
 
   # Update calibration column
+  # (1 for first and last row because those are the calibration points)
   d$Cal[c(1, nrow(d))] <- 1
-
 
   #============================================================================#
   # QC                                                                      ####
@@ -519,6 +191,8 @@ qc_deployment <- function(dir, report = TRUE) {
   if(end_date != lubridate::as_date(deployment_date))
     stop("Last date in log files: ", end_date,
          " does not match deployment date in path: ", date, sep = "")
+
+
 
 
   #----------------------------------------------------------------------------#
@@ -554,61 +228,74 @@ qc_deployment <- function(dir, report = TRUE) {
   # lv = low variation
   # ls = low streak
 
+  # Write empty strings to all the column specific flag columns
+  # Exclude aggregated flag column: "FLAGS"
+  flag_cols <- grep("Flag$", names(d), value = TRUE)
+  for(col in flag_cols)
+    d[[col]] <- ""
 
-  # Check Temperature
+  # Check for Temperature Im,ediate Rejection (ir) flags
   d$Temp_DOLog_Flag <- ir_check_temperature(d$Temp_DOLog, "D")
   d$Temp_CondLog_Flag<- ir_check_temperature(d$Temp_CondLog, "C")
 
   # Check conductivity high range
   d$High_Range_Flag <- ir_check_high_range(d$High_Range)
-  ir_check_high_range(d$High_Range)
 
   # Check raw dissolved oxygen
   d$Raw_DO_Flag <- ir_check_raw_do(d$Raw_DO)
 
+  # Check other columns for error codes
+  d$DO_Flag <- ir_check_sensor_error(d$DO, "D")
+  d$Salinity_Flag <- ir_check_sensor_error(d$Salinity, "S")
+
   # Update general flag to indicate immediate rejection
-  d$Gen_QC[!d$Temp_DOLog_Flag == "" |
-           !d$Temp_CondLog_Flag == "" |
-           !d$High_Range_Flag == "" |
-           !d$Raw_DO_Flag == ""]  <- 9
-
+  all_flags <- apply(d[ , flag_cols], 1,  function(x) paste(x, collapse = ""))
+  d$Gen_QC[all_flags != ""]  <- 9
+  rm(all_flags)
 
   #----------------------------------------------------------------------------#
-  # Fouling flags (These trigger review)
+  # Fouling flags  These trigger review;
+  #    they are not immediate rejection flags.
   #----------------------------------------------------------------------------#
 
-  # See google doc for a discussion of flag definitions
+  # See Google doc for a discussion of flag definitions
   #
   # https://docs.google.com/spreadsheets/d/1bYxi0nbgDaUsKEyLoj_ry-1Zc-A4MNDfS_J_zH7HiJI/edit#gid=405499625
 
-  d$Temp_DOLog_Flag <- check_temperature(x = d$Temp_DOLog,
-                                      logger = "D",
-                                      site = site,
-                                      sites = sites)
+  d$Temp_DOLog_Flag <- paste0(d$TempDOLog_Flag,
+                              check_temperature(x = d$Temp_DOLog,
+                                                logger = "D",
+                                                site = site,
+                                                sites = sites))
 
-  d$Temp_CondLog_Flag <- check_temperature(x = d$Temp_CondLog,
-                                      logger = "C",
-                                      site = site,
-                                      sites = sites)
+  d$Temp_CondLog_Flag <- paste0(d$Temp_CondLog_Flag,
+                                check_temperature(x = d$Temp_CondLog,
+                                                  logger = "C",
+                                                  site = site,
+                                                  sites = sites))
 
-  d$Raw_DO_Flag <- check_raw_do(x = d$Raw_DO,
+  d$Raw_DO_Flag <- paste0(d$Raw_DO_Flag,
+                          check_raw_do(x = d$Raw_DO,
+                                       site = site,
+                                       sites = sites))
+
+  d$DO_Flag <-  paste0(d$DO_Flag,
+                       check_do(d$DO,
+                                interval = md$logging_interval_min,
                                 site = site,
-                                sites = sites)
-
-  d$DO_Flag <- check_do(d$DO,
-                        interval = md$logging_interval_min,
-                        site = site,
-                        sites = sites)
+                                sites = sites))
 
 
-  d$Salinity_Flag <- check_salinity(d$Salinity,
-                                   interval = md$logging_interval_min,
-                                   site = site,
-                                   sites = sites)
+  d$Salinity_Flag <- paste0(d$Salinity_Flag,
+                            check_salinity(d$Salinity,
+                                           interval = md$logging_interval_min,
+                                           site = site,
+                                           sites = sites))
 
-  d$DO_Pct_Sat_Flag <- check_do_pct_sat(d$DO_Pct_Sat,
-                                     site = site,
-                                     sites = sites)
+  d$DO_Pct_Sat_Flag <- paste0(d$DO_Pct_Sat_Flag,
+                               check_do_pct_sat(d$DO_Pct_Sat,
+                                                site = site,
+                                                sites = sites))
 
 
   #----------------------------------------------------------------------------#
@@ -634,6 +321,8 @@ qc_deployment <- function(dir, report = TRUE) {
   #----------------------------------------------------------------------------#
 
   # Set 9999 for rows that don't already have a 9 indicating immediate rejection
+  # 9999 is a placeholder indicating that the human review needs to
+  #    put some other value there.
   d$Gen_QC[is.na(d$Gen_QC) & d$Flags != ""] <- 9999
 
   md$pct_immediate_rejection <- (sum(d$Gen_QC %in% 9) / nrow(d) * 100) |>
@@ -644,9 +333,9 @@ qc_deployment <- function(dir, report = TRUE) {
 
 
   #----------------------------------------------------------------------------#
-  # Select final columns (drop  _flag columns)
+  # Select final columns (drop  _flag columns) and put in standard order
   #----------------------------------------------------------------------------#
-  d <- d[, final_cols]
+  d <- d[, expected_column_names$qc_final]
 
   #----------------------------------------------------------------------------#
   # Write Files
@@ -663,18 +352,19 @@ qc_deployment <- function(dir, report = TRUE) {
     used_output <- c(used_output, "report")
   }
 
-  cat("\n\nWrote to deployment folder:\n  ", dir,"\n",
-      "Files:\n", sep = "")
-  cat(paste("  ", used_output, ": ", basename(unlist(out_paths[used_output])),
-            "\n", sep = ""),
-      sep = "")
+
+  message("\n\nWrote to deployment folder:\n  ", dir,"\n",
+          "Files:\n", sep = "")
+  message(paste("  ", used_output, ": ", basename(unlist(out_paths[used_output])),
+                "\n", sep = ""),
+          sep = "")
 
 
-  cat("\nReview and update QC codes in:\n  ", basename(out_paths$prelim_qc),
-      "\n", "And rename to:\n  ", basename(out_paths$final_qc), "\n",
-      "Then delete the QC report:\n  ", basename(out_paths$report),
-      "\n\n",
-      sep = "")
+  message("\nReview and update QC codes in:\n  ", basename(out_paths$prelim_qc),
+          "\n", "And rename to:\n  ", basename(out_paths$final_qc), "\n",
+          "Then delete the QC report:\n  ", basename(out_paths$report),
+          "\n\n",
+          sep = "")
 
 
   return(invisible(list(d = d, md = md)))

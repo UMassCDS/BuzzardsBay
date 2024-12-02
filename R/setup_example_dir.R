@@ -140,6 +140,13 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
     file.copy(placements, dest_md_dir)
   }
 
+  # Copy import_types.csv and bb_parameters.yml into base director
+  file.copy(system.file("extdata/import_types.csv", package = "BuzzardsBay"),
+            example_base)
+  file.copy(system.file("extdata/bb_parameters.yml", package = "BuzzardsBay"),
+            example_base)
+
+
   return(list(base = example_base,
               deployment = deployment_dirs[1],
               deployments = deployment_dirs))
