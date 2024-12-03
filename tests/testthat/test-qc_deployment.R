@@ -88,8 +88,10 @@ test_that("qc_deployment() works with a preceeding deployment", {
   # Process current deployment - plots should include prior
   expect_no_error(qc_deployment(example_paths$deployments[2]))
 
-  make_deployment_report(example_paths$deployments[2])
-
+  if (FALSE) {
+   # This line useful for debugging
+   make_deployment_report(example_paths$deployments[2])
+  }
 })
 
 test_that("qc_deployment() date time bug is fixed", {

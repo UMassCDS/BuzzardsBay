@@ -7,7 +7,7 @@
 * Similar files can be created in site directories to set site specific values.
   Site versions only need to set the values that differ from the global values.
  
-* New required import type table `<base_dir>/import_type.txt` 
+* New required import type table `<base_dir>/import_type.csv` 
  
 To create the required files:
 

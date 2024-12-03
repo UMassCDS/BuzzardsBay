@@ -31,35 +31,6 @@ make_deployment_report <- function(dir, quiet = FALSE) {
   site <- paths$site
   deployment_date <- paths$deployment_date
 
-
-  #----------------------------------------------------------------------------#
-  # Identify preceding deployment data file and store in
-  #  paths$preceding_data   NA indicates none found
-  #----------------------------------------------------------------------------#
-  deps <- list.files(paths$site_dir,
-                     pattern =
-                       "^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$")
-  other_deps <- setdiff(deps, deployment_date) |>
-    lubridate::as_date()
-  preceding_deps <-
-    other_deps[other_deps < lubridate::as_date(deployment_date)]
-  if (length(preceding_deps > 0)) {
-    preceding_dep <-  max(preceding_deps)
-    preceding_dep_dir <- file.path(paths$site_dir, preceding_dep)
-    # data_names are possible files for the preceding deployment
-    data_names <- paste0(c("QC", "Auto_QC"),
-                         "_", site, "_",
-                         preceding_dep, ".csv")
-    data_paths <- file.path(preceding_dep_dir, data_names)
-
-    paths$preceding_data <- data_paths[file.exists(data_paths)][1]
-
-    rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
-  } else {
-    paths$preceding_data <- NA
-  }
-  rm(deps, other_deps, preceding_deps)
-
   #----------------------------------------------------------------------------#
   # Check for required input files
   #----------------------------------------------------------------------------#
