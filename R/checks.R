@@ -102,6 +102,11 @@ check_do <- function(x, interval = 15, site, sites) {
 
 check_salinity <- function(x, interval = 15, site, sites) {
 
+ # Special case where salinity was bad and not used for calibration
+  if (all(is.na(x)))
+    return(rep("Sm:", length(x)))
+
+
   # Jumps
   diff <- c(x[-1], NA) - x
   end_of_jump <- abs(diff) > bbp$sal_max_jump & !is.na(diff)

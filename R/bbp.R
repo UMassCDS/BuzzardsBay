@@ -63,5 +63,15 @@ bbp$sal_max_jump <- 0.75
 bbp$sal_lv_range <- default_lv_range
 bbp$sal_lv_duration <- default_lv_duration
 
+
+## Range limits used to constrain plot Y axis
+bbp$plot_min_do <- 0
+bbp$plot_max_do <- 20
+bbp$plot_min_sal <- 0
+bbp$plot_max_sal <- 100
+bbp$plot_min_temp <- 25
+bbp$plot_max_temp <- 35
+
+
 # The values here are defaults - save a copy to reset defaults later
 default_bbp <- as.environment(as.list(bbp, all.names = TRUE))

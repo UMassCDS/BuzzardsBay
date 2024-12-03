@@ -17,12 +17,12 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "100%")
 
 ```{r preprocess data, include=FALSE}
 
-
-data_path <-  params$paths$data_path
-sites_path <- params$paths$sites_path
-metadata_path <- params$paths$metadata_path
-preceding_data_path <- params$paths$preceding_data_path
 paths <- params$paths
+
+data_path <-  params$paths$deployment_auto_qc
+sites_path <- params$paths$sites
+metadata_path <- params$paths$deployment_metadata
+preceding_auto_qc <- params$paths$preceding_auto_qc
 
 using_example_data <- FALSE
 
@@ -30,7 +30,7 @@ using_example_data <- FALSE
 # If all parameters are null substitute paths to example files
 # (for testing and debugging)
 n_null <- sum(is.null(data_path), is.null(sites_path),
-              is.null(metadata_path), is.null(preceding_data_path))
+              is.null(metadata_path), is.null(preceding_auto_qc))
 if (! n_null %in% c(0, 4))
   stop("Either all required paths should be set or none (to use example files)")
 if (n_null == 4) {
@@ -51,27 +51,22 @@ if (n_null == 4) {
                                          package = "BuzzardsBay",
                                          mustWork = TRUE)
 
-  paths$preceding_data_path <- NA
+  paths$preceding_auto_qc <- NA
   paths$site_parameters <- NA
   using_example_data <- TRUE
-
-
-
 }
 
 
 update_bb_parameters(paths)
 
-has_preceding_data <- "preceding_data_path" %in% names(paths) &&
-  !is.na(paths$preceding_data_path)
-
+has_preceding_data <- "preceding_auto_qc" %in% names(paths) &&
+  !is.na(paths$preceding_auto_qc)
 
 # Read data
 d <- readr::read_csv(data_path, col_types = readr::cols())
 sites <- readr::read_csv(sites_path, col_types = readr::cols())
 md <- yaml::read_yaml(metadata_path)
 d$Date_Time <- format_csv_date_time(d$Date_Time)
-
 
 # Convert sites to list with just current site
 site <- md$site
@@ -97,7 +92,7 @@ d$Prior_Dep <- FALSE
 
 prior_deployment_desc_text <- ""
 if (has_preceding_data) {
-  pd <- readr::read_csv(preceding_data_path, show_col_types = FALSE)
+  pd <- readr::read_csv(paths$preceding_auto_qc, show_col_types = FALSE)
   pd$Date_Time <- format_csv_date_time(pd$Date_Time)
 
   inclusion_lag <- lubridate::make_difftime(6 * 60^2) # 6 hours
@@ -158,6 +153,8 @@ bbp <- bb_options()
 n_ir <- sum(d$Gen_QC == 9 & !d$Prior_Dep, na.rm = TRUE) # immediate rejection
 n_to_review <- sum(d$Gen_QC == 9999 & !d$Prior_Dep, na.rm = TRUE)
 
+has_salinity_data <- !all(is.na(d$Salinity))
+
 ```
 
 ---
@@ -198,6 +195,7 @@ Dots mark both ends of jumps that are greater than `r bbp$do_max_jump`.
 
 ```{r DO static plot, echo=FALSE, message=TRUE, warning=TRUE}
 
+
 # Loggical indicating sensor error value was detected
 p <- bb_plot(d,
              dl,
@@ -219,13 +217,15 @@ p <- bb_plot(d,
                                   "Min Site Raw DO (Rsl)",
                                   "Min Site DO (Dsl)"),
              threshold_colors = rgb(1, 0, 0, .8),
-             range_limit = c(0, bb_options("max_raw_do"))
-)
+             range_limit = c(bb_options("plot_min_do"),
+                             bb_options("plot_max_do")))
 
 
 suppress_specific_warnings(print(p))
 
+
 ```
+
 
 ### Calibrated dissolved oxygen (mg/l), interactive plot
 
@@ -248,7 +248,10 @@ bb_interactive_plot(d, dl,
                                          sites$Min_QC_DO),
                     threshold_labels = c("Max Site DO (Dsh)",
                                          "Min Site DO (Dsl)"),
-                    threshold_colors = c("purple", "purple"))
+                    threshold_colors = c("purple", "purple"),
+                    range_limit = c(bb_options("plot_min_do"),
+                                    bb_options("plot_max_do")))
+
 
 
 ```
@@ -256,9 +259,12 @@ bb_interactive_plot(d, dl,
 
 ## Salinity
 
-### Calibrated salinity (ppt)
 
-```{r salinity static plot }
+`r ifelse(has_salinity_data, "", "There is no salinity data to plot.")`
+
+```{r salinity static plot,  eval = has_salinity_data}
+
+asis_output("### Calibrated salinity (ppt)")
 
 p <- bb_plot(d, dl,
              focal_column = "Salinity",
@@ -270,14 +276,15 @@ p <- bb_plot(d, dl,
              threshold_values = c(sites$Max_QC_Sal, sites$Min_QC_Sal),
              threshold_labels = c("Max Site Salinity (Ssh)",
                                   "Min Site Salinity (Ssl)"),
-             threshold_colors = rgb(1, 0, 0, .8))
+             threshold_colors = rgb(1, 0, 0, .8),
+             range_limit = c(bb_options("plot_min_sal"), 
+                             bb_options("plot_max_sal")))
 suppress_specific_warnings(print(p))
 
 ```
 
-### Calibrated salinity (ppt), interactive plot
-
-```{r salinit interactive plot}
+```{r salinity interactive plot, eval = has_salinity_data}
+asis_output("### Calibrated salinity (ppt), interactive plot")
 
 bb_interactive_plot(d, dl,
                     focal_column = "Salinity",
@@ -288,7 +295,9 @@ bb_interactive_plot(d, dl,
                     threshold_values = c(sites$Max_QC_Sal, sites$Min_QC_Sal),
                     threshold_labels = c("Max Site Salinity (Ssh)",
                                          "Min Site Salinity (Ssl)"),
-                    threshold_colors = c("purple", "purple"))
+                    threshold_colors = c("purple", "purple"),
+                    range_limit = c(bb_options("plot_min_sal"), 
+                             bb_options("plot_max_sal")))
 
 
 ```
@@ -317,7 +326,8 @@ p <- bb_plot(d, dl,
                                   "Min Site Temp (TDsl, TCsl)",
                                   "Max Temp (TDh, TCh)",
                                   "Min Temp (TDl, TCl)"),
-             threshold_colors = rgb(1, 0, 0, .8))
+             threshold_colors = rgb(1, 0, 0, .8), 
+             range_limit = c(bb_options("plot_min_temp"), bb_options("plot_max_temp")))
 
 suppress_specific_warnings(print(p))
 
@@ -341,5 +351,7 @@ bb_interactive_plot(d, dl,
                                          "Min Site Temp (TDsl, TCsl)",
                                          "Max Temp (TDh, TCh)",
                                          "Min Temp (TDl, TCl)"),
-                    threshold_colors = c("purple", "purple", "red", "red"))
+                    threshold_colors = c("purple", "purple", "red", "red"),
+                     range_limit = c(bb_options("plot_min_temp"), 
+                                     bb_options("plot_max_temp")))
 ```

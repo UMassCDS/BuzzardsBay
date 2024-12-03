@@ -41,6 +41,11 @@
 #'   \item{`sal_max_jump`}{The maximum difference between successive salinity
 #'   records before the salinity jump (`Sj`) flag is set for both involved
 #'   records.}
+#'   \item{`plot_min_do`, `plot_max_do`, `plot_min_sal`, `plot_max_sal`,
+#'   `plot_min_temp`, `plot_max_temp`}{ These constrain the Y range in
+#'   the QC Report plots when plotting Dissolved Oxygen (DO), Salinity (sal),
+#'   and temperature (temp)}
+#'
 #'}
 #'
 #'

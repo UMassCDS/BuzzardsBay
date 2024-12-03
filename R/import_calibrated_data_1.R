@@ -65,6 +65,11 @@ import_calibrated_data_1 <- function(paths) {
   md <- c(get_do_details(input_paths$do_details),
           get_cond_details(input_paths$cond_details))
 
+  # Check for salinity calibration based on a single value -rather than file -
+  # which indicates that the salinity data is bad
+  bad_salinity_data <- "salinity_value_ppt" %in% names(md$do_calibration)
+
+
   # Consolidate information from the two devices
 
   # Format timezone
@@ -221,20 +226,33 @@ import_calibrated_data_1 <- function(paths) {
   do <- clean_logger_header(do)
   cond <- clean_logger_header(cond)
 
+  # Double check for bad salinity data (previously checked based on metadata)
+  # If DO is missing "Salinity" column it was calibrated with a fixed salinity
+  # indicating bad salinity data.
+  if(!"Salinity" %in% names(do))
+    bad_salinity_data <- TRUE
+
+  if(!bad_salinity_data)
+    do <- dplyr::rename(do, Salinity_DOLog = "Salinity")
+
   # Rename identical columns to avoid name collisions
-  do <- dplyr::rename(do, Temp_DOLog = "Temp", Salinity_DOLog = "Salinity")
+  do <- dplyr::rename(do, Temp_DOLog = "Temp")
   cond <- dplyr::rename(cond, Temp_CondLog = "Temp")
 
-  # Drop site and sn from salinity column
-  # In 2024 example data the salinity column includes <site>_<sn>
-  # without "#" before <sn>  this renames to just Salinity
+  if (bad_salinity_data) {
+    # If the salinity data is not trustworthy replace it with NA
+    do$Salinity_DOLog <- NA
+    cond$Salinity <- NA
+    cond$Spec_Cond <- NA
+    cond$High_Range <- NA
+  }
+
+  # Identify and rename salinity column (This si for robustness)
   salinity_col <- grep("^Salinity", names(cond), value = TRUE)
   if(length(salinity_col) == 0)
     stop("Could not find a salinity column in ", input_paths$cond)
-
   if(length(salinity_col) > 1)
     stop("Found multiple salinity columns in ", input_paths$cond)
-
   names(cond)[names(cond) == salinity_col] <- "Salinity"
 
   # rename "DO_Pct" to "DO_Pct_Sat"
@@ -252,7 +270,6 @@ import_calibrated_data_1 <- function(paths) {
   # Convert Date_Time to POSIXct date time class
   d$Date_Time <- lubridate::mdy_hms(d$Date_Time) |>
     format(format = "%Y-%m-%d %H:%M:%S")
-
 
 
   # Verify that the two Salinities are identical

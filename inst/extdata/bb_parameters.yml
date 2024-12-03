@@ -12,4 +12,10 @@ do_max_jump: 2.0
 do_lv_duration: 60.0
 do_lv_range: 0.01
 sal_lv_duration: 60.0
+plot_min_do: 0
+plot_max_do: 20
+plot_min_sal: 0
+plot_max_sal: 50
+plot_min_temp: 0
+plot_max_temp: 40
 

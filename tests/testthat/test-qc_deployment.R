@@ -83,10 +83,12 @@ test_that("qc_deployment() works with a preceeding deployment", {
                           example_paths$deployment)
 
   # Process "prior" deployment to make data for it
-  suppressWarnings(qc_deployment(example_paths$deployments[1]))
+  suppressWarnings(qc_deployment(example_paths$deployments[1], report = FALSE))
 
   # Process current deployment - plots should include prior
   expect_no_error(qc_deployment(example_paths$deployments[2]))
+
+  make_deployment_report(example_paths$deployments[2])
 
 })
 
@@ -103,6 +105,15 @@ test_that("qc_deployment() plot range with error codes in data", {
                                      deployment_filter = "2024-07-23")
 
   paths <- lookup_paths(deployment_dir = example_paths$deployment)
-  qc_deployment(example_paths$deployment)
+  expect_no_error(qc_deployment(example_paths$deployment))
 
 })
+
+
+test_that("qc_deployment() works with fixed salinity calibration", {
+  example_paths <- local_example_dir(site_filter = "OB1",
+                                     deployment_filter = "2024-07-30")
+  paths <- lookup_paths(deployment_dir = example_paths$deployment)
+  expect_no_error(qc_deployment(example_paths$deployment))
+})
+

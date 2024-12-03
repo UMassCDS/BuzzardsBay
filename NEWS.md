@@ -9,7 +9,7 @@
  
 * New required import type table `<base_dir>/import_type.txt` 
  
-To create them:
+To create the required files:
 
 ```
 base_dir <- "path to base directory" # set this
@@ -31,10 +31,24 @@ that you want to change for that site (don't copy the entire file).
 
 For an explanation of all the parameters see the help for `bb_options()`
 
+## Sites with no salinity data
+
+Modified `import_calibrated_data_1()` and, indirectly, `qc_deployment()` to
+work with sites where the conductivity logger's data was rejected and a fixed,
+mean salinity was used during
+calibration. In these cases all the salinity related data will be `NA`
+in the output to `qc_deployment()`.  This is triggered in the code by either
+(1) `Salinity value (ppt)` item in the DO metadata.
+(2) No `Salinity` column in the calibrated DO data.
+
+
 ## Example Data
 
 Added OB9 2024-07-23 as an example of a site with -888.88 values that are
 throwing off the plot range.
+
+Added OB1 2024097-30, a site where DO is calibrated with a single, fixed 
+salinity value.
 
 ## Flags 
 
@@ -51,13 +65,16 @@ previously the flags themselves might have been overwritten.
 
 ## Plotting
 
-The non-interactive plots now set the y-range to the range of the data 
-excluding the values that have been flagged as sensor errors (-888.88) this
-helps the DO plot but doesn't help with the extreme values in some of the other
-plots.  NEED TO UPDATE INTERACTIVE SIMILARLY. 
+The plots now set the y-range to the range of the data 
+excluding the values that have been flagged as sensor errors (-888.88) and 
+constrained based on global parameters `plot_max_do`, `plot_min_do`, 
+`plot_max_sal`, `plot_min_sal`, `plot_max_temp`, and `plot_min_temp`.
 
-Possibly also constrain to the immediate rejection high and low values for 
-the data set.
+The interactive plots now include red circles for the last observation of
+the prior deployment and the first of the current deployment.
+
+Interactive plots now include black circles indicating jumps in the data;
+matching the non-interactive plots.
 
 ## Refactoring
 

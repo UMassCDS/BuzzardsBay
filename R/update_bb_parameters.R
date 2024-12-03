@@ -70,9 +70,17 @@ update_bb_parameters <- function(paths) {
 
     for (n in valid_names) {
 
+      # Handle special case where yaml file returns integer but default type
+      # is double (which fails valid type check)
+      if (is.integer(p[[n]]) && is.double(default_bbp[[n]])) {
+        p[[n]] <- as.double(p[[n]])
+      }
+
       # Check that the type of value is as expected
       default_type <- typeof(default_bbp[[n]])
       this_type <- typeof(p[[n]])
+
+
       if (!this_type == default_type) {
         stop("Expected ", n, " to be a ", default_type, " but it is a ",
              this_type, " - in ", f)
