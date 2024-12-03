@@ -116,4 +116,3 @@ test_that("qc_deployment() works with fixed salinity calibration", {
   paths <- lookup_paths(deployment_dir = example_paths$deployment)
   expect_no_error(qc_deployment(example_paths$deployment))
 })
-

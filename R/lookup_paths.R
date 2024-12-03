@@ -234,7 +234,7 @@ lookup_paths <- function(base_dir = NULL, year = NULL, site = NULL,
 
     rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
   } else {
-    p$preceding_auto_qc<- NA
+    p$preceding_auto_qc <- NA
   }
   rm(deps, other_deps, preceding_deps)
 

@@ -33,21 +33,21 @@ For an explanation of all the parameters see the help for `bb_options()`
 
 ## Sites with no salinity data
 
-Modified `import_calibrated_data_1()` and, indirectly, `qc_deployment()` to
-work with sites where the conductivity logger's data was rejected and a fixed,
-mean salinity was used during
-calibration. In these cases all the salinity related data will be `NA`
-in the output to `qc_deployment()`.  This is triggered in the code by either
-(1) `Salinity value (ppt)` item in the DO metadata.
-(2) No `Salinity` column in the calibrated DO data.
+`qc_deployment()` now works with deployments calibrated with a fixed salinity
+value.  
+In these cases all the salinity related data will be `NA`
+in the output from `qc_deployment()`.
+This is triggered when either
+(1) `Salinity value (ppt)` item is in the calibrated DO details file.
+(2) `Salinity` column is missing in the calibrated DO data.
 
 
 ## Example Data
 
-Added OB9 2024-07-23 as an example of a site with -888.88 values that are
-throwing off the plot range.
+Added OB9 2024-07-23 as an example of a deployment with -888.88 
+sensor error values throw off the plot range.
 
-Added OB1 2024097-30, a site where DO is calibrated with a single, fixed 
+Added OB1 2024-07-30, a deployment where DO is calibrated with a single, fixed 
 salinity value.
 
 ## Flags 
@@ -71,14 +71,12 @@ constrained based on global parameters `plot_max_do`, `plot_min_do`,
 `plot_max_sal`, `plot_min_sal`, `plot_max_temp`, and `plot_min_temp`.
 
 The interactive plots now include red circles for the last observation of
-the prior deployment and the first of the current deployment.
-
-Interactive plots now include black circles indicating jumps in the data;
-matching the non-interactive plots.
+the prior deployment and the first of the current deployment, and black
+circles for jumps.
 
 ## Refactoring
 
-The `qc_deployment()` function was refactored by breaking it into smaller
+The `qc_deployment()` function was broken into smaller
 functions. Importing the calibrated data is now done with several sub-functions
 in a manner that makes it easier to define different import mechanism for 
 different logger types. 

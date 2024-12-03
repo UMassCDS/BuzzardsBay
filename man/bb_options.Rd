@@ -60,6 +60,10 @@ high range (\code{Hl}) flags.}
 \item{\code{max_raw_do}}{Threshold for the high raw DO (\code{Rh}) flag.}
 \item{\code{max_temp}, \code{min_temp}}{Thresholds for the high temperature
 (\code{TDh}, \code{TCh}) and low temperature (\code{TDl}, \code{TCl})}
+\item{\code{plot_min_do}, \code{plot_max_do}, \code{plot_min_sal}, \code{plot_max_sal},
+\code{plot_min_temp}, \code{plot_max_temp}}{ These constrain the Y range in
+the QC Report plots when plotting Dissolved Oxygen (\code{DO}),
+Salinity (\code{sal}), and temperature (\code{temp})}
 \item{\code{sal_lv_duration}, \code{sal_lv_range}}{If the difference between the
 maximum and minimum salinity remains below \code{sal_lc_range} for more than
 \code{sal_lv_duration} minutes than the low variation in salinity (\code{Slv}) flag
@@ -67,6 +71,7 @@ is set.}
 \item{\code{sal_max_jump}}{The maximum difference between successive salinity
 records before the salinity jump (\code{Sj}) flag is set for both involved
 records.}
+
 }
 }
 \examples{

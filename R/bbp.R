@@ -68,9 +68,9 @@ bbp$sal_lv_duration <- default_lv_duration
 bbp$plot_min_do <- 0
 bbp$plot_max_do <- 20
 bbp$plot_min_sal <- 0
-bbp$plot_max_sal <- 100
-bbp$plot_min_temp <- 25
-bbp$plot_max_temp <- 35
+bbp$plot_max_sal <- 50
+bbp$plot_min_temp <- 0
+bbp$plot_max_temp <- 40
 
 
 # The values here are defaults - save a copy to reset defaults later

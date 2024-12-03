@@ -277,7 +277,7 @@ p <- bb_plot(d, dl,
              threshold_labels = c("Max Site Salinity (Ssh)",
                                   "Min Site Salinity (Ssl)"),
              threshold_colors = rgb(1, 0, 0, .8),
-             range_limit = c(bb_options("plot_min_sal"), 
+             range_limit = c(bb_options("plot_min_sal"),
                              bb_options("plot_max_sal")))
 suppress_specific_warnings(print(p))
 
@@ -296,8 +296,8 @@ bb_interactive_plot(d, dl,
                     threshold_labels = c("Max Site Salinity (Ssh)",
                                          "Min Site Salinity (Ssl)"),
                     threshold_colors = c("purple", "purple"),
-                    range_limit = c(bb_options("plot_min_sal"), 
-                             bb_options("plot_max_sal")))
+                    range_limit = c(bb_options("plot_min_sal"),
+                                    bb_options("plot_max_sal")))
 
 
 ```
@@ -326,8 +326,9 @@ p <- bb_plot(d, dl,
                                   "Min Site Temp (TDsl, TCsl)",
                                   "Max Temp (TDh, TCh)",
                                   "Min Temp (TDl, TCl)"),
-             threshold_colors = rgb(1, 0, 0, .8), 
-             range_limit = c(bb_options("plot_min_temp"), bb_options("plot_max_temp")))
+             threshold_colors = rgb(1, 0, 0, .8),
+             range_limit = c(bb_options("plot_min_temp"),
+                             bb_options("plot_max_temp")))
 
 suppress_specific_warnings(print(p))
 
@@ -352,6 +353,6 @@ bb_interactive_plot(d, dl,
                                          "Max Temp (TDh, TCh)",
                                          "Min Temp (TDl, TCl)"),
                     threshold_colors = c("purple", "purple", "red", "red"),
-                     range_limit = c(bb_options("plot_min_temp"), 
-                                     bb_options("plot_max_temp")))
+                    range_limit = c(bb_options("plot_min_temp"),
+                                    bb_options("plot_max_temp")))
 ```

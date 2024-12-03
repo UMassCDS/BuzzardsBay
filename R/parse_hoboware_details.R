@@ -173,7 +173,7 @@ get_do_details <- function(path) {
   # Salinity_value_ppt indicates calibrating with a single salinity value
   # Capturing it here so we can handle this edge case.
   # The standard way is to use a salinity file with varying salinities.
-  if("Salinity_value_ppt" %in% names(doap))
+  if ("Salinity_value_ppt" %in% names(doap))
     doap_targets <- c(doap_targets, "Salinity_value_ppt")
 
   doap <- doap[doap_targets]

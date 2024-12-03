@@ -102,7 +102,7 @@ check_do <- function(x, interval = 15, site, sites) {
 
 check_salinity <- function(x, interval = 15, site, sites) {
 
- # Special case where salinity was bad and not used for calibration
+  # Special case where salinity was bad and not used for calibration
   if (all(is.na(x)))
     return(rep("Sm:", length(x)))
 
