@@ -25,7 +25,8 @@ bb_interactive_plot <- function(d,
                                 y_label,
                                 threshold_values,
                                 threshold_labels,
-                                threshold_colors) {
+                                threshold_colors,
+                                range_limit = c(NA, NA)) {
 
   interval <- d$Date_Time[2] - d$Date_Time[1]
 
@@ -67,8 +68,20 @@ bb_interactive_plot <- function(d,
   all_flag_rectangles <- c(flag_rectangles, other_flag_rectangles)
 
 
+  # Assemble jump points
+  d$jumped <- grepl(jump_pattern, d$Flags)
+  jump_points <- d[d$jumped, , drop = FALSE]
+
+
   # Determine range of the focal data and critical thresholds
-  yrange <- range(d[[focal_column]])
+  vals <- d[[focal_column]]
+  yrange <- range(vals[!vals %in% bb_options("logger_error_values")])
+  rm(vals)
+
+  # Constrain to range limit
+  yrange[1] <- max(yrange[1], range_limit[1], na.rm =  TRUE)
+  yrange[2] <- min(yrange[2], range_limit[2], na.rm = TRUE)
+
 
   # Assemble plot
   p <- plotly::plot_ly(d,
@@ -85,11 +98,48 @@ bb_interactive_plot <- function(d,
 
   }
 
+
+
+
   p <- p |>
     plotly::layout(xaxis = list(title = "Date/Time"),
                    yaxis = list(title = y_label,
                                 range = yrange),
                    shapes = all_flag_rectangles)
+
+
+  if (any(d$Prior_Dep)) {
+
+
+    last_prior <- max(d$Date_Time[d$Prior_Dep]) # end of prior deployment
+    first <- min(d$Date_Time[!d$Prior_Dep])  # beginning of current deployment
+
+    sv <- d$Date_Time %in% c(last_prior, first)
+    cp <- d[sv, , drop = FALSE]
+    names(cp)[names(cp) == focal_column] <- "Deployment transition"
+
+    p <- p |> plotly::add_trace(x = ~Date_Time,
+                                y = ~.data[["Deployment transition"]],
+                                data = cp,
+                                mode = "markers",
+                                type = "scatter",
+                                name = "Deployment transition",
+                                marker = list(color = "red",
+                                              symbol = "circle-open",
+                                              size = 10))
+  }
+
+  # Add jump points
+  p <- p |> plotly::add_trace(x = ~Date_Time,
+                              y = ~.data[[focal_column]],
+                              data = jump_points,
+                              mode = "markers",
+                              type = "scatter",
+                              name = "Jumps",
+                              marker = list(color = "Black",
+                                            symbol = "circle",
+                                            size = 5))
+
 
   return(p)
 

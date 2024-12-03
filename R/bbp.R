@@ -14,7 +14,7 @@ bbp <- new.env()
 
 # Immediate rejection check parameters
 
-bbp$logger_error_value <- -888.88
+bbp$logger_error_values <- -888.88
 
 # TDl/TCl  (Low temperature)
 bbp$min_temp <- 5
@@ -62,3 +62,16 @@ bbp$sal_max_jump <- 0.75
 # Salinity low variation
 bbp$sal_lv_range <- default_lv_range
 bbp$sal_lv_duration <- default_lv_duration
+
+
+## Range limits used to constrain plot Y axis
+bbp$plot_min_do <- -0.5
+bbp$plot_max_do <- 20
+bbp$plot_min_sal <- 0
+bbp$plot_max_sal <- 36
+bbp$plot_min_temp <- 0
+bbp$plot_max_temp <- 31
+
+
+# The values here are defaults - save a copy to reset defaults later
+default_bbp <- as.environment(as.list(bbp, all.names = TRUE))

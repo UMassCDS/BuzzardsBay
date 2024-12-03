@@ -21,6 +21,7 @@ ggplot
 gid
 gplot
 https
+MX
 noaa
 plotly
 ppt
@@ -31,3 +32,10 @@ rtide
 tidesandcurrents
 titration
 μS
+PSU
+Uncalibrated
+QC'd
+microsiemens
+timezone
+timezones
+uncalibrated

@@ -19,14 +19,25 @@
 #' `do_streak_min`
 #' for more than `do_streak_duration` than the Dissolved Oxygen low streak
 #' (`Dls`) flag is set.}
-#' \item{`logger_error_value`}{The value that indicates a logger error
-#' (`TDe`, `TCe`, `He`, or`Re`).  Temperature (from both loggers),
-#' High Range, and Raw DO are all checked for this value.}
+#' \item{`logger_error_values`}{One or more values that indicate a logger
+#'  error.  If setting multiple values in a YAML file use indented lines
+#'  with a dash for each value:
+#'  ```
+#'  logger_error_values:
+#'    - -888.88
+#'    - 9999
+#'  ```
+#'  Temperature (from both loggers), High Range, and Raw DO are all checked
+#'  for this value. Flags: `TDe`, `TCe`, `He`, and `Re`.}
 #' \item{`max_hr`, `min_hr`}{Thresholds for the high high range (`Hh`) and low
 #' high range (`Hl`) flags.}
 #' \item{`max_raw_do`}{Threshold for the high raw DO (`Rh`) flag.}
 #'  \item{`max_temp`, `min_temp`}{Thresholds for the high temperature
 #'  (`TDh`, `TCh`) and low temperature (`TDl`, `TCl`)}
+#'   \item{`plot_min_do`, `plot_max_do`, `plot_min_sal`, `plot_max_sal`,
+#'   `plot_min_temp`, `plot_max_temp`}{ These constrain the Y range in
+#'   the QC Report plots when plotting Dissolved Oxygen (`DO`),
+#'   Salinity (`sal`), and temperature (`temp`)}
 #'  \item{`sal_lv_duration`, `sal_lv_range`}{If the difference between the
 #'  maximum and minimum salinity remains below `sal_lc_range` for more than
 #'  `sal_lv_duration` minutes than the low variation in salinity (`Slv`) flag
@@ -34,6 +45,7 @@
 #'   \item{`sal_max_jump`}{The maximum difference between successive salinity
 #'   records before the salinity jump (`Sj`) flag is set for both involved
 #'   records.}
+#'
 #'}
 #'
 #'

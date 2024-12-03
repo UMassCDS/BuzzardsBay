@@ -12,7 +12,7 @@ ir_check_temperature <- function(t, logger) {
 
   flag <- rep("", length(t))
 
-  sv <- t == bbp$logger_error_value & !is.na(t) # selection vector
+  sv <- t %in% bbp$logger_error_values & !is.na(t) # selection vector
   flag[sv] <- paste0(flag[sv], "T", logger, "e:") # sensor error indicated
 
   sv <- t < bbp$min_temp & !is.na(t)
@@ -28,7 +28,7 @@ ir_check_temperature <- function(t, logger) {
 ir_check_high_range <- function(c) {
   flag <- rep("", length(c))
 
-  sv <- c == bbp$logger_error_value & !is.na(c)    # sv = selection vector
+  sv <- c %in% bbp$logger_error_values & !is.na(c)    # sv = selection vector
   flag[sv]  <- paste0(flag[sv], "He:")  # Error
 
   sv <- c < bbp$min_hr & !is.na(c)
@@ -44,11 +44,32 @@ ir_check_high_range <- function(c) {
 ir_check_raw_do <- function(d, interval = 0.25) {
   flag <- rep("", length(d))
 
-  sv <- d == bbp$logger_error_value
-  flag[sv] <- paste0(flag[sv], "Re")
+  sv <- d %in% bbp$logger_error_values
+  flag[sv] <- paste0(flag[sv], "Re:")
 
   sv <- d > bbp$max_raw_do
-  flag[sv] <-  paste0(flag[sv], "Rh")
+  flag[sv] <-  paste0(flag[sv], "Rh:")
 
   flag
+}
+
+# Immediate rejection check for sensor error codes
+# Note this can be applied to any data column so the prefix used in the
+# flag for the column it is called on should be specified.
+# Arguments:
+#  x: is the data as a vector
+#  prefix: is the prefix used to describe the data column in the flags
+ir_check_sensor_error <- function(x, prefix) {
+  valid_prefix <- c("TD", "TC", "H", "R", "D", "P", "S")
+
+
+  if (!prefix %in% valid_prefix) {
+    stop("The data prefix (", prefix, ") should be one of: ",
+         paste(valid_prefix, collapse = ", "), sep = "")
+  }
+
+  flag <- rep("", length(x))
+  sv <- x %in% bbp$logger_error_values
+  flag[sv] <- paste0(prefix, "e:")
+  return(flag)
 }

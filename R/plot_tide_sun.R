@@ -35,13 +35,13 @@ plot_tide_sun <- function(d, station, lat, lon, tz) {
   # However for the purposes of looking up tide, sunrise, and sunset
   # I need to have the timezone properly set, so I take those times and
   # convert them to correct UTC equivalent based on the psuedo-timezone
-  # that HOBOware uses  - an offset from GMT - see convert_to_utc()
+  # that HOBOware uses  - an offset from GMT - see apply_timezone()
 
   # Then I plot the tide and daylight hours using the original date times
   # which still represent the local time.
 
   tide_sun  <- data.frame(Date_Time = sort(unique(d$Date_Time)))
-  tide_sun$utc <- convert_to_utc(tide_sun$Date_Time, tz)
+  tide_sun$utc <- apply_timezone(tide_sun$Date_Time, tz)
 
 
   tide_sun$Tide_Height <- get_tide_height(tide_sun$utc, station = station)
@@ -75,6 +75,5 @@ plot_tide_sun <- function(d, station, lat, lon, tz) {
                                  breaks = c(tod_colors),
                                  labels = c(tod_color_labels),
                                  guide = "legend")
-
 
 }

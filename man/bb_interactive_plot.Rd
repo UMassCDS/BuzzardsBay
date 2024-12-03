@@ -15,7 +15,8 @@ bb_interactive_plot(
   y_label,
   threshold_values,
   threshold_labels,
-  threshold_colors
+  threshold_colors,
+  range_limit = c(NA, NA)
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ one per \code{threshold_value}.}
 
 \item{threshold_colors}{The color to use for the threshold lines, can be
 one color or a color for each \code{threshold_value}.}
+
+\item{range_limit}{The plot range will never exceed this range - it can
+be more restricted.}
 }
 \value{
 A plotly plot object.

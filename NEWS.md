@@ -1,11 +1,113 @@
-## Wish list:
+# BuzzardsBay 0.1.0.9012
 
-* Figure out what to do if both DO and Cond have single point calibration - 
-in which case either the start or the end of the calibration window will be
-missing.
-* Calculate conductivity calibration ratio - pulling from raw data.
-* Add tide height plots?
+## Necessary file updates for this version:
 
+* New required global parameter file:  `<base_dir>/bb_parameters.yml`
+ controls flag parameters.
+* Similar files can be created in site directories to set site specific values.
+  Site versions only need to set the values that differ from the global values.
+ 
+* New required import type table `<base_dir>/import_type.csv` 
+ 
+To create the required files:
+
+```
+base_dir <- "path to base directory" # set this
+create_parameter_file(base_dir)
+import_type_file <- system.file("extdata/import_types.csv", package = "BuzzardsBay")
+file.copy(import_type_file, base_dir)
+```
+  
+## Parameters
+
+The parameters that are used while flagging issues in the data are now user
+configurable both through a global parameter file or site specific parameter 
+files. See note above on creating the global parameter file above.
+
+To override the global values for a site create an identically named 
+YAML file in the site directory (`<base_dir>/<year>/<site>`) and set the 
+values there.  I recommend only including the values in the site specific file
+that you want to change for that site (don't copy the entire file).
+
+For an explanation of all the parameters see the help for `bb_options()`
+
+## Sites with no salinity data
+
+`qc_deployment()` now works with deployments calibrated with a fixed salinity
+value.  
+In these cases all the salinity related data will be `NA`
+in the output from `qc_deployment()`.
+This is triggered when either
+(1) `Salinity value (ppt)` item is in the calibrated DO details file.
+(2) `Salinity` column is missing in the calibrated DO data.
+
+
+## Example Data
+
+Added OB9 2024-07-23 as an example of a deployment with -888.88 
+sensor error values throw off the plot range.
+
+Added OB1 2024-07-30, a deployment where DO is calibrated with a single, fixed 
+salinity value.
+
+## Flags 
+
+Added checks for error values in calibrated  DO and Salinity. 
+Previously the error codes (-888.88) were only flagged in the uncalibrated
+versions of these columns, but the new example data shows them only 
+in the calibrated values.
+
+Fixed bug in flags that caused non-immediate rejection flags to overwrite 
+immediate rejection flags in the "Flags" column for some columns when 
+both types of flags were thrown.  Now and previously the "Gen_QC" column 
+was correctly set to 9 when there were immediate rejection flags - even when
+previously the flags themselves might have been overwritten.
+
+## Plotting
+
+The plots now set the y-range to the range of the data 
+excluding the values that have been flagged as sensor errors (-888.88) and 
+constrained based on global parameters `plot_max_do`, `plot_min_do`, 
+`plot_max_sal`, `plot_min_sal`, `plot_max_temp`, and `plot_min_temp`.
+
+The interactive plots now include red circles for the last observation of
+the prior deployment and the first of the current deployment, and black
+circles for jumps.
+
+## Refactoring
+
+The `qc_deployment()` function was broken into smaller
+functions. Importing the calibrated data is now done with several sub-functions
+in a manner that makes it easier to define different import mechanism for 
+different logger types. 
+
+* New `lookup_paths()` function generates paths to all kinds of files. 
+  Many are deployment specific. 
+  The returned list also includes `deployment_date`, 
+  `site`, and `year` which are closely related to the paths.
+* Big chunks of `qc_deployment()` were moved to other internal
+  functions that aren't intended to be called by package users directly.
+  * New `import_calibrated_data()` is called to read
+  the calibrated data.  It calls numbered helper functions to read the data
+  based on the model types stored in `placements.csv` and the `import_type.csv`
+  table which crosswalks the model numbers to an input type integer. 
+  * New `import_calibrated_data_1()` imports the first type of calibrated data. 
+  Which is the HOBOware CSV and details.txt files we've been working with.
+  * An anticipated `import_calibrated_data_2()` function will import the MX801 
+  logger's excel file output.
+  * New function `read_and_format_placements()` imports the `placements.csv`  
+   file and cleans up formatting issues. 
+  * New function `lookup_devices()` returns the device names and serial numbers
+  for a given deployment from `placements.csv`.
+  * New required parameter file `import_type.csv` is stored in the base
+  directory - it's not year specific.  It connects device models from placements
+  to an import type and thus provides a mechanism for importing from different
+  formats associated with different logger models. 
+  
+## Time
+  * `convert_to_utc()` renamed `apply_timezone()` and now handles both GMT
+  offset timezone definitions (`"GMT-04:00"`) and timezones (`"EDT"`)
+  
 # BuzzardsBay 0.1.0.9011
 
 * Fix bug with date times in prior deployment.

@@ -146,6 +146,7 @@ get_do_details <- function(path) {
 
   doap <- d[[do_series_name]][[doap_name]]
 
+
   if (is.null(doap)) {
     stop("HOBOware Dissolved oxygen details file (", path, ")",
          " was not parsed properly or doesn't have the expected contents.
@@ -168,6 +169,13 @@ get_do_details <- function(path) {
   if (!all(doap_targets %in% names(doap)))
     stop("The DO details file from HOBOware was parsed wrong or is missing ",
          "expected calibration information.")
+
+  # Salinity_value_ppt indicates calibrating with a single salinity value
+  # Capturing it here so we can handle this edge case.
+  # The standard way is to use a salinity file with varying salinities.
+  if ("Salinity_value_ppt" %in% names(doap))
+    doap_targets <- c(doap_targets, "Salinity_value_ppt")
+
   doap <- doap[doap_targets]
   names(doap) <- tolower(names(doap))
   names(doap) <-  gsub("_per_", "_", names(doap))

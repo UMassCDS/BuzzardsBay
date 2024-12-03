@@ -14,15 +14,9 @@
 #' @return An informative error is thrown if something is wrong.
 #' Nothing is returned.
 check_placement <- function(sn, type, placements, deployment_date, site) {
-  placements$start_date <- format_csv_date(placements$start_date) |>
-    lubridate::as_date()
-  placements$end_date <- format_csv_date(placements$end_date) |>
-    lubridate::as_date()
-  names(placements) <- tolower(names(placements))
-  type <- tolower(type)
-  placements$type <- tolower(placements$type)
-  deployment_date <- lubridate::as_date(deployment_date)
 
+  deployment_date <- lubridate::as_date(deployment_date)
+  type <- tolower(type)
 
   timing_ok <- placements$start_date <= deployment_date &
     !is.na(placements$start_date) &

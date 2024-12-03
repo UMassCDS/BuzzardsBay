@@ -10,6 +10,7 @@ bb_plot(
   focal_columns,
   jump_pattern,
   focal_flag_pattern,
+  err_pattern,
   plot_label,
   focal_flag_label = plot_label,
   y_label,
@@ -17,7 +18,8 @@ bb_plot(
   threshold_labels,
   threshold_colors,
   lat = NULL,
-  lon = NULL
+  lon = NULL,
+  range_limit = c(NA, NA)
 )
 }
 \arguments{
@@ -33,6 +35,10 @@ focal columns.}
 
 \item{focal_flag_pattern}{Regular expression to identify all flags for
 the focal columns}
+
+\item{err_pattern}{Regular expression to identify flags that indicate a
+sensor error code (typically value of -888.88) these values will be excluded
+when setting the y axis range.}
 
 \item{plot_label}{Label for the plot.}
 
@@ -51,6 +57,9 @@ one color or a color for each \code{threshold_value}.}
 
 \item{lat, lon}{The latitude and longitude of the site, used to calculate
 sunrise and sunset times.}
+
+\item{range_limit}{The plot range will never exceed this range - it can
+be more restricted.}
 }
 \value{
 A ggplot plot object. Use \code{print()} to turn it into a plot/

@@ -27,103 +27,43 @@ make_deployment_report <- function(dir, quiet = FALSE) {
   # Set paths
   #----------------------------------------------------------------------------#
 
-  # Standardize slashes
-  dir <- gsub("[/\\\\]+", .Platform$file.sep, dir)
-  dir <- gsub("[/\\\\]$", "", dir) # drop trailing /
+  paths <- lookup_paths(deployment_dir = dir)
+  site <- paths$site
+  deployment_date <- paths$deployment_date
 
-  # Directory paths
-  year_dir <- cut_path_items(dir, 2)
-  md_dir <- file.path(year_dir, "Metadata")
-
-  paths <- list()
-
-  paths <- c(paths, list(
-    sites = file.path(md_dir, "sites.csv"),
-    placements = file.path(md_dir, "placements.csv")
-  ))
-
-  # get deployment date date (defined as the end of deployment)
-  # and site name
-  # Assuming this structure
-  # /<base_dir>/<year>/<site>/<year>-<month>-<day>/
-  dirs <- strsplit(dir, "[/\\\\]+")[[1]]
-  deployment_date <- dirs[length(dirs)]
-  site <- dirs[length(dirs) - 1]
-  rm(dirs)
-
-  # Get path of an immediate preceding deployment data - NULL if none
-  site_dir <- file.path(year_dir, site)
-  deps <- list.files(site_dir,
-                     pattern =
-                       "^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$")
-  other_deps <- setdiff(deps, deployment_date) |>
-    lubridate::as_date()
-  preceding_deps <-
-    other_deps[other_deps < lubridate::as_date(deployment_date)]
-  if (length(preceding_deps > 0)) {
-    preceding_dep <-  max(preceding_deps)
-    preceding_dep_dir <- file.path(site_dir, preceding_dep)
-    # data_names are possible files for the preceding deployment
-    data_names <- paste0(c("QC", "Auto_QC"),
-                         "_", site, "_",
-                         preceding_dep, ".csv")
-    data_paths <- file.path(preceding_dep_dir, data_names)
-
-    preceding_data_path <- data_paths[file.exists(data_paths)][1]
-
-    rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
-  } else {
-    preceding_data_path <- NA
-  }
-  rm(deps, other_deps, preceding_deps)
-
-
-
-
-
-  paths <- c(paths, list(
-    auto_qc = file.path(dir, paste0("Auto_QC_", site, "_",
-                                    deployment_date, ".csv")),
-    prelim_qc = file.path(dir, paste0("Preliminary_QC_", site, "_",
-                                      deployment_date, ".csv")),
-    final_qc =  file.path(dir, paste0("QC_", site, "_",
-                                      deployment_date, ".csv")),
-    metadata = file.path(dir, paste0("Metadata_", site, "_",
-                                     deployment_date, ".yml")),
-    report = file.path(dir, paste0("QC_", site, "_", deployment_date,
-                                   "_report.html")),
-    preceding_data = preceding_data_path
-  ))
-
-
-  required <- c("auto_qc", "sites", "metadata")
+  #----------------------------------------------------------------------------#
+  # Check for required input files
+  #----------------------------------------------------------------------------#
+  required <- c("deployment_auto_qc", "sites", "deployment_metadata")
   for (i in seq_along(required)) {
     if (!file.exists(paths[[required[i]]]))
       stop("Required ", required[i], " file is missing.  Expected at: ",
            paths[[required[i]]])
   }
 
+  #----------------------------------------------------------------------------#
+  # Knit rmarkdown into html report
+  #----------------------------------------------------------------------------#
+
   template_rmd <- system.file("rmd/QAQC_report.rmd", package = "BuzzardsBay",
                               mustWork = TRUE)
 
   rmarkdown::render(input = template_rmd,
-                    output_file = paths$report,
-                    params = list(data_path = paths$auto_qc,
-                                  metadata_path = paths$metadata,
-                                  sites_path = paths$sites,
-                                  preceding_data_path = paths$preceding_data),
+                    output_file = paths$deployment_report,
+                    params = list(paths = paths),
                     quiet = quiet)
+
 
   if (FALSE) {
     # Run this manually to step through QAQC_report.Rmd
     # nolint start: object_usage_linter
-    data_path <-  paths$auto_qc
+    data_path <-  paths$deployment_auto_qc
     sites_path <- paths$sites
-    metadata_path <- paths$metadata
+    metadata_path <- paths$deployment_metadata
     preceding_data_path <- paths$preceding_data
     # nolint end: object_usage_linter
   }
 
-  return(invisible(paths$repor))
+  return(invisible(paths$deployment_report))
 
 }

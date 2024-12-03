@@ -8,7 +8,7 @@
 #' with a date time vector and also checks the station against
 #' `tide_station_info`.
 #'
-#' @param dt Series of date-time values as POSIXct. The time zone must be
+#' @param dt Series of date-time values as POSIXct. The timezone must be
 #' properly set.
 #' @param station A station name or station ID as it appears in
 #' [tide_station_info].
