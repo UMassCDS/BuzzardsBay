@@ -78,6 +78,10 @@ bb_interactive_plot <- function(d,
   yrange <- range(vals[!vals %in% bb_options("logger_error_values")])
   rm(vals)
 
+  # Extend 5% so that the range extends slightly beyond the data
+  buffer <- (yrange[2] - yrange[1]) * 0.05
+  yrange <- yrange + c(-buffer, buffer)
+
   # Constrain to range limit
   yrange[1] <- max(yrange[1], range_limit[1], na.rm =  TRUE)
   yrange[2] <- min(yrange[2], range_limit[2], na.rm = TRUE)

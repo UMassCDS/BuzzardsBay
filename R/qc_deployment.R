@@ -331,6 +331,13 @@ qc_deployment <- function(dir, report = TRUE) {
     round(2)
   md$n_records <- nrow(d)
 
+  #----------------------------------------------------------------------------#
+  #  Special case, if all Salinity related data is NA (fixed value calibration)
+  #  then set DO_Calibration_QC column to 34.
+  #----------------------------------------------------------------------------#
+  if (all(is.na(d$Salinity))) {
+    d$DO_Calibration_QC <- 34
+  }
 
   #----------------------------------------------------------------------------#
   # Select final columns (drop  _flag columns) and put in standard order

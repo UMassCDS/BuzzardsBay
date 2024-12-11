@@ -28,8 +28,6 @@ make_deployment_report <- function(dir, quiet = FALSE) {
   #----------------------------------------------------------------------------#
 
   paths <- lookup_paths(deployment_dir = dir)
-  site <- paths$site
-  deployment_date <- paths$deployment_date
 
   #----------------------------------------------------------------------------#
   # Check for required input files

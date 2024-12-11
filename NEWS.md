@@ -1,6 +1,16 @@
+# BuzzardsBay 0.1.0.9013
+
+* Drop `Sm` flag (Salinity data missing). When salinity data is missing set
+the `DO_Calibration_QC` column to 34.
+
+* Extend y axis of interactive plot by 5% of the range of data so that there is 
+a slight buffer around the data.
+
+* Add tests for consistent csv output for RB1 2023-06-09. 
+
 # BuzzardsBay 0.1.0.9012
 
-## Necessary file updates for this version:
+## Necessary file updates for this version
 
 * New required global parameter file:  `<base_dir>/bb_parameters.yml`
  controls flag parameters.

@@ -9,9 +9,18 @@ test_that("qc_deployment() works", {
                                       paths$deployment_prelim_qc,
                                       paths$deployment_report)))
   d <- readr::read_csv(paths$deployment_auto_qc, show_col_types = FALSE)
+
+  # Check that column names are as expected
   expect_equal(names(d), expected_column_names$qc_final)
 
-  expect_snapshot(head(d) |> as.data.frame())
+  # Check that the location and flags of the first 20 flags haven't changed
+  flags <- data.frame(row = 1:nrow(d), Flags = d$Flags) |>
+    dplyr::filter(!is.na(Flags)) |> head(n = 20)
+  expect_snapshot(flags)
+
+  # Check that rows 50 to 53 have not changed
+  expect_snapshot(d[50:53, ] |> as.data.frame())
+
 
 })
 
@@ -89,8 +98,8 @@ test_that("qc_deployment() works with a preceeding deployment", {
   expect_no_error(qc_deployment(example_paths$deployments[2]))
 
   if (FALSE) {
-   # This line useful for debugging
-   make_deployment_report(example_paths$deployments[2])
+    # This line useful for debugging
+    make_deployment_report(example_paths$deployments[2])
   }
 })
 
