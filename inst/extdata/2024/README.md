@@ -34,3 +34,11 @@ of the standard 2-point calibration.
 
     "OB9 for 2024-07-23 is a really good example of a dataset that has a sensor malfunction written in, so the graphs are difficult to read."
     (the sensor error code -888.88 is getting plotted resulting in a massive yrange on the plot).
+
+
+## WFH 2024-04-09
+    This is an example of tide rider output. The TR_WFH_20240409_TRSX01.csv was from Michael Jakuba and emailed to me by Kristin Huizenga on 2024-12-05. 
+    It contained high frequency of observations that I resampled at 10 minute intervals. 
+    The other calibrated data files are hacked copies from a separate deployment.  
+    See data-raw/make_fake_tide_rider_calibration_dir.R  for how these files were generated.
+     

@@ -1,3 +1,5 @@
+* Add faked tide rider deployment data: `WFH/2024-04-09/`
+
 # BuzzardsBay 0.1.0.9013
 
 * Drop `Sm` flag (Salinity data missing). When salinity data is missing set

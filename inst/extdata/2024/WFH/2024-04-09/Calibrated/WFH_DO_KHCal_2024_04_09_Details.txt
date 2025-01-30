@@ -1,0 +1,272 @@
+Details
+Series: DO conc, mg/L
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: Dissolved Oxygen Concentration, mg/L
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 06:24:30 PM GMT-04:00
+		• Calibration Gain: 1.10238
+		• Calibration Offset: 0.00072
+	Series Statistics
+		• Samples: 1,288
+		• Max: 11.01
+		• Min: 3.75
+		• Avg: 8.30
+		• Std Dev (σ): 1.25
+		• First Sample Time: 06/12/24 11:30:00 AM GMT-04:00
+		• Last Sample Time: 06/21/24 10:00:00 AM GMT-04:00
+Series: Temp, °C
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: Temperature U26, °C
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+	Series Statistics
+		• Samples: 1,288
+		• Max: 26.12
+		• Min: 20.26
+		• Avg: 22.71
+		• Std Dev (σ): 1.26
+		• First Sample Time: 06/12/24 11:30:00 AM GMT-04:00
+		• Last Sample Time: 06/21/24 10:00:00 AM GMT-04:00
+Series: DO Adj Conc, mg/L
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: DO Adj Conc, mg/L
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 06:24:30 PM GMT-04:00
+		• Calibration Gain: 1.10238
+		• Calibration Offset: 0.00072
+	Series Statistics
+		• Samples: 1,286
+		• Max: 9.66
+		• Min: 3.43
+		• Avg: 7.32
+		• Std Dev (σ): 1.05
+		• First Sample Time: 06/12/24 11:40:00 AM GMT-04:00
+		• Last Sample Time: 06/21/24 09:50:00 AM GMT-04:00
+	Dissolved Oxygen Assistant Parameters
+		• Performing Field Calibration
+		• Using start cal point
+		• Start time: 06/12/24 11:40:00 AM GMT-04:00
+		• Start DO conc: 9.14
+		• Start temperature (C): 21.64
+		• Start salinity (ppt): 29.58
+		• Start meter/titration value (mg/L): 7.82
+		• Start salinity correction: 0.8417
+		• Using end cal point
+		• End time: 06/21/24 09:50:00 AM GMT-04:00
+		• End DO conc: 7.79
+		• End temperature (C): 22.46
+		• End salinity (ppt): 29.58
+		• End meter/titration value (mg/L): 7.04
+		• End salinity correction: 0.8423
+		• Adjust for Salinity selected
+		• Salinity datafile: C:\Users\volunteer\Documents\HOBOware\2024\2024-06-21\WFH_Sal_2024_06_21.txt
+		• Overlap mode: Option 1
+		• Barometric Pressure selected
+		• Pressure value (atm): 1.00000
+		• Reporting data between selected points only
+		• Start: Field cal reference start
+		• End: Field cal reference end
+		• User Notes
+		• Enter user notes here
+Series: DO Percent Sat, %
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: DO Percent Sat, %
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Logging Interval: 00 Hr 10 Min 00 Sec
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+		• Calibration Date: 04/29/24 06:24:30 PM GMT-04:00
+		• Calibration Gain: 1.10238
+		• Calibration Offset: 0.00072
+	Series Statistics
+		• Samples: 1,286
+		• Max: 132.6
+		• Min: 48.8
+		• Avg: 100.3
+		• Std Dev (σ): 14.3
+		• First Sample Time: 06/12/24 11:40:00 AM GMT-04:00
+		• Last Sample Time: 06/21/24 09:50:00 AM GMT-04:00
+	Dissolved Oxygen Assistant Parameters
+		• Performing Field Calibration
+		• Using start cal point
+		• Start time: 06/12/24 11:40:00 AM GMT-04:00
+		• Start DO conc: 9.14
+		• Start temperature (C): 21.64
+		• Start salinity (ppt): 29.58
+		• Start meter/titration value (mg/L): 7.82
+		• Start salinity correction: 0.8417
+		• Using end cal point
+		• End time: 06/21/24 09:50:00 AM GMT-04:00
+		• End DO conc: 7.79
+		• End temperature (C): 22.46
+		• End salinity (ppt): 29.58
+		• End meter/titration value (mg/L): 7.04
+		• End salinity correction: 0.8423
+		• Adjust for Salinity selected
+		• Salinity datafile: C:\Users\volunteer\Documents\HOBOware\2024\2024-06-21\WFH_Sal_2024_06_21.txt
+		• Overlap mode: Option 1
+		• Barometric Pressure selected
+		• Pressure value (atm): 1.00000
+		• Reporting data between selected points only
+		• Start: Field cal reference start
+		• End: Field cal reference end
+		• User Notes
+		• Enter user notes here
+Series: Salinity, ppt
+	Devices
+		Device Info
+			• Product: 
+			• Serial Number: 
+			• Version Number: 0.00
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: Unknown
+			• Header Created: 06/12/24 11:40:00 AM GMT-04:00
+	Deployment Info
+		• Full Series Name: Salinity, ppt
+		• Launch Name: 
+		• Deployment Number: Unknown
+		• Launch Time: 06/12/24 11:40:00 AM GMT-04:00
+		• Logging Interval: Unknown
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: Unknown
+		• Launching Program: HOBOware Pro-3.7.26_0505_1156_Windows
+	Series Statistics
+		• Samples: 1,286
+		• Max: 30.9026
+		• Min: 4.9015
+		• Avg: 29.0529
+		• Std Dev (σ): 1.0961
+		• First Sample Time: 06/12/24 11:40:00 AM GMT-04:00
+		• Last Sample Time: 06/21/24 09:50:00 AM GMT-04:00
+Event Type: Coupler Detached
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: Coupler Detached
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+	Series Statistics
+		• Samples: 2
+		• First Sample Time: 06/16/24 09:50:40 AM GMT-04:00
+		• Last Sample Time: 06/16/24 09:58:41 AM GMT-04:00
+Event Type: Coupler Attached
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: Coupler Attached
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+	Series Statistics
+		• Samples: 2
+		• First Sample Time: 06/16/24 09:58:41 AM GMT-04:00
+		• Last Sample Time: 06/21/24 10:02:08 AM GMT-04:00
+Event Type: Stopped
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: Stopped
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 04/10/2024 09:55:00 PM GMT-04:00
+		• Last Sample Time: 04/10/2024 09:55:00 PM GMT-04:00
+Event Type: End Of File
+	Devices
+		Device Info
+			• Product: HOBO U26-001 Dissolved Oxygen
+			• Serial Number: 21429547
+			• Version Number: 1.08
+			• Manufacturer: Onset Computer Corp
+			• Device Memory: 65536
+			• Header Created: 03/02/12 02:19:05 PM GMT-04:00
+	Deployment Info
+		• Full Series Name: End Of File
+		• Launch Name: WFH_BBC10_21429547
+		• Deployment Number: 27
+		• Launch Time: 04/09/2024 11:50:00 AM GMT-04:00
+		• Launch GMT Offset: -4 Hr 0 Min
+		• Battery at Launch: 3.44 Volts
+	Series Statistics
+		• Samples: 1
+		• First Sample Time: 04/10/2024 09:55:00 PM GMT-04:00
+		• Last Sample Time: 04/10/2024 09:55:00 PM GMT-04:00
