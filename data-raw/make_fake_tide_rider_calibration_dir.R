@@ -18,9 +18,8 @@ tr_file <-
   "inst/extdata/2024/WFH/2024-04-09/Calibrated/RAW-TR_WFH_20240409_TRSX01.csv"
 tr <- readr::read_csv(tr_file)
 
-s_dir <- system.file(
-  "extdata/2024/BD1/2024-06-21/Calibrated",
-  package = "BuzzardsBay")
+s_dir <- system.file("extdata/2024/BD1/2024-06-21/Calibrated",
+                     package = "BuzzardsBay")
 s_site <- "BD1"
 s_date <- "2024-06-21"
 d_site <- "WFH"
@@ -33,8 +32,8 @@ udd <- gsub("-", "_", d_date)
 
 # Sparsify the Tide Rider locations (to keep files small
 sparse_times <- seq(from = lubridate::as_datetime("2024-04-09 11:50:00"),
-                to = lubridate::as_datetime("2024-04-10 21:55:00"),
-                by = lubridate::as.difftime(5, units = "mins"))
+                    to = lubridate::as_datetime("2024-04-10 21:55:00"),
+                    by = lubridate::as.difftime(5, units = "mins"))
 
 # Interpolate continuous variables
 lat <- approx(x = tr$Time, y = tr$Latitude, xout = sparse_times)$y
@@ -93,7 +92,7 @@ old_end_time <- det$Event_Type_Stopped$Series_Statistics$Last_Sample_Time
 dest_tr_file <- gsub("/RAW-", "/", tr_file)
 readr::write_csv(tr2, dest_tr_file)
 
-# Process the details files subbing in the new site name, and start and end times
+# Process the details files subbing in new site name, and start and end times
 for (i in seq_len(2)) {
   det <- readLines(c(from$do_det, from$cond_det)[i])
   det <- gsub(s_site, d_site, det)

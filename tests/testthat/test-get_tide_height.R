@@ -19,8 +19,8 @@ test_that("get_tide_height works with all stations", {
 
   all(station_ids %in% tide_station_info$id)
 
-  skip() # the test below fails
-
+  skip("Document a failure in get_tide_hight() (always skipped)")
+  # test  fails:
   for (i in seq_along(station_ids)) {
     res[, i] <- get_tide_height(dt, station = station_ids[i])
   }

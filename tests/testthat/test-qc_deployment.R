@@ -14,8 +14,9 @@ test_that("qc_deployment() works", {
   expect_equal(names(d), expected_column_names$qc_final)
 
   # Check that the location and flags of the first 20 flags haven't changed
-  flags <- data.frame(row = 1:nrow(d), Flags = d$Flags) |>
-    dplyr::filter(!is.na(Flags)) |> head(n = 20)
+  flags <- data.frame(row = seq_len(nrow(d)), Flags = d$Flags) |>
+    dplyr::filter(!is.na(Flags)) |>
+    head(n = 20)
   expect_snapshot(flags)
 
   # Check that rows 50 to 53 have not changed
@@ -126,4 +127,24 @@ test_that("qc_deployment() works with fixed salinity calibration", {
                                      deployment_filter = "2024-07-30")
   paths <- lookup_paths(deployment_dir = example_paths$deployment)
   expect_no_error(qc_deployment(example_paths$deployment))
+})
+
+
+test_that("man/qc_deployment() works with MX801 data", {
+
+  example_paths <- local_example_dir(site_filter = "BBC",
+                                     year_filter = 2025, subdir = "mx801")
+  deployment_dirs <- example_paths$deployments
+
+
+
+  paths1 <- lookup_paths(deployment_dir = deployment_dirs[1])
+  expect_no_error(qc_deployment(paths1$deployment_dir))
+
+  paths2 <- lookup_paths(deployment_dir = deployment_dirs[2])
+  expect_no_error(qc_deployment(paths2$deployment_dir))
+
+  paths3 <-  lookup_paths(deployment_dir = deployment_dirs[3])
+  expect_no_error(qc_deployment(paths3$deployment_dir))
+
 })

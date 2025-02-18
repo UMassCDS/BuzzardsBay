@@ -1,4 +1,30 @@
+# BuzzardsBay 0.1.0.9014
+
+* Add MX801 import and example data these were from short trial runs.
+  * Add data to `extdata/2025/BBC`
+  * Update sites, placements, and import_types tables.
+    Site information for BBC is not accurate/real.
+    I copied info from another site. 
+  * Several changes will need to be made to inputs to use it.
+     * Add a line `MX801,2` to the `import_types.csv` table.
+     This tells the `qc_deployment()` to use a different import function for
+     the `MX801` loggers.
+    * In the placements table the `MX801` logger will appear twice for each 
+    placement, once for `DO` and once for `Cond`. For example:
+    ```
+    BBC,22070944,MX801,DO,1/1/25,
+    BBC,22070944,MX801,Cond,1/1/25,
+    ```
+    Indicates that the logger with serial number `22070944` was deployed at site
+    `BBC` on `1/1/25` Dates can also be written as `2025-01-01`, which is the 
+    standard format for this package; but since excel tends to re-write them 
+    in the `1/1/25` format that is also accepted.
+    
 * Add faked tide rider deployment data: `WFH/2024-04-09/`
+   * Dropped many redundant records
+   * Made fake calibrated DO and Cond data to accompany it.
+   I'm not sure all the metadata was fully updated in the fake data. 
+  
 
 # BuzzardsBay 0.1.0.9013
 
@@ -8,7 +34,7 @@ the `DO_Calibration_QC` column to 34.
 * Extend y axis of interactive plot by 5% of the range of data so that there is 
 a slight buffer around the data.
 
-* Add tests for consistent csv output for RB1 2023-06-09. 
+* Add tests for consistent CSV output for RB1 2023-06-09. 
 
 # BuzzardsBay 0.1.0.9012
 

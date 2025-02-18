@@ -9,13 +9,17 @@ library(readxl)
 
 # Note each row in the details tab has one non-empty cell in one of the
 # first four columns.
-# Here we reformat the data as text with indentations indicating column
-# then we preceed everything that is indented with a dash,
-# delete all but the first colon on every line.
-# Add a trailing colon on lines that aren't full indented,
-# Add null after a colon if the next line doesn't have additional indentation
-# Delete all but the last colon on every line.
-# And convet to a list with read_yaml()
+# Here we:
+# * reformat the data as text with indentations indicating column
+#   adding two leading spaces for every empty column before each item
+# * insert a dash before everything that is indented
+#     to indicate list membership,
+# * delete all but the first colon on every line as colons separate names and
+#     values but leave colons if bounded by digits as in times (12:00:00)
+# * Add a trailing colon on lines that are not fully indented
+# * Add null after a colon if the next line doesn't have additional indentation
+#  * Delete all but the last colon on every line.
+# And convert to a list with read_yaml()
 
 
 d <- readxl::read_excel(xf, sheet = 3, col_types = "text", col_names = FALSE)

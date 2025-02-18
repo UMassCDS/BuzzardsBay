@@ -112,7 +112,6 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
       }
 
 
-
       source_files <- file.path(site_dir, files)
       dest_site_dir <- file.path(example_base, year, site)
       dir.create(dest_site_dir, showWarnings = FALSE)
@@ -122,8 +121,14 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
       file.copy(source_files, dest_files)
 
       # Keep track of new deployment dirs
+
+      # Clip out the just the deployment name
       deployments <- gsub("(^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}).*$",
                           "\\1", files, perl = TRUE) |> unique()
+
+      # Drop anything that wasn't a deployment eg readme file
+      deployments <- grep("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$",
+                          deployments, value = TRUE)
       deployment_dirs <- c(deployment_dirs,
                            file.path(dest_site_dir, deployments))
     }

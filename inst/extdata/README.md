@@ -1,7 +1,11 @@
-# 2024 Example datasets
+# Example datasets
 
 These were generally added to test and resolve errors that came up due to unanticipated
-conditions.
+conditions, or because of new loggers or changes in formats.
+
+
+## 2024 
+
 
 ### OB1 2024-05-21, 2024-05-31
 
@@ -36,9 +40,21 @@ of the standard 2-point calibration.
     (the sensor error code -888.88 is getting plotted resulting in a massive yrange on the plot).
 
 
-## WFH 2024-04-09
+### WFH 2024-04-09
     This is an example of tide rider output. The TR_WFH_20240409_TRSX01.csv was from Michael Jakuba and emailed to me by Kristin Huizenga on 2024-12-05. 
     It contained high frequency of observations that I resampled at 10 minute intervals. 
     The other calibrated data files are hacked copies from a separate deployment.  
     See data-raw/make_fake_tide_rider_calibration_dir.R  for how these files were generated.
-     
+
+## 2025
+
+### BBC 2025-01- (04, 06, 27)
+
+Example output from the new MX8011 logger which has a different format.
+
+ * 2025-01-04 - has two point calibration.  I think this is the most common type.
+ * 2025-01-06 - has three point calibration.
+ * 2025-01-27 - has one point calibration.  
+Note, I think BBC might be a fake site.  These are real data from short tests
+of the loggers.
+See: the  [BBC README.md file](./2025/BBC/README.md) for more details.

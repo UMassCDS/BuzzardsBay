@@ -437,7 +437,11 @@ clean_names <- function(x, spaces = 0) {
     return(x)
   n <- names(x)
   n <- gsub(" ", "_", n) # replace spaces with _
-  n <- gsub("/", "_per_", n) # replace "/" with "_per_"
+
+  # replace "/" with "_per_"
+  # (unless there's a digit immediately before or after - to avoid
+  # mangling dates in the MX801 logger details )
+  n <- gsub("([^[:digit:]])/([^[:digit:]])", "\\1_per_\\2", n, perl = TRUE)
   n <- gsub("%", "pct", n)  # replace "%" with "_pct"
   n <- gsub("[()\u00B0,]", "", n) # drop these symbols \u00B0 is the deg symbol
   n <- gsub("_+", "_", n) # drop repeated _

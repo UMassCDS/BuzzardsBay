@@ -28,6 +28,9 @@ check_placement <- function(sn, type, placements, deployment_date, site) {
   # Filter to current SN
   placements <- placements[placements$sn %in% sn, , drop = FALSE]
 
+  # Filter to current type
+  placements <- placements[placements$type %in% type, , drop = FALSE]
+
   if (nrow(placements) == 0)
     stop("SN ", sn, " does not appear in the placement table on ",
          deployment_date, "\n")

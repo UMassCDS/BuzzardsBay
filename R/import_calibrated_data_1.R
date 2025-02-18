@@ -38,7 +38,7 @@ import_calibrated_data_1 <- function(paths) {
   relative_paths <- gsub(paste0("^", paths$base_dir, "[/\\\\]*"), "",
                          relative_paths, ignore.case = TRUE)
 
-  cat("\nImporting calibrated data Type 1 - Hoboware CSV and datails.txt\n",
+  cat("\nImporting calibrated data Type 1 - Hoboware CSV and details.txt\n",
       "\twith import_calibrated_data_1()\n\n")
 
   cat("Buzzards Bay base directory:\n\t",
