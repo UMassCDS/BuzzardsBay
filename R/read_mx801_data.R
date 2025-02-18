@@ -13,7 +13,7 @@
 read_mx801_data <- function(file) {
 
   stopifnot(file.exists(file))
-  if (!grepl(".xlsx$", file)) {
+  if (!grepl(".xlsx$", file, ignore.case = TRUE)) {
     stop("Expecting an .xlsx file for MX801 data import")
   }
 
@@ -28,7 +28,8 @@ read_mx801_data <- function(file) {
                                    "Percent.Saturation",
                                    "Salinity.[^Aa]", # exclude "Salinity-Adj.."
                                    "Electrical.Conductivity",
-                                   "Specific.Conductivity"),
+                                   "Specific.Conductivity",
+                                   "Water Level"),
 
                        name = c("Date_Time",
                                 "Temp_DOLog",
@@ -38,7 +39,8 @@ read_mx801_data <- function(file) {
                                 "DO_Pct_Sat",
                                 "Salinity",
                                 "High_Range",
-                                "Spec_Cond"))
+                                "Spec_Cond",
+                                "Depth"))
 
   cols <- names(d)
   for (i in seq_len(nrow(col_cw))) {
@@ -50,20 +52,23 @@ read_mx801_data <- function(file) {
 
   names(d) <- cols
 
-  # This data isn't collected by the MX801
+  # Previously we had two salinity columns this logger only
+  # has one which we are using for both.
   d$Salinity_DOLog <- d$Salinity
-  dropped_cols <- setdiff(names(d), expected_column_names$calibrated)
-  missing_cols <- setdiff(expected_column_names$calibrated, names(d))
+
+  # Expected cols includes a few that are optional
+  expected_cols <-  get_expected_columns("calibrated", names(d))
+
+  # These are required columns that are missing
+  missing_cols <- setdiff(expected_cols, names(d))
 
   if (length(missing_cols) > 0) {
-    cat("Dropped columns:\n\t", paste(dropped_cols, collapse = ",\n\t"),
-        "\n", sep = "")
-    stop("Missing columns from MX801 data inport: ",
+    stop("Missing required columns from MX801 data inport: ",
          paste(missing_cols, collapse = ", "))
   }
 
 
-  d <- d[, expected_column_names$calibrated]
+  d <- d[, expected_cols]
 
   d$Date_Time <- as.character(d$Date_Time)
 

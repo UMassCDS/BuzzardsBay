@@ -127,11 +127,15 @@ qc_deployment <- function(dir, report = TRUE) {
     lubridate::as_datetime() |>
     hms::as_hms()
 
+
+
   # Check for missing columns
   # Construct full data frame with all the expected columns in proper order
   # This inserts lots of additional columns that initially have NA
-  full <- matrix(nrow = nrow(d), ncol = length(expected_column_names$intermediate),
-                 dimnames = list(NULL, expected_column_names$intermediate)
+  expected_cols <- get_expected_columns("qc_intermediate", existing = names(d))
+
+  full <- matrix(nrow = nrow(d), ncol = length(expected_cols),
+                 dimnames = list(NULL, expected_cols)
   ) |> as.data.frame()
   full[, names(d)] <- d
   d <- full
@@ -342,7 +346,8 @@ qc_deployment <- function(dir, report = TRUE) {
   #----------------------------------------------------------------------------#
   # Select final columns (drop  _flag columns) and put in standard order
   #----------------------------------------------------------------------------#
-  d <- d[, expected_column_names$qc_final]
+  final_cols <- get_expected_columns("qc_final", names(d))
+  d <- d[, final_cols]
 
   #----------------------------------------------------------------------------#
   # Write Files

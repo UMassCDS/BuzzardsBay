@@ -11,7 +11,7 @@ test_that("qc_deployment() works", {
   d <- readr::read_csv(paths$deployment_auto_qc, show_col_types = FALSE)
 
   # Check that column names are as expected
-  expect_equal(names(d), expected_column_names$qc_final)
+  expect_equal(names(d), get_expected_columns("qc_final", names(d)))
 
   # Check that the location and flags of the first 20 flags haven't changed
   flags <- data.frame(row = seq_len(nrow(d)), Flags = d$Flags) |>
@@ -137,9 +137,11 @@ test_that("man/qc_deployment() works with MX801 data", {
   deployment_dirs <- example_paths$deployments
 
 
-
   paths1 <- lookup_paths(deployment_dir = deployment_dirs[1])
-  expect_no_error(qc_deployment(paths1$deployment_dir))
+  expect_no_error(d1 <- qc_deployment(paths1$deployment_dir))
+  expect_true("Depth" %in% names(d))
+
+
 
   paths2 <- lookup_paths(deployment_dir = deployment_dirs[2])
   expect_no_error(qc_deployment(paths2$deployment_dir))

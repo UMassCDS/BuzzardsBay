@@ -1,12 +1,30 @@
+# NOTE: Use get_expected_columns() instead of referencing these lists directly.
+
+# Define lists of expected and optional column names at different points in the
+# pipeline.
+
+
 expected_column_names <- list(
 
   calibrated =
-    c("Date_Time", "Raw_DO", "Temp_DOLog", "DO", "DO_Pct_Sat", "Salinity_DOLog",
-      "High_Range", "Temp_CondLog", "Spec_Cond", "Salinity"),
+    c("Date_Time",
+      "Raw_DO",
+      "Temp_DOLog",
+      "DO",
+      "DO_Pct_Sat",
+      "Salinity_DOLog",
+      "High_Range",
+      "Temp_CondLog",
+      "Spec_Cond",
+      "Salinity",
+      "Latitude",  # optional
+      "Longitude", # optional
+      "Depth"      # optional
+      ),
 
   # Note intermediate columns include individual flag columns for each data
   # column.  These will be combined in $Flags and then dropped.
-  intermediate = c("Site",
+  qc_intermediate = c("Site",
                    "Date",
                    "Date_Time",
                    "Gen_QC",
@@ -43,6 +61,9 @@ expected_column_names <- list(
                    "Spec_Cond_Flag",
                    "Spec_Cond_QC",
                    "Cal",
+                   "Latitude",  # optional
+                   "Longitude", # optional
+                   "Depth",     # optional
                    "QA_Comment",
                    "Field_Comment")
 
@@ -51,6 +72,15 @@ expected_column_names <- list(
 # Set final QC data columns as a subset of the intermediate columns
 # Drop individual flags, and DO Logger salinity
 expected_column_names$qc_final <-
-  expected_column_names$intermediate[!grepl("_Flag|Salinity_DOLog",
-                                            expected_column_names$intermediate,
-                                            ignore.case = TRUE)]
+  expected_column_names$qc_intermediate[
+    !grepl("_Flag|Salinity_DOLog",
+           expected_column_names$qc_intermediate,
+           ignore.case = TRUE)]
+
+# These are optional column names for each type
+# (calibrated, intermediate, and qc_final)
+expected_column_names$optional_calibrated <- c("Latitude", "Longitude",
+                                               "Depth")
+expected_column_names$optional_qc_intermediate <- c("Latitude", "Longitude",
+                                                    "Depth")
+expected_column_names$optional_qc_final <- c("Latitude", "Longitude", "Depth")

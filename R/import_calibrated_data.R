@@ -82,8 +82,9 @@ import_calibrated_data <- function(paths, devices) {
   l <- do.call(what = import_fun, args = list(paths = paths))
   d <- l$d
 
-  # see R/expected_column_names.R
-  miss <- setdiff(names(d), expected_column_names$calibrated)
+  # see R/expected_column_names.R to adjust what is expected
+  expected_cols <- get_expected_columns("calibrated", existing = names(d))
+  miss <- setdiff(names(d), expected_cols)
 
   if (length(miss) > 0) {
     stop("Imported calibration data is missing expected column(s):\"",
