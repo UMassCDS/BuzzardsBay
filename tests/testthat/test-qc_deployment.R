@@ -136,17 +136,63 @@ test_that("man/qc_deployment() works with MX801 data", {
                                      year_filter = 2025, subdir = "mx801")
   deployment_dirs <- example_paths$deployments
 
-
+  #----------------------------------------------------------------------------#
+  # File with 2 point DO, and 2 point Condudctivity calibration
+  #----------------------------------------------------------------------------#
+  n_do  <- 2
+  n_cond <- 2
   paths1 <- lookup_paths(deployment_dir = deployment_dirs[1])
-  expect_no_error(d1 <- qc_deployment(paths1$deployment_dir))
-  expect_true("Depth" %in% names(d))
+  expect_no_error(res1 <- qc_deployment(paths1$deployment_dir))
+  expect_true("Depth" %in% names(res1$d))
 
+  #n do
+  expect_equal(res1$md$do_calibration$n_points, n_do)
+  expect_length(res1$md$do_calibration$pct_saturation, n_do)
+  expect_length(res1$md$do_calibration$measured_do, n_do)
 
+  # n Cond
+  expect_length(res1$md$cond_calibration$spec_cond_25c, n_cond)
+  expect_length(res1$md$cond_calibration$measured_cond, n_cond)
+  expect_length(res1$md$cond_calibration$temperature, n_cond)
 
+  #----------------------------------------------------------------------------#
+  # File with 2 point DO and 3 point Conductivity calibration
+  #----------------------------------------------------------------------------#
+  n_do <- 2
+  n_cond <- 3
   paths2 <- lookup_paths(deployment_dir = deployment_dirs[2])
-  expect_no_error(qc_deployment(paths2$deployment_dir))
+  expect_no_error(res2 <- qc_deployment(paths2$deployment_dir))
+  expect_true("Depth" %in% names(res2$d))
+
+  #n do
+  expect_equal(res2$md$do_calibration$n_points, n_do)
+  expect_length(res2$md$do_calibration$pct_saturation, n_do)
+  expect_length(res2$md$do_calibration$measured_do, n_do)
+
+  # n Cond
+  expect_length(res2$md$cond_calibration$spec_cond_25c, n_cond)
+  expect_length(res2$md$cond_calibration$measured_cond, n_cond)
+  expect_length(res2$md$cond_calibration$temperature, n_cond)
+
+  #----------------------------------------------------------------------------#
+  # File with 1 point DO and 2 point Conductivity calibration
+  #----------------------------------------------------------------------------#
+  n_do  <- 1
+  n_cond <- 2
 
   paths3 <-  lookup_paths(deployment_dir = deployment_dirs[3])
-  expect_no_error(qc_deployment(paths3$deployment_dir))
+  expect_no_error(res3 <- qc_deployment(paths3$deployment_dir))
+
+  expect_true("Depth" %in% names(res3$d))
+
+  #n do
+  expect_equal(res3$md$do_calibration$n_points, n_do)
+  expect_length(res3$md$do_calibration$pct_saturation, n_do)
+  expect_length(res3$md$do_calibration$measured_do, n_do)
+
+  # n Cond
+  expect_length(res3$md$cond_calibration$spec_cond_25c, n_cond)
+  expect_length(res3$md$cond_calibration$measured_cond, n_cond)
+  expect_length(res3$md$cond_calibration$temperature, n_cond)
 
 })

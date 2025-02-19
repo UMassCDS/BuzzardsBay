@@ -1,0 +1,49 @@
+site: AB2
+deployment: AB2_2024-08-16
+deployment_date: '2024-08-16'
+calibration_start: 2024-08-06 14:40:00
+calibration_end: 2024-08-16 12:40:00
+pct_calibrated: 99.9301
+n_records: 1429
+pct_immediate_rejection: 0.0
+pct_flagged_for_review: 1.33
+logging_interval_min: 10.0
+timezone: GMT-04:00
+auto_qc_date: '2024-08-21'
+do_calibration:
+  start_do_conc: 6.57
+  start_temperature_c: 24.4
+  start_salinity_ppt: 30.68
+  start_meter_titration_value_mg_l: 5.3
+  start_salinity_correction: 0.8393
+  end_do_conc: 8.68
+  end_temperature_c: 24.3
+  end_meter_titration_value_mg_l: 7.3
+  start_ratio: 0.8066971
+  end_ratio: 0.8410138
+do_deployment:
+  full_series_name: DO Adj Conc, mg/L
+  launch_name: BBC4_AB2_21118670
+  launch_time: 2024-08-06 14:27:48
+  calibration_date: 2024-04-29 17:09:49
+  calibration_gain: 1.11108
+  calibration_offset: -0.00072
+do_device:
+  product: HOBO U26-001 Dissolved Oxygen
+  serial_number: 21118670
+  version_number: 1.08
+  header_created: 2012-03-02 14:19:05
+cond_calibration:
+  start_cal_cond: 47468.0
+  start_cal_temp: 25.3
+  end_cal_cond: 46854.3
+  end_cal_temp: 24.6
+cond_deployment:
+  full_series_name: Salinity, ppt
+  launch_name: BBC4_AB2_21113541
+  launch_time: 2024-08-06 14:32:39
+cond_device:
+  product: HOBO U24-002 Conductivity
+  serial_number: 21113541
+  version_number: 1.52
+  header_created: 2021-06-02 09:23:50

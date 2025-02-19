@@ -45,16 +45,28 @@ of the standard 2-point calibration.
     It contained high frequency of observations that I resampled at 10 minute intervals. 
     The other calibrated data files are hacked copies from a separate deployment.  
     See data-raw/make_fake_tide_rider_calibration_dir.R  for how these files were generated.
+    
+### Aggregation and Analysis
+For these deployments the test data consists of the final QC CSV and YAML files
+but NOT the calibration files. Thus these don't work with `qc_deployment()`.
+#### AB2  
+*2024-08-16, 2024-08-27, 2024-09-05*   3 consecutive deployments
+#### E33
+*2024-07-09, 2024-07-23* 2 consecutive deployments, second is two weeks long
+    
 
 ## 2025
 
 ### BBC 2025-01- (04, 06, 27)
 
-Example output from the new MX8011 logger which has a different format.
+Example output from the new MX8011 logger which has a different format from 
+the U24 and U26 loggers, and logges both conductivity and DO on one device.
+There are several possible calibration possibilities.
 
- * 2025-01-04 - has two point calibration.  I think this is the most common type.
- * 2025-01-06 - has three point calibration.
- * 2025-01-27 - has one point calibration.  
-Note, I think BBC might be a fake site.  These are real data from short tests
-of the loggers.
+ * 2025-01-04 (2, 2) - two point calibration for both DO and Cond. calibration.
+   I think this is the most common type.
+ * 2025-01-06 (2, 3)- two points for DO and three points for Cond. calibration.
+ * 2025-01-27 (2, 1) - one point for DO and two points for Cond. calibration.  
+Note, I think BBC might be a fake site.  These are real data from short tsests
+of the loggers.ss
 See: the  [BBC README.md file](./2025/BBC/README.md) for more details.

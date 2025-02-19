@@ -6,26 +6,45 @@
     Site information for BBC is not accurate/real.
     I copied info from another site. 
   * Several changes will need to be made to inputs to use it.
-     * Add a line `MX801,2` to the `import_types.csv` table.
+    * Add a line `MX801,2` to the `import_types.csv` table.
      This tells the `qc_deployment()` to use a different import function for
      the `MX801` loggers.
     * In the placements table the `MX801` logger will appear twice for each 
-    placement, once for `DO` and once for `Cond`. For example:
-    ```
-    BBC,22070944,MX801,DO,1/1/25,
-    BBC,22070944,MX801,Cond,1/1/25,
-    ```
-    Indicates that the logger with serial number `22070944` was deployed at site
-    `BBC` on `1/1/25` Dates can also be written as `2025-01-01`, which is the 
-    standard format for this package; but since excel tends to re-write them 
-    in the `1/1/25` format that is also accepted.
+     placement, once for `DO` and once for `Cond`. For example:
+     
+     ```
+     BBC,22070944,MX801,DO,1/1/25,
+     BBC,22070944,MX801,Cond,1/1/25,
+     ```
+     Indicates that the logger with serial number `22070944` was deployed at site
+     `BBC` on `1/1/25` Dates can also be written as `2025-01-01`, which is the 
+     standard format for this package; but since excel tends to re-write them 
+     in the `1/1/25` format that is also accepted.
     
 * Add faked tide rider deployment data: `WFH/2024-04-09/`
-   * Dropped many redundant records
+   * Dropped many redundant records.
    * Made fake calibrated DO and Cond data to accompany it.
    I'm not sure all the metadata was fully updated in the fake data. 
   
+* Add example data for aggregation and analysis module and empty test for
+  those functions. These are the final QC CSV and metadata YAML files 
+  for several deployments in sites `AB2` and `E33`.  These sites and the 
+  associated loggers were also added to `placements.csv` 
+  using an arbitrary date that is consistent with example data.  
+  
+  Use the following to setup directories to test against these:
+  ``` 
+  example_paths <- setup_example_dir(year_filter = 2024, site_filter = "AB2")
+  site_dir <- dirname(example_paths$deployment)
+  ```
+  Or
+  
+  ```
+  example_paths <- setup_example_dir(year_filter = 2024, site_filter = "E33")
+  site_dir <- dirname(example_paths$deployment)
+  ```
 
+  
 # BuzzardsBay 0.1.0.9013
 
 * Drop `Sm` flag (Salinity data missing). When salinity data is missing set
