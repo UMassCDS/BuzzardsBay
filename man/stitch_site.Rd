@@ -4,8 +4,18 @@
 \alias{stitch_site}
 \title{Stitch all deployments for a site and year}
 \usage{
-stitch_site(site, year)
+stitch_site(site_dir)
+}
+\arguments{
+\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results.}
 }
 \description{
-Stitch all deployments for a site and year
+Merges all QCed deployments for the specified site and year and writes result files. Missing dates and
+times are interpolated, with a warning for gaps that are suspiciously large. Data that are out range for
+their sensor are flagged. Three files are written:
+\enumerate{
+\item archive.csv - contains all columns, for complete archival.
+\item share.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file)
+\item core - just the good stuff. This is the file used for producing summaries and reports.
+}
 }
