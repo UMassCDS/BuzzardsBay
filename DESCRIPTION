@@ -4,7 +4,9 @@ Title: Process and analyze data for the COMBB project
 Version: 0.1.0.9014
 Authors@R: 
     c(person("Ethan", "Plunkett",  email = "plunkett@umass.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-4405-2251")))
+           comment = c(ORCID = "0000-0003-4405-2251")),
+           person("Bradley", "Compton", email = "bcompton@umass.edu", role = c("aut"), 
+           comment = c(ORCID = "0009-0002-2375-8116")))
 Description: Process and analyze data from the Continuous Oxygen Monitoring in 
     Buzzards Bay (COMBB) project. 
 Imports:
@@ -19,7 +21,9 @@ Imports:
     rmarkdown,
     slider,
     suncalc,
-    yaml
+    yaml,
+    digest,
+    readr
 Encoding: UTF-8
 Language: en-US
 LazyData: true
