@@ -4,10 +4,12 @@
 \alias{stitch_site}
 \title{Stitch all deployments for a site and year}
 \usage{
-stitch_site(site_dir)
+stitch_site(site_dir, max_gap = 1)
 }
 \arguments{
-\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results.}
+\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results}
+
+\item{max_gap}{Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded}
 }
 \description{
 Merges all QCed deployments for the specified site and year and writes result files. Missing dates and
@@ -26,7 +28,7 @@ Three versions of the data file are written:
 Two additional files are written:
 \enumerate{
 \item daily_stats.csv - a file with a row for each day of the season with several summary statistics.
-\item hashes.txt - a file for internal use by \code{check_site}, this lists full paths to deployment files and
+\item hash.txt - a file for internal use by \code{check_site}, this tab-delimited file lists full paths to deployment files and
 md5 hashes.
 }
 }

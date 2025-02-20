@@ -1,4 +1,4 @@
-'stitch_site' <- function(site_dir) {
+'stitch_site' <- function(site_dir, max_gap = 1) {
 
   #' Stitch all deployments for a site and year
   #'
@@ -14,56 +14,92 @@
   #'
   #' Two additional files are written:
   #' 1. daily_stats.csv - a file with a row for each day of the season with several summary statistics.
-  #' 2. hashes.txt - a file for internal use by `check_site`, this lists full paths to deployment files and
+  #' 2. hash.txt - a file for internal use by `check_site`, this tab-delimited file lists full paths to deployment files and
   #' md5 hashes.
   #'
-  #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results.
+  #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
+  #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
   #' @export
 
 
 
-  paths <- lookup_site_paths(site_dir)
-  qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                      # Read QC file for each deployment
-  cols <- get_expected_columns('qc_final')                                      # get expected column names; we'll dump the rest
+  library(lubridate)
 
-  for(i in 1:length(qc)) {                                                      # clean up data: for each deployment,
-    qc[[i]] <- qc[[i]][, cols]                                                  #    get the columns we want and drop the junk
+
+  paths <- lookup_site_paths(site_dir)
+  qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                        # Read QC file for each deployment
+  cols <- get_expected_columns('qc_final')                                        # get expected column names; we'll dump the rest
+  shared_cols <- cols                                                             # *** at the moment, the archive and shared files are identical ??? ***
+  core_cols <- c('Site', 'Depth', 'Unique_ID', 'Date_Time', 'Julian_Date',
+                 'Temp_CondLog', 'DO', 'DO_Pct_Sat', 'Salinity', 'High_Range',
+                 'QA_Comment', 'Field_Comment')                                   # columns to include in core file
+
+  t <- basename(paths$deployments$QCpath)                                         # pull deployment names out of paths
+  deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
+
+  for(i in 1:length(qc)) {                                                        # clean up data: for each deployment,
+    qc[[i]] <- qc[[i]][, cols]                                                    #    get the columns we want and drop the junk
     t <- as.POSIXct(format_csv_date_time(qc[[i]]$Date_Time, format = 'datetime'), tz = 'UTC')
-    qc[[i]]$Date <- format(t, format = '%Y-%m-%d')                              #    reformat dates and dates/times that may have been damaged by Excel
+    qc[[i]]$Date <- format(t, format = '%Y-%m-%d')                                #    reformat dates and dates/times that may have been damaged by Excel
     qc[[i]]$Date_Time <- format(t, format = '%Y-%m-%d %H:%M:%S')
   }
 
+  site <- qc[[1]]$Site[1]
   z <- qc[[1]]
 
-  if(length(qc) > 1)                                                            # if we have more than one deployment in season,
-    for(i in 1:(length(qc) - 1)) {                                              #    Fill gaps: for each pair of deployments,
-      x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))        #       date of tail of first deployment in pair, head of second one
-      x <- as.POSIXct(x)                                                        #       dates to POSIX
-      gap <- interval(x[1], x[2]) / dminutes(1)                                 #       gap to fill, in minutes
-      m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min    #       logging interval of first deployment in pair (min)
-      need <- ceiling(gap / m) - 1                                              #       how many dates do we need to interpolate?
-      fill <- x[1] + dminutes(1:need * m)                                       #       here are our interpolated times
-      fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                        #       formatted in the final form
+  if(length(qc) > 1)                                                              # if we have more than one deployment in season,
+    for(i in 1:(length(qc) - 1)) {                                                #    Fill gaps: for each pair of deployments,
+      x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))          #       date of tail of first deployment in pair, head of second one
+      x <- as.POSIXct(x)                                                          #       dates to POSIX
+      gap <- interval(x[1], x[2]) / dminutes(1)                                   #       gap to fill, in minutes
+      m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min      #       logging interval of first deployment in pair (min)
+      need <- ceiling(gap / m) - 1                                                #       how many dates do we need to interpolate?
+      fill <- x[1] + dminutes(1:need * m)                                         #       here are our interpolated times
+      fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                          #       formatted in the final form
 
-      y <- data.frame(matrix(NA, length(fill), length(cols)))                   #       create data frame to fill the gap, with Site, Date, and Date_Time, all else NA
+      y <- data.frame(matrix('#N/A', length(fill), length(cols)))                 #       create data frame to fill the gap, with Site, Date, and Date_Time, all others #N/A
       names(y) <- cols
-      y$Site <- qc[[1]]$Site[1]
-      y$Date <- format(date(fill), format = '%Y-%m-%d')
+      y$Site <- site
+      y$Date <- format(lubridate::date(fill), format = '%Y-%m-%d')
       y$Date_Time <- fill
       y$Time <- sub('\\d{4}-\\d{2}-\\d{2} ', '', fill)
 
-      z <- rbind(z, y, qc[[i + 1]])                                             #       build up result: what we've already got, gap fill, and second deployment of pair
+      z <- rbind(z, y, qc[[i + 1]])                                               #       build up result: what we've already got, gap fill, and second deployment of pair
 
-     # warn if there's a large gap between deployments
+      if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                #       warn if there's a large gap between deployments
+        cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
     }
 
+  # insert Latitude and Longitude, other columns? *******************************************************************************************************************
+  z$Waterbody <- 123456                 # pull this out of somewhere...not in sites file; ask COMBB to add to sites file
+  z$WPP_station_identifier <- 123456    #   "
+  z$Latitude <- 123456                  # if not present, pull from inst/extdata/sites.csv
+  z$Longitude <- 123456                 #   "
+  z$Depth <- 123456                     # NA if not present
+  z$Unique_ID <- 123456                 # generate row numbers
+  z$Julian_Date <- 123456               # generate this
+  z$Automatic_Flags <- 123456           # ~~~~~~~~~~ is really just Flags ~~~~~~~~~~~
+  z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
+
+  # check for values outside of calibration ranges  *** waiting for ranges from COMBBers ****************************************************************************
+
+  # write three versions of data file
   write.csv(z, file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
 
-  # check for values outside of calibration ranges  *** waiting for ranges from COMBBers
-  # write 3 data files
-  # call daily_stats and write stats file
-  # write hash file
-  # say what we just did
+  # replace rejected values with DR  ********************************************************************************************************************************
+  # See Deployment Data Info, tab 4 QC Codes. Rejection column based on Gen_QC. 'DR' for columns with sensor metrics.
 
+  write.csv(z[, shared_cols], file = file.path(site_dir, paste0('share_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
+  write.csv(z[, core_cols], file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
 
+  stats <- data.frame(matrix(1:15, 5, 3, byrow = TRUE))
+  names(stats) = c('one', 'two', 'three')
+#  stats <- daily_stats(...)                                                        # calculate daily stats *********************************************************
+  write.csv(stats, file = file.path(site_dir, paste0('daily_stats_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
+
+  hash <- data.frame(QC = paths$deployments$QCpath, hash = paths$deployments$hash)  # write hashes
+  write.table(hash, file = file.path(site_dir, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
+
+  cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
+  cat('Results are in ', site_dir, '/\n', sep = '')
 }
