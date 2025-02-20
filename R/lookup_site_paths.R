@@ -25,9 +25,9 @@
   deploy <- list.files(site_dir)                                          # deployment folders
   deploy <- deploy[grep('\\d{4}-\\d{2}-\\d{2}', deploy)]                  # make sure we don't pick up anything but yyyy-mm-dd
 
-  qc <- file.path(site_dir, deploy, paste0('QC_', site, '_', deploy, '.csv'))
-  meta <- file.path(site_dir, deploy, paste0('Metadata_', site, '_', deploy, '.yml'))
-  z$deployments <- data.frame(date = deploy, QCpath = qc, mdpath = meta)
+  qc <- sort(file.path(site_dir, deploy, paste0('QC_', site, '_', deploy, '.csv')))
+  md <- sort(file.path(site_dir, deploy, paste0('Metadata_', site, '_', deploy, '.yml')))
+  z$deployments <- data.frame(date = deploy, QCpath = qc, mdpath = md)
 
   if(any(t <- !file.exists(f <- unlist(z$deployments[, c('QCpath', 'mdpath')]))))
     stop(paste0('Missing deployment files: ', f[t], collapse = ', '))

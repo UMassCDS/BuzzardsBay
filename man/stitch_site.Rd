@@ -12,10 +12,21 @@ stitch_site(site_dir)
 \description{
 Merges all QCed deployments for the specified site and year and writes result files. Missing dates and
 times are interpolated, with a warning for gaps that are suspiciously large. Data that are out range for
-their sensor are flagged. Three files are written:
+their sensor are flagged. Writes three versions of the data file for the complete season, daily stats,
+and hash files for use by \code{check_site}.
+}
+\details{
+Three versions of the data file are written:
 \enumerate{
 \item archive.csv - contains all columns, for complete archival.
-\item share.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file)
+\item share.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file).
 \item core - just the good stuff. This is the file used for producing summaries and reports.
+}
+
+Two additional files are written:
+\enumerate{
+\item daily_stats.csv - a file with a row for each day of the season with several summary statistics.
+\item hashes.txt - a file for internal use by \code{check_site}, this lists full paths to deployment files and
+md5 hashes.
 }
 }
