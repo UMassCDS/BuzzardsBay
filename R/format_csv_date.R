@@ -68,6 +68,7 @@ format_csv_date_time <- function(x, format = "datetime") {
 
   # Process each format separately
   dates <- rep(NA, length(x))
+  dates <- lubridate::as_datetime(dates)
   if (any(ymd_hm_sv))
     dates[ymd_hm_sv] <- lubridate::ymd_hm(x[ymd_hm_sv])
   if (any(mdy_hm_sv))
