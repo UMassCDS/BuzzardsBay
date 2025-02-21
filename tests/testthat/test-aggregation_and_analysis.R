@@ -7,12 +7,9 @@
 
 test_that("Aggregation works", {
 
-  skip() # Delete to run tests during CRAN check or devetools::test()
+  skip() # Delete to run tests during CRAN check or devtools::test()
 
   example_paths1 <- local_example_dir(year_filter = 2024, site_filter = "AB2")
-  # If setting up an example dir outside of a test use:
-  #   setup_example_dir(year_filter = 2024, site_filter = "AB2")
-  # It's the same but without a promise to delete later.
 
   site_dir1 <- dirname(example_paths1$deployment)
 

@@ -5,19 +5,22 @@
 #' 1. Read the calibrated dissolved oxygen and conductivity files created by
 #' HOBOware.
 #' 2. Read and parse the associated Details files into nested lists.
-#' 3. Reformat and merge the datafiles.
+#' 3. Reformat and merge the data files.
 #' 4. Add automatic flags, and create columns for manual QC
 #' 5. Write the data and metadata.
+#' 6. If `report = TRUE` it will call [make_deployment_report()] to make
+#' and interactive HTML report with plots for QAQC.
 #'
 #' `qc_deployment()` assumes the files are arranged in a specific
 #' [file structure](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU/edit#heading=h.s6vs4d7vj0cn).
 #'
-#' @note Input files are looked for within `file.path(dir, "Calibration")`
-#' using a heuristic that assumes the detail files end in `"Details.txt"`; the
-#' data files end in `".csv"`; the dissolved oxygen files have `"DO_"`;
-#' the Salinity/Conductivity files have either `"Cond_"`, `"Con_"` or `"Sal_`
-#' in the name; and that there is only one of each kind of file - four files
-#'  total.
+#' @note
+#' `qc_deployment()` calls [import_calibrated_data()] which currently supports
+#' three completely different import functions.  See [import_calibrated_data()]
+#' for documentation on the data formats they each expect.
+#'
+#' In all cases input files are looked for within a `Calibration` sub directory
+#' to the deployment directory (`dir`).
 #'
 #' @param dir The path to a deployment directory to run QC on.  It should
 #' have a `Calibration/` directory with calibrated DO and conductivity data
