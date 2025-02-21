@@ -49,3 +49,4 @@ or tide charts. For these uses it's not actually important that its in the
 local timezone and so UTC with the offset applied is fine, as long as the
 resulting object correctly identifies when the data was collected.
 }
+\keyword{internal}

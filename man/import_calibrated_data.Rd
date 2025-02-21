@@ -7,7 +7,7 @@
 import_calibrated_data(paths, devices)
 }
 \arguments{
-\item{paths}{Path list as returned from \verb{[lookup_paths()]}.  Only the
+\item{paths}{Path list as returned from \code{\link[=lookup_paths]{lookup_paths()}}.  Only the
 \code{import_types} component is used here.}
 
 \item{devices}{Device information in a list as returned from
@@ -37,24 +37,106 @@ conductance (older loggers) in microsiemens per cm.}
 is the units assigned by the newer loggers}
 }
 \description{
-This function imports calibrated data from \code{paths$deployment_cal_dir}
-it calls distinct functions depending on the devices associated with the
-deployment based on the \code{import_type} associated with the devices in
-the  \code{import_type.csv} file in the base directory for the Buzzards Bay
-data.
+This function imports calibrated data for a single deployment from its
+\code{Calibrated} sub directory.
+\code{import_calibrated_data()} calls distinct functions (import types)
+depending on the  devices associated with the deployment in \code{placements.csv}
+The called functions are internal to the package
+and have the naming structure \code{import_calibrated_data_[x]}
+where \verb{[x]} is an integer.
 }
-\details{
-Import types:
+\section{Import types}{
+\subsection{Import Type 0 - CSV}{
+
+This simple CSV import is a fallback in case updates to HOBOware or
+the loggers themselves break the targeted imports.
+It expects a CSV file and a YAML (\code{.yml}) file.
+
+To use this import:
 \enumerate{
-\item The original input type that used calibrated data exported from
-Hobo ware.  This expects to find two CSV files and two \code{detailes.txt}
+\item Make sure in \code{import_types.csv} there's a default line:
+\verb{default,0} This means that if an import type isn't identified for a model
+listed in a placement that the CSV import will be used.
+\item In \code{placments.csv} if you want to use the CSV import use a model name
+that is NOT in \code{import_types.csv} so the default CSV import is used.
+I recommend using the model name with \code{-CSV} appended; e.g.
+instead of \code{MX801} use \code{MX801-CSV}.
+\item In the deployment's \code{Calibrated} directory create an appropriate CSV and
+YAML file as described below.
+}
+\subsection{CSV file}{
+
+In the CSV file the columns are resolved by name not order and the import
+will attempt to resolve several different column naming conventions. Any
+of the following should work:
+\itemize{
+\item The canonical column names used by this package:  "Date_Time", "Raw_DO",
+"Temp_DOLog", "DO", "DO_Pct_Sat", "High_Range", "Temp_CondLog",
+"Spec_Cond", "Salinity", "Depth", "Latitude", and "Longitude". The last
+three are optional, the rest are required.
+\item Columns names from the MX801 logger. For example by saving the first sheet
+as a CSV.
+\item Column names from the U24 and U26 loggers. However, when combining data
+from these two loggers into a single CSV the two temperature columns will
+have to be manually renamed to "Temp_CondLog", and "Temp_DOLog"
+as they are otherwise indistinguishable.
+}
+
+If using other column names please verify carefully
+}
+
+\subsection{YAML file}{
+
+In the YAML file the following items are required:
+\itemize{
+\item \strong{calibration_start:} The date and time of the start of the deployment.
+For field calibrated sensors (U24, U26) this is also the calibration time.
+For factory calibrated sensors (MX801) this is NOT the calibration time.
+\item \strong{calibration_end:} As in the above, the end of the deployment and/or
+calibrated window.
+\item \strong{timezone:} The timezone as reported by the logger and/or calibration
+software.
+The output from HOBOware uses a GMT offset like “GMT-04:00”,
+which is not a broadly supported timezone but is accepted here.
+The MX801 uses a timezone code “EST” which is also accepted here.
+\item \strong{do_device:} Information on the DO sensor or logger with items:
+\itemize{
+\item \strong{product:} The dissolved oxygen sensor e.g.
+“HOBO U26-001 Dissolved Oxygen”, "U26-01", or “MX801”.
+}
+\item \strong{serial_number:} The device serial number.
+\item \strong{cond_device:} List with information on the conductivity sensor with
+items:
+\itemize{
+\item \strong{product:} The conductivity sensor e.g. “HOBO U24-002 Conductivity”
+\item \strong{serial_number:} Conductivity sensor serial number
+Additional items that appear in the
+\href{https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?tab=t.0}{metadata documentation}
+are permitted and will be retained. Items that do not appear in that document
+will be ignored.
+}
+}
+}
+
+}
+
+\subsection{Import Type 1 - U24, U26}{
+
+HOBOware derived from U24 and U26 loggers.
+Import type 1 expects to find two CSV files and two \code{details.txt}
 files in the calibration directory. The Dissolved Oxygen files should have
 \code{"Do_"} somewhere in the names while the Conductivity files should have
 either \code{"Cond_"} or \verb{"Sal_} in the names.
-\item This is the import type associated with the \code{MX801} logger. Note
-there should still be two lines in \code{placements.csv} one each for
-\code{"Do"} and \code{"Cond"} both of which should indicate "MX801".  This import
-expects a single  excel file with combined data from both loggers and on
-one sheet and the details information on another.  NOT IMPLEMENTED YET.
+}
+
+\subsection{Import Type 2 - MX801}{
+
+This is the import type for the MX801 logger, it expects a single \code{.xlxs}
+file  with combined data from both loggers and on the first sheet
+and the details (metadata) on the third sheet.
+Note there should still be two lines for each placement  in \code{placements.csv}
+one each for \code{"DO"} and \code{"Cond"} both of which should indicate "MX801" as the
+model and have the same Serial Number.
 }
 }
+

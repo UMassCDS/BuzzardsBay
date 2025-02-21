@@ -19,10 +19,10 @@ knitr::opts_chunk$set(echo = FALSE, out.width = "100%")
 
 paths <- params$paths
 
-data_path <-  params$paths$deployment_auto_qc
-sites_path <- params$paths$sites
-metadata_path <- params$paths$deployment_metadata
-preceding_auto_qc <- params$paths$preceding_auto_qc
+data_path <-  paths$deployment_auto_qc
+sites_path <- paths$sites
+metadata_path <- paths$deployment_metadata
+preceding_auto_qc <- paths$preceding_auto_qc
 
 using_example_data <- FALSE
 
@@ -155,6 +155,19 @@ n_to_review <- sum(d$Gen_QC == 9999 & !d$Prior_Dep, na.rm = TRUE)
 
 has_salinity_data <- !all(is.na(d$Salinity))
 
+# Generate text to describe calibration ratios if they exist and aren't NA
+has_ratios <-
+  all(c("start_ratio", "end_ratio") %in% names(md$do_calibration)) &&
+  all(!is.na(md$do_calibration[c("start_ratio", "end_ratio")]))
+# nolint start: indentation_linter
+calibration_text <- ifelse(
+  has_ratios,
+  paste0("DO calibration ratios (start, end): ",
+         round(md$do_calibration$start_ratio, 3), ", ",
+         round(md$do_calibration$end_ratio, 3), "\n"),
+  "")
+# nolint end
+
 ```
 
 ---
@@ -178,9 +191,7 @@ Percent (and number) immediate rejection: `r md$pct_immediate_rejection`
 (`r n_ir`)  
 Percent (and number) flagged for review: `r md$pct_flagged_for_review`
 (`r n_to_review`)  
-DO calibration ratios (start, end): 
-`r round(md$do_calibration$start_ratio, 3)`, 
-`r round(md$do_calibration$end_ratio, 3)`   
+`r calibration_text`
 Input path: `r data_path`  
 
 ## Dissolved Oxygen

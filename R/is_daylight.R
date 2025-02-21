@@ -10,7 +10,7 @@
 #' that timezone correctly set in the object.
 #' @export
 is_daylight <- function(dt, lat, lon, tz) {
-  utc <- apply_timezone(dt, tz)
+  utc <- apply_timezone(dt, tz) # nolint: object_usage_linter
   daytime <- rep(FALSE, length(dt))
 
   # All the dates in the interval

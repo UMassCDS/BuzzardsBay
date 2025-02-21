@@ -41,7 +41,7 @@ plot_tide_sun <- function(d, station, lat, lon, tz) {
   # which still represent the local time.
 
   tide_sun  <- data.frame(Date_Time = sort(unique(d$Date_Time)))
-  tide_sun$utc <- apply_timezone(tide_sun$Date_Time, tz)
+  tide_sun$utc <- apply_timezone(tide_sun$Date_Time, tz) # nolint
 
 
   tide_sun$Tide_Height <- get_tide_height(tide_sun$utc, station = station)
