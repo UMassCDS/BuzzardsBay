@@ -23,49 +23,48 @@
 
 
   paths <- lookup_site_paths(site_dir)
-  qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                        # Read QC file for each deployment
-  cols <- get_expected_columns('qc_final')                                        # get expected column names; we'll dump the rest
+  qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                            # Read QC file for each deployment
+  cols <- get_expected_columns('qc_final')                                            # get expected column names; we'll dump the rest
   new_cols <- c('Waterbody', 'WPP_station_identifier', 'Latitude', 'Longitude',
                 'Depth', 'Unique_ID', 'Julian_Date', 'Automatic_Flags', 'Exclude')
   all_cols <- unique(c(cols, new_cols))
-  wpp_cols <- cols                                                                # can change cols for WPP if wanted; at the moment, it's all columns
+  wpp_cols <- cols                                                                    # can change cols for WPP if wanted; at the moment, it's all columns
   core_cols <- c('Site', 'Depth', 'Unique_ID', 'Date_Time', 'Julian_Date',
                  'Temp_CondLog', 'DO', 'DO_Pct_Sat', 'Salinity', 'High_Range',
-                 'QA_Comment', 'Field_Comment')                                   # columns to include in core file
+                 'QA_Comment', 'Field_Comment')                                       # columns to include in core file
 
-  t <- basename(paths$deployments$QCpath)                                         # pull deployment names out of paths
+  t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
   deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
 
-  for(i in 1:length(qc)) {                                                        # clean up data: for each deployment,
-    qc[[i]] <- qc[[i]][, cols]                                                    #    get the columns we want and drop the junk
-    t <- as.POSIXct(format_csv_date_time(qc[[i]]$Date_Time, format = 'datetime'), tz = 'UTC')
-    qc[[i]]$Date <- format(t, format = '%Y-%m-%d')                                #    reformat dates and dates/times that may have been damaged by Excel
-    qc[[i]]$Date_Time <- format(t, format = '%Y-%m-%d %H:%M:%S')
+  for(i in 1:length(qc)) {                                                            # clean up data: for each deployment,
+    qc[[i]] <- qc[[i]][, cols]                                                        #    get the columns we want and drop the junk
+    qc[[i]]$Date_Time <- format_csv_date_time(qc[[i]]$Date_Time, format = 'character')#    reformat dates and dates/times that may have been damaged by Excel
+    qc[[i]]$Date <- substring(qc[[i]]$Date_Time, regexpr('\\d{4}-\\d{2}-\\d{2}', qc[[i]]$Date_Time), 10)
   }
 
   site <- qc[[1]]$Site[1]
   z <- qc[[1]]
 
-  if(length(qc) > 1)                                                              # if we have more than one deployment in season,
-    for(i in 1:(length(qc) - 1)) {                                                #    Fill gaps: for each pair of deployments,
-      x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))          #       date of tail of first deployment in pair, head of second one
-      x <- as.POSIXct(x)                                                          #       dates to POSIX
-      gap <- interval(x[1], x[2]) / dminutes(1)                                   #       gap to fill, in minutes
-      m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min      #       logging interval of first deployment in pair (min)
-      need <- ceiling(gap / m) - 1                                                #       how many dates do we need to interpolate?
-      fill <- x[1] + dminutes(1:need * m)                                         #       here are our interpolated times
-      fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                          #       formatted in the final form
+  if(length(qc) > 1)                                                                  # if we have more than one deployment in season,
+    for(i in 1:(length(qc) - 1)) {                                                    #    Fill gaps: for each pair of deployments,
+      x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))              #       date of tail of first deployment in pair, head of second one
+      x <- as.POSIXct(x)                                                              #       dates to POSIX
+      gap <- interval(x[1], x[2]) / dminutes(1)                                       #       gap to fill, in minutes
+      m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min          #       logging interval of first deployment in pair (min)
+      need <- ceiling(gap / m) - 1                                                    #       how many dates do we need to interpolate?
+      fill <- x[1] + dminutes(1:need * m)                                             #       here are our interpolated times
+      fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                              #       formatted in the final form
 
-      y <- data.frame(matrix('#N/A', length(fill), length(cols)))                 #       create data frame to fill the gap, with Site, Date, and Date_Time, all others #N/A
+      y <- data.frame(matrix('#N/A', length(fill), length(cols)))                     #       create data frame to fill the gap, with Site, Date, and Date_Time, all others #N/A
       names(y) <- cols
       y$Site <- site
       y$Date <- format(date(fill), format = '%Y-%m-%d')
       y$Date_Time <- fill
       y$Time <- sub('\\d{4}-\\d{2}-\\d{2} ', '', fill)
 
-      z <- rbind(z, y, qc[[i + 1]])                                               #       build up result: what we've already got, gap fill, and second deployment of pair
+      z <- rbind(z, y, qc[[i + 1]])                                                   #       build up result: what we've already got, gap fill, and second deployment of pair
 
-      if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                #       warn if there's a large gap between deployments
+      if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                    #       warn if there's a large gap between deployments
         cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
     }
 
@@ -92,8 +91,8 @@
   write.csv(z[, core_cols], file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
 
   x <- paths$deployments$QCpath
-  x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                         # pull relative paths for QC files
-  hash <- data.frame(QC = x, hash = paths$deployments$hash)                     # write hashes
+  x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files
+  hash <- data.frame(QC = x, hash = paths$deployments$hash)                           # write hashes
   write.table(hash, file = file.path(site_dir, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
   cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
