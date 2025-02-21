@@ -12,23 +12,19 @@ stitch_site(site_dir, max_gap = 1)
 \item{max_gap}{Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded}
 }
 \description{
-Merges all QCed deployments for the specified site and year and writes result files. Missing dates and
-times are interpolated, with a warning for gaps that are suspiciously large. Data that are out range for
-their sensor are flagged. Writes three versions of the data file for the complete season, daily stats,
-and hash files for use by \code{check_site}.
+Merges all QCed deployments for the specified site and year and writes result files. Missing
+dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
+that are out range for their sensor are flagged. Writes three versions of the data file for the
+complete season, and hash files for use by \code{check_site}.
 }
 \details{
 Three versions of the data file are written:
 \enumerate{
-\item archive.csv - contains all columns, for complete archival.
-\item share.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file).
-\item core - just the good stuff. This is the file used for producing summaries and reports.
+\item archive_\if{html}{\out{<site>}}_\if{html}{\out{<year>}}.csv - contains all columns, for complete archival.
+\item WPP_\if{html}{\out{<site>}}_\if{html}{\out{<year>}}.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file).
+\item core_\if{html}{\out{<site>}}_\if{html}{\out{<year>}} - just the good stuff. This is the file used for producing summaries and reports.
 }
 
-Two additional files are written:
-\enumerate{
-\item daily_stats.csv - a file with a row for each day of the season with several summary statistics.
-\item hash.txt - a file for internal use by \code{check_site}, this tab-delimited file lists full paths to deployment files and
-md5 hashes.
-}
+An additional file is written for internal use by \code{check_site}:
+2. hash.txt - a tab-delimited file lists paths to deployment files and md5 hashes.
 }

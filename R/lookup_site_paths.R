@@ -10,7 +10,6 @@
   #' \item{deployments}{A data frame with a row for each deployment, and columns `date`, `QCpath`, `md_path`, and `hash`,
   #' containing the date for each deployment, the full path to the final QCed data, the full path to the deployment metadata
   #' file, and the md5 hash of the QCed data file.}
-  #' @export
 
 
 
