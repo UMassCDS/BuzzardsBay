@@ -81,6 +81,6 @@ format_csv_date_time <- function(x, format = "datetime") {
   if (format == "datetime")
     return(dates)
   if (format == "character")
-    return(as.character(dates))
+    return(format(dates, format = "%Y-%m-%d %T"))
   stop("Unrecognized format argument")
 }
