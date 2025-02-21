@@ -196,3 +196,10 @@ test_that("man/qc_deployment() works with MX801 data", {
   expect_length(res3$md$cond_calibration$temperature, n_cond)
 
 })
+
+test_that("qc_deployment() works with import type 0 (CSV)", {
+  example_paths <- local_example_dir(site_filter = "SIM",
+                                     year_filter = 2025)
+  deployment_dir <- example_paths$deployment
+  qc_deployment(deployment_dir)
+})

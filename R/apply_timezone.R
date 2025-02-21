@@ -36,6 +36,7 @@
 #' zone e.g. "EDT" as appears in other calibrated files.
 #' @return A date time object in with a defined timezone that together locates
 #' the observations correctly in time (but may not be in the local timezone).
+#' @keywords internal
 apply_timezone <- function(dt, tz) {
 
   # I've been storing the time as a date time string without any timezone,

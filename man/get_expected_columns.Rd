@@ -8,10 +8,10 @@ get_expected_columns(type, existing = character(0))
 }
 \arguments{
 \item{type}{What type (point along the data pipeline) are the names for,
-currenttly one of
+currently one of
 \itemize{
 \item \code{calibration}  output from \code{import_calibrated_data()}
-\item \code{intermediate}  intermediate in QC proces this includes the individual
+\item \code{intermediate}  intermediate in QC process this includes the individual
 flag columns.
 \item \code{qc_final}  output from \code{qc_deployment()}
 }}
@@ -30,7 +30,7 @@ set in the \code{expected_columns}  list object.
 }
 \details{
 At each step in the process there are both required and optional names
-this function handles the fuzzyness between those two - returning a final
+this function handles the fuzziness between those two - returning a final
 set of column names, in canonical order.
 
 This function uses lists of column names defined separately in

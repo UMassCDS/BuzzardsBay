@@ -6,16 +6,16 @@
 #' set in the `expected_columns`  list object.
 #'
 #' At each step in the process there are both required and optional names
-#' this function handles the fuzzyness between those two - returning a final
+#' this function handles the fuzziness between those two - returning a final
 #' set of column names, in canonical order.
 #'
 #' This function uses lists of column names defined separately in
 #' `R/expected_column_names.R` edit that list to change the output.
 #'
 #' @param type What type (point along the data pipeline) are the names for,
-#' currenttly one of
+#' currently one of
 #' * `calibration`  output from `import_calibrated_data()`
-#' * `intermediate`  intermediate in QC proces this includes the individual
+#' * `intermediate`  intermediate in QC process this includes the individual
 #'    flag columns.
 #' * `qc_final`  output from `qc_deployment()`
 #' @param existing A vector of existing column names. This is used to determine
@@ -25,7 +25,7 @@
 #' @keywords internal
 get_expected_columns <- function(type, existing = character(0)) {
 
-  if(!type %in% names(expected_column_names))
+  if (!type %in% names(expected_column_names))
     stop(type, " is not a valid type for get_expeected_columns()")
 
   # Expected cols includes a few that are optional

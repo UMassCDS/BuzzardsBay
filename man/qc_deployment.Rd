@@ -27,9 +27,11 @@ A list with items:
 \item Read the calibrated dissolved oxygen and conductivity files created by
 HOBOware.
 \item Read and parse the associated Details files into nested lists.
-\item Reformat and merge the datafiles.
+\item Reformat and merge the data files.
 \item Add automatic flags, and create columns for manual QC
 \item Write the data and metadata.
+\item If \code{report = TRUE} it will call \code{\link[=make_deployment_report]{make_deployment_report()}} to make
+and interactive HTML report with plots for QAQC.
 }
 }
 \details{
@@ -37,12 +39,12 @@ HOBOware.
 \href{https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU/edit#heading=h.s6vs4d7vj0cn}{file structure}.
 }
 \note{
-Input files are looked for within \code{file.path(dir, "Calibration")}
-using a heuristic that assumes the detail files end in \code{"Details.txt"}; the
-data files end in \code{".csv"}; the dissolved oxygen files have \code{"DO_"};
-the Salinity/Conductivity files have either \code{"Cond_"}, \code{"Con_"} or \verb{"Sal_}
-in the name; and that there is only one of each kind of file - four files
-total.
+\code{qc_deployment()} calls \code{\link[=import_calibrated_data]{import_calibrated_data()}} which currently supports
+three completely different import functions.  See \code{\link[=import_calibrated_data]{import_calibrated_data()}}
+for documentation on the data formats they each expect.
+
+In all cases input files are looked for within a \code{Calibration} sub directory
+to the deployment directory (\code{dir}).
 }
 \examples{
 \dontrun{
