@@ -1,3 +1,8 @@
+# BuzzardsBay 0.1.0.9016
+
+Fixed bug in `format_csv_date_time()` that caused it to drop the time component
+at midnight.  E.g. "8/7/2024 0:00" became "2024-08-07".  
+
 # BuzzardsBay 0.1.0.9015
 
 ### CSV Import
