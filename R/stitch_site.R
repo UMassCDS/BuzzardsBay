@@ -17,12 +17,15 @@
   #'
   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
-  #' @import lubridate
+  #' @importFrom lubridate interval dminutes date duration dhours
   #' @export
 
 
 
-  paths <- lookup_site_paths(site_dir)
+  paths <- lookup_site_paths(site_dir, warn = TRUE)
+  if(dim(paths$deployments)[1] == 0)
+    stop(paste0('There are no valid deployments (both QC and Metadata files) for ', site_dir))
+
   qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                            # Read QC file for each deployment
   cols <- get_expected_columns('qc_final')                                            # get expected column names; we'll dump the rest
   new_cols <- c('Waterbody', 'WPP_station_identifier', 'Latitude', 'Longitude',

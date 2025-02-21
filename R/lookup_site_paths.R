@@ -1,10 +1,11 @@
-'lookup_site_paths' <- function(site_dir) {
+'lookup_site_paths' <- function(site_dir, warn = FALSE) {
 
   #' Look up paths for a specified site
   #'
   #' Find and return paths to all depolyment directories, metadata files, and final QC files for selected year and site.
   #'
-  #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results.
+  #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`); this path must include QCed results
+  #' @param warn If TRUE, chatter on missing files and just drop them; otherwise throw an error
   #' @return A named list consisting of:
   #' \item{sites}{The full path to the site info table}
   #' \item{deployments}{A data frame with a row for each deployment, and columns `date`, `QCpath`, `md_path`, and `hash`,
@@ -28,8 +29,19 @@
   md <- sort(file.path(site_dir, deploy, paste0('Metadata_', site, '_', deploy, '.yml')))
   z$deployments <- data.frame(date = deploy, QCpath = qc, mdpath = md)
 
-  if(any(t <- !file.exists(f <- unlist(z$deployments[, c('QCpath', 'mdpath')]))))
-    stop(paste0('Missing deployment files: ', f[t], collapse = ', '))
+
+  t <- !cbind(file.exists(z$deployments$QCpath),
+              file.exists(z$deployments$mdpath))                          # check for missing files
+  if(any(t)) {
+    m <- paste0('Missing deployment files: ', basename(c(z$deployments$QCpath[t[, 1]], z$deployments$mdpath[t[, 2]])), collapse = ', ')
+    if(warn) {                                                            # if warn,
+      z$deployments <- z$deployments[!t[, 1] | t[, 2], ]                  #    drop offending rows and whine
+      cat('Note: ', m, '\n', sep = '')
+    }
+    else                                                                  #else, throw an error
+      stop(m)
+  }
+
 
   for(i in 1:dim(z$deployments)[1]) {                                     # now get hashes of QC files. For each file,
     x <- readr::read_file(z$deployments$QCpath[i])
