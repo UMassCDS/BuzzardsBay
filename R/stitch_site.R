@@ -17,7 +17,7 @@
   #'
   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
-  #' @importFrom lubridate interval dminutes date duration dhours
+  #' @importFrom lubridate interval dminutes date duration dhours year yday
   #' @export
 
 
@@ -27,24 +27,18 @@
     stop(paste0('There are no valid deployments (both QC and Metadata files) for ', site_dir))
 
   qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                            # Read QC file for each deployment
-  cols <- get_expected_columns('qc_final')                                            # get expected column names; we'll dump the rest
-  # new_cols <- c('Waterbody', 'WPP_station_identifier', 'Latitude', 'Longitude',
-  #               'Depth', 'Unique_ID', 'Julian_Date', 'Automatic_Flags', 'Exclude')
-  all_cols <- c('Waterbody', 'WPP_Station_Identifier', 'Site',
-                            'Latitude', 'Longitude', 'Depth', 'Unique_ID',
-                            'Date', 'Date_Time', 'Julian_Date', 'Gen_QC', 'Flags',
-                            'Time', 'Time_QC', 'Temp_DOLog', 'Temp_DOLog_QC', 'Temp_CondLog', 'Temp_CondLog_QC', 'Raw_DO', 'Raw_DO_QC', 'DO', 'DO_QC', 'DO_Calibration_QC', 'DO_Pct_Sat', 'DO_Pct_Sat_QC', 'Salinity', 'Salinity_QC', 'Sal_Calibration_QC', 'High_Range', 'High_Range_QC', 'Spec_Cond', 'Spec_Cond_QC', 'Cal', 'QA_Comment', 'Field_Comment', 'Exclude')
 
-  wpp_cols <- cols                                                                    # can change cols for WPP if wanted; at the moment, it's all columns
-  core_cols <- c('Site', 'Depth', 'Unique_ID', 'Date_Time', 'Julian_Date',
-                 'Temp_CondLog', 'DO', 'DO_Pct_Sat', 'Salinity', 'High_Range',
-                 'QA_Comment', 'Field_Comment')                                       # columns to include in core file
+  all_cols <- get_expected_columns('final_all')                                       # get canonical columns in the right order
+  wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
+  core_cols <- get_expected_columns('final_core')
 
   t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
   deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
 
   for(i in 1:length(qc)) {                                                            # clean up data: for each deployment,
-    qc[[i]] <- qc[[i]][, cols]                                                        #    get the columns we want and drop the junk
+    qc[[i]][, all_cols[!all_cols %in% names(qc[[i]])]] <- NA                          #    add missing required columns
+    qc[[i]] <- qc[[i]][, all_cols]                                                    #    get the columns we want in canonical order and drop the junk
+
     qc[[i]]$Date_Time <- format_csv_date_time(qc[[i]]$Date_Time, format = 'character')#    reformat dates and dates/times that may have been damaged by Excel
     qc[[i]]$Date <- substring(qc[[i]]$Date_Time, regexpr('\\d{4}-\\d{2}-\\d{2}', qc[[i]]$Date_Time), 10)
   }
@@ -62,8 +56,8 @@
       fill <- x[1] + dminutes(1:need * m)                                             #       here are our interpolated times
       fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                              #       formatted in the final form
 
-      y <- data.frame(matrix('#N/A', length(fill), length(cols)))                     #       create data frame to fill the gap, with Site, Date, and Date_Time, all others #N/A
-      names(y) <- cols
+      y <- data.frame(matrix(NA, length(fill), length(all_cols)))                     #       create data frame to fill the gap, with Site, Date, and Date_Time, all others NA
+      names(y) <- all_cols
       y$Site <- site
       y$Date <- format(date(fill), format = '%Y-%m-%d')
       y$Date_Time <- fill
@@ -75,33 +69,35 @@
         cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
     }
 
+
   #Add additional columns and put everything in the right order
 
-  # insert Latitude and Longitude, other columns? *******************************************************************************************************************
-  z$Waterbody <- 123456                 # pull this out of somewhere...not in sites file; ask COMBB to add to sites file
-  z$WPP_Station_Identifier <- 123456    #   "
-  z$Latitude <- 123456                  # if not present, pull from inst/extdata/sites.csv
-  z$Longitude <- 123456                 #   "
-  # if(is.null(z$Depth))
-  #   z$Depth <- NA           # NA if not present - no, create new columns en masse
+  x <- read.csv('inst/extdata/sites.csv')                                             #       insert site-level columns from sites.csv
+  z$Waterbody <- 123456                 #  ----------------------------ask COMBB to add this to sites file------------------------------
+  z$WPP_Station_Identifier <- 123456    #  ---------------------------- "                                 ------------------------------
+
+  if(all(is.na(z$Latitude)))                                                          #       If lat/long aren't present, pull from sites file - only if all missing
+  z$Latitude <- x$latitude[x$site == site]
+  if(all(is.na(z$Longitude)))
+    z$Longitude <- x$longitude[x$site == site]
+
   z$Unique_ID <- 1:dim(z)[1]                                                          #       unique ID is simply row number
   z$Julian_Date <- yday(z$Date)                                                       #       Julian date, really day in year
-  z$Automatic_Flags <- 123456           # ~~~~~~~~~~ is really just Flags ~~~~~~~~~~~
+
   z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
-
-
 
 
   # check for values outside of calibration ranges  *** waiting for ranges from COMBBers ****************************************************************************
 
+
   # write three versions of data file
-  write.csv(z, file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
+  write.csv(z, file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '#N/A')
 
   # replace rejected values with DR  ********************************************************************************************************************************
   # See Deployment Data Info, tab 4 QC Codes. Rejection column based on Gen_QC. 'DR' for columns with sensor metrics.
 
-  write.csv(z[, wpp_cols], file = file.path(site_dir, paste0('WPP_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
-  write.csv(z[, core_cols], file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
+  write.csv(z[, wpp_cols], file = file.path(site_dir, paste0('WPP_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '#N/A')
+  write.csv(z[, core_cols], file = file.path(site_dir, paste0('core_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
 
   x <- paths$deployments$QCpath
   x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files
