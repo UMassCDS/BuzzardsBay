@@ -65,8 +65,66 @@ expected_column_names <- list(
                       "Longitude", # optional
                       "Depth",     # optional
                       "QA_Comment",
-                      "Field_Comment"))
+                      "Field_Comment"),
+
+
+  final_all = c("Waterbody",                              # This is the full set of final columns, used in the archive result file
+                "WPP_Station_Identifier",
+                "Site",
+                "Latitude",
+                "Longitude",
+                "Depth",
+                "Unique_ID",
+                "Date",
+                "Date_Time",
+                "Julian_Date",
+                "Gen_QC",
+                "Flags",
+                "Time",
+                "Time_QC",
+                "Temp_DOLog",
+                "Temp_DOLog_QC",
+                "Temp_CondLog",
+                "Temp_CondLog_QC",
+                "Raw_DO",
+                "Raw_DO_QC",
+                "DO",
+                "DO_QC",
+                "DO_Calibration_QC",
+                "DO_Pct_Sat",
+                "DO_Pct_Sat_QC",
+                "Salinity",
+                "Salinity_QC",
+                "Sal_Calibration_QC",
+                "High_Range",
+                "High_Range_QC",
+                "Spec_Cond",
+                "Spec_Cond_QC",
+                "Cal",
+                "QA_Comment",
+                "Field_Comment",
+                "Exclude"),
+
+  final_WPP = NULL,                                     # WPP has the same columns as the archive result file, though this could change
+
+
+  final_core = c("Site",                                # the core result file has a nice concise list
+                 "Depth",
+                 "Unique_ID",
+                 "Date_Time",
+                 "Julian_Date",
+                 "Temp_CondLog",
+                 "DO",
+                 "DO_Pct_Sat",
+                 "Salinity",
+                 "High_Range",
+                 "QA_Comment",
+                 "Field_Comment")
+    )
 # nolint end
+
+expected_column_names$final_WPP <- expected_column_names$final_all    # final_WPP the same as final_all for now
+
 
 # Set final QC data columns as a subset of the intermediate columns
 # Drop individual flags, and DO Logger salinity

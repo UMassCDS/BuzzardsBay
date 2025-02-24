@@ -10,10 +10,13 @@ get_expected_columns(type, existing = character(0))
 \item{type}{What type (point along the data pipeline) are the names for,
 currently one of
 \itemize{
-\item \code{calibration}  output from \code{import_calibrated_data()}
+\item \code{calibrated}  output from \code{import_calibrated_data()}
 \item \code{intermediate}  intermediate in QC process this includes the individual
-flag columns.
+flag columns
 \item \code{qc_final}  output from \code{qc_deployment()}
+\item \code{final_all} complete set of columns in final files, used for archive result file
+\item \code{final_WPP} columns in the WPP result file
+\item \code{final_core} columns in the core result file
 }}
 
 \item{existing}{A vector of existing column names. This is used to determine
@@ -25,8 +28,8 @@ that are present) in canonical order.
 }
 \description{
 \code{get_expected_columns()} looks up the column names and order expected at
-different points in the data pipeline.  The columns them selves are
-set in the \code{expected_columns}  list object.
+different points in the data pipeline.  The columns themselves are
+set in the \code{expected_columns} list object.
 }
 \details{
 At each step in the process there are both required and optional names
@@ -34,6 +37,8 @@ this function handles the fuzziness between those two - returning a final
 set of column names, in canonical order.
 
 This function uses lists of column names defined separately in
-\code{R/expected_column_names.R} edit that list to change the output.
+\code{R/expected_column_names.R}. Edit that list to change the output.
+
+Note that there are no optional names for the three \verb{final_*} result files.
 }
 \keyword{internal}
