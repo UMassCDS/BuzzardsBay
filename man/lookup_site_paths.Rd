@@ -4,10 +4,12 @@
 \alias{lookup_site_paths}
 \title{Look up paths for a specified site}
 \usage{
-lookup_site_paths(site_dir)
+lookup_site_paths(site_dir, warn = FALSE)
 }
 \arguments{
-\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results.}
+\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}); this path must include QCed results}
+
+\item{warn}{If TRUE, chatter on missing files and just drop them; otherwise throw an error}
 }
 \value{
 A named list consisting of:

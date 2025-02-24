@@ -28,9 +28,13 @@
 
   qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                            # Read QC file for each deployment
   cols <- get_expected_columns('qc_final')                                            # get expected column names; we'll dump the rest
-  new_cols <- c('Waterbody', 'WPP_station_identifier', 'Latitude', 'Longitude',
-                'Depth', 'Unique_ID', 'Julian_Date', 'Automatic_Flags', 'Exclude')
-  all_cols <- unique(c(cols, new_cols))
+  # new_cols <- c('Waterbody', 'WPP_station_identifier', 'Latitude', 'Longitude',
+  #               'Depth', 'Unique_ID', 'Julian_Date', 'Automatic_Flags', 'Exclude')
+  all_cols <- c('Waterbody', 'WPP_Station_Identifier', 'Site',
+                            'Latitude', 'Longitude', 'Depth', 'Unique_ID',
+                            'Date', 'Date_Time', 'Julian_Date', 'Gen_QC', 'Flags',
+                            'Time', 'Time_QC', 'Temp_DOLog', 'Temp_DOLog_QC', 'Temp_CondLog', 'Temp_CondLog_QC', 'Raw_DO', 'Raw_DO_QC', 'DO', 'DO_QC', 'DO_Calibration_QC', 'DO_Pct_Sat', 'DO_Pct_Sat_QC', 'Salinity', 'Salinity_QC', 'Sal_Calibration_QC', 'High_Range', 'High_Range_QC', 'Spec_Cond', 'Spec_Cond_QC', 'Cal', 'QA_Comment', 'Field_Comment', 'Exclude')
+
   wpp_cols <- cols                                                                    # can change cols for WPP if wanted; at the moment, it's all columns
   core_cols <- c('Site', 'Depth', 'Unique_ID', 'Date_Time', 'Julian_Date',
                  'Temp_CondLog', 'DO', 'DO_Pct_Sat', 'Salinity', 'High_Range',
@@ -71,16 +75,22 @@
         cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
     }
 
+  #Add additional columns and put everything in the right order
+
   # insert Latitude and Longitude, other columns? *******************************************************************************************************************
   z$Waterbody <- 123456                 # pull this out of somewhere...not in sites file; ask COMBB to add to sites file
-  z$WPP_station_identifier <- 123456    #   "
+  z$WPP_Station_Identifier <- 123456    #   "
   z$Latitude <- 123456                  # if not present, pull from inst/extdata/sites.csv
   z$Longitude <- 123456                 #   "
-  z$Depth <- 123456                     # NA if not present
-  z$Unique_ID <- 123456                 # generate row numbers
-  z$Julian_Date <- 123456               # generate this
+  # if(is.null(z$Depth))
+  #   z$Depth <- NA           # NA if not present - no, create new columns en masse
+  z$Unique_ID <- 1:dim(z)[1]                                                          #       unique ID is simply row number
+  z$Julian_Date <- yday(z$Date)                                                       #       Julian date, really day in year
   z$Automatic_Flags <- 123456           # ~~~~~~~~~~ is really just Flags ~~~~~~~~~~~
   z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
+
+
+
 
   # check for values outside of calibration ranges  *** waiting for ranges from COMBBers ****************************************************************************
 
