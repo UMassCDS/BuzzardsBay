@@ -31,6 +31,7 @@
   all_cols <- get_expected_columns('final_all')                                       # get canonical columns in the right order
   wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
   core_cols <- get_expected_columns('final_core')
+  sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
 
   t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
   deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
@@ -72,32 +73,54 @@
 
   #Add additional columns and put everything in the right order
 
-  x <- read.csv('inst/extdata/sites.csv')                                             #       insert site-level columns from sites.csv
+  x <- read.csv('inst/extdata/sites.csv')                                             # insert site-level columns from sites.csv
   z$Waterbody <- 123456                 #  ----------------------------ask COMBB to add this to sites file------------------------------
   z$WPP_Station_Identifier <- 123456    #  ---------------------------- "                                 ------------------------------
 
-  if(all(is.na(z$Latitude)))                                                          #       If lat/long aren't present, pull from sites file - only if all missing
+  if(all(is.na(z$Latitude)))                                                          # If lat/long aren't present, pull from sites file - only if all missing
   z$Latitude <- x$latitude[x$site == site]
   if(all(is.na(z$Longitude)))
     z$Longitude <- x$longitude[x$site == site]
 
-  z$Unique_ID <- 1:dim(z)[1]                                                          #       unique ID is simply row number
-  z$Julian_Date <- yday(z$Date)                                                       #       Julian date, really day in year
+  z$Unique_ID <- 1:dim(z)[1]                                                          # unique ID is simply row number
+  z$Julian_Date <- yday(z$Date)                                                       #  Julian date, really day in year
 
-  z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
+
+#  z <<- z; qc_codes <<- qc_codes; return()
+
+
+
+## I think we're dropping Exclude, so need to remove it from expected_column_names
+#  z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
 
 
   # check for values outside of calibration ranges  *** waiting for ranges from COMBBers ****************************************************************************
 
 
+
   # write three versions of data file
-  write.csv(z, file = file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '#N/A')
+  f <- file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
+  write.csv(z, file = f, row.names = FALSE, quote = FALSE, na = '#N/A')               # "archive" result file, with all columns and all data, including rejected values
 
-  # replace rejected values with DR  ********************************************************************************************************************************
-  # See Deployment Data Info, tab 4 QC Codes. Rejection column based on Gen_QC. 'DR' for columns with sensor metrics.
 
-  write.csv(z[, wpp_cols], file = file.path(site_dir, paste0('WPP_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '#N/A')
-  write.csv(z[, core_cols], file = file.path(site_dir, paste0('core_', site, '_', year(z$Date[1]), '.csv')), row.names = FALSE, quote = FALSE, na = '')
+  # now replace rejected values
+  qc_codes <- read.csv('inst/extdata/qc_codes.csv')                                   # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+  r <- qc_codes$Rejection[match(z$Gen_QC, qc_codes$QC_Code)]                          # Gen_QC has rejection code for entire row
+  z[as.logical(r), sensor_cols] <- 'DR'
+
+  for(sensor in sensor_cols) {                                                        # For each sensor column,
+    r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]      #    reject sensor metrics based on individual sensor QC columns
+    z[as.logical(r), sensor] <- 'DR'
+  }
+
+  f <- file.path(site_dir, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))        # "WPP" result file, with all columns, rejected values as "DR"
+  write.csv(z[, wpp_cols], file = f, row.names = FALSE, quote = FALSE, na = '#N/A')
+
+  z[z == 'DR'] <- NA
+  f <- file.path(site_dir, paste0('core_', site, '_', year(z$Date[1]), '.csv'))       # "core" result file, with selected columns, rejected values as NA
+  write.csv(z[, core_cols], file = f, row.names = FALSE, quote = FALSE, na = '')
+
+
 
   x <- paths$deployments$QCpath
   x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files

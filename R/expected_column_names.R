@@ -121,8 +121,7 @@ expected_column_names <- list(
                  "QA_Comment",
                  "Field_Comment"),
 
-  final_sensors = c("Depth",                            # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
-                    "Temp_DOLog",
+  final_sensors = c("Temp_DOLog",                       # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
                     "Temp_CondLog",
                     "Raw_DO",
                     "DO",
