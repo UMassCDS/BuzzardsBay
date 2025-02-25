@@ -76,7 +76,6 @@ parse_mx801_details <- function(file) {
 
   # Convert each row into a string
   text <- apply(d4, 1, function(x) paste(x, collapse = ""))
-  text <- gsub("\n", " ", text) # eliminate internal carriage returns
 
   # Dropping first line ("Details") because it breaks list hierarchy
   text <- text[-1]
@@ -93,18 +92,17 @@ parse_mx801_details <- function(file) {
   next_line_indented[is.na(next_line_indented)] <- FALSE
   ends_in_colon <- grepl(":[[:blank:]]*$", text)
   indentation_problems <-   ends_in_colon & !next_line_indented
-
   # Resolve indentation problems by adding "NA" to end of line.
   text[indentation_problems] <- paste0(text[indentation_problems], "NA")
 
 
-  # Some cells have internal \r carriage returns
+  # Some cells have internal \r or \n carriage returns
   # For those cells we are going to split at the first :
   # and each carriage return and then indent everything but the first
   # item with the indentation of the first item + "  "
-  # basically turning each line into a list item.
+  # This turns each line in the cell into a list item.
 
-  l <- strsplit(text, "\r")
+  l <- strsplit(text, "(\r)|(\n)|(\r\n)")
   multi <- which(unlist(lapply(l, length)) > 1)
   for (i in multi) {
     vect <- l[[i]]

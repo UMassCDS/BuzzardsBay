@@ -14,10 +14,12 @@ currently one of
 \item \code{intermediate}  intermediate in QC process this includes the individual
 flag columns
 \item \code{qc_final}  output from \code{qc_deployment()}
-\item \code{final_all} complete set of columns in final files, used for archive result file
+\item \code{final_all} complete set of columns in final files, used for archive
+result file
 \item \code{final_WPP} columns in the WPP result file
 \item \code{final_core} columns in the core result file
-\item \code{final_sensors} columns representing sensors WPP result file; may be set to "DR"
+\item \code{final_sensors} columns representing sensors WPP result file; may be set
+to "DR"
 when rejected in QC
 }}
 

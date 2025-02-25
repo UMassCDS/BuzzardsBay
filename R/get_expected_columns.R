@@ -20,10 +20,12 @@
 #' * `intermediate`  intermediate in QC process this includes the individual
 #'    flag columns
 #' * `qc_final`  output from `qc_deployment()`
-#' * `final_all` complete set of columns in final files, used for archive result file
+#' * `final_all` complete set of columns in final files, used for archive
+#'    result file
 #' * `final_WPP` columns in the WPP result file
 #' * `final_core` columns in the core result file
-#' * `final_sensors` columns representing sensors WPP result file; may be set to "DR"
+#' * `final_sensors` columns representing sensors WPP result file; may be set
+#'    to "DR"
 #' when rejected in QC
 #' @param existing A vector of existing column names. This is used to determine
 #' which of the optional column names are present
