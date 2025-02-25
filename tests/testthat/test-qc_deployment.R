@@ -195,6 +195,15 @@ test_that("man/qc_deployment() works with MX801 data", {
   expect_length(res3$md$cond_calibration$measured_cond, n_cond)
   expect_length(res3$md$cond_calibration$temperature, n_cond)
 
+  #----------------------------------------------------------------------------#
+  #  Input file with different internal line endings
+  #----------------------------------------------------------------------------#
+  skip("Skipping extra MX801 test - always skipped.")
+
+  paths4 <-  lookup_paths(deployment_dir = deployment_dirs[4])
+  expect_no_error(res4 <- qc_deployment(paths3$deployment_dir))
+
+
 })
 
 test_that("qc_deployment() works with import type 0 (CSV)", {

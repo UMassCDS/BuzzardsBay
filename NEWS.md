@@ -1,3 +1,16 @@
+# BuzzardsBay 0.1.0.9017
+
+* Documentation edits
+* Added additional options to `get_expected_column_names()` to support 
+  aggregation and analysis modules.
+* Fixed bug in `parse_mx801_details()` so that it works regardless of how the 
+  the carriage returns or new lines within cells are encoded.  It previously 
+  worked with carriage return ("\r") but not new line ("\n").  I expect 
+  the differences in the input files may trace back to whether calibration was
+  done on a mac or PC but that's just a guess.
+  
+
+
 # BuzzardsBay 0.1.0.9016
 
 Fixed bug in `format_csv_date_time()` that caused it to drop the time component
