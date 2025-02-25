@@ -12,7 +12,7 @@
 #' This function uses lists of column names defined separately in
 #' `R/expected_column_names.R`. Edit that list to change the output.
 #'
-#' Note that there are no optional names for the three `final_*` result files.
+#' Note that there are no optional names for the four `final_*` result files.
 #'
 #' @param type What type (point along the data pipeline) are the names for,
 #' currently one of
@@ -23,6 +23,8 @@
 #' * `final_all` complete set of columns in final files, used for archive result file
 #' * `final_WPP` columns in the WPP result file
 #' * `final_core` columns in the core result file
+#' * `final_sensors` columns representing sensors WPP result file; may be set to "DR"
+#' when rejected in QC
 #' @param existing A vector of existing column names. This is used to determine
 #' which of the optional column names are present
 #' @returns A list of the expected names (including only the optional names

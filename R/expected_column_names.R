@@ -108,7 +108,7 @@ expected_column_names <- list(
   final_WPP = NULL,                                     # WPP has the same columns as the archive result file, though this could change
 
 
-  final_core = c("Site",                                # the core result file has a nice concise list
+  final_core = c("Site",                                # A concise subset of columns for the core result file
                  "Depth",
                  "Unique_ID",
                  "Date_Time",
@@ -119,7 +119,17 @@ expected_column_names <- list(
                  "Salinity",
                  "High_Range",
                  "QA_Comment",
-                 "Field_Comment")
+                 "Field_Comment"),
+
+  final_sensors = c("Depth",                            # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
+                    "Temp_DOLog",
+                    "Temp_CondLog",
+                    "Raw_DO",
+                    "DO",
+                    "DO_Pct_Sat",
+                    "Salinity",
+                    "High_Range",
+                    "Spec_Cond")
     )
 # nolint end
 
