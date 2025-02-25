@@ -133,7 +133,8 @@ expected_column_names <- list(
     )
 # nolint end
 
-expected_column_names$final_WPP <- expected_column_names$final_all    # final_WPP the same as final_all for now
+# final_WPP the same as final_all for now
+expected_column_names$final_WPP <- expected_column_names$final_all
 
 
 # Set final QC data columns as a subset of the intermediate columns
