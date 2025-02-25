@@ -17,6 +17,8 @@ flag columns
 \item \code{final_all} complete set of columns in final files, used for archive result file
 \item \code{final_WPP} columns in the WPP result file
 \item \code{final_core} columns in the core result file
+\item \code{final_sensors} columns representing sensors WPP result file; may be set to "DR"
+when rejected in QC
 }}
 
 \item{existing}{A vector of existing column names. This is used to determine
@@ -39,6 +41,6 @@ set of column names, in canonical order.
 This function uses lists of column names defined separately in
 \code{R/expected_column_names.R}. Edit that list to change the output.
 
-Note that there are no optional names for the three \verb{final_*} result files.
+Note that there are no optional names for the four \verb{final_*} result files.
 }
 \keyword{internal}
