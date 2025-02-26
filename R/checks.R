@@ -131,7 +131,7 @@ check_salinity <- function(x, interval = 15, site, sites) {
   #----------------------------------------------------------------------------#
   flag <- rep("", length(x))
   flag[big_jump] <- paste0(flag[big_jump], "Sj:")
-  flag[low_var] <- paste0(flag[big_jump], "Slv:")
+  flag[low_var] <- paste0(flag[low_var], "Slv:")
   flag[low_for_site] <- paste0(flag[low_for_site], "Ssl:")
   flag[high_for_site] <- paste0(flag[high_for_site], "Ssh:")
 

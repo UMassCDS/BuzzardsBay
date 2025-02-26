@@ -31,7 +31,7 @@ test_that("qc_deployment() works with repeated High Range in column name", {
   # "High Range" in the name.
   # The .csv header line looks like this:
   # Date Time,High Range High Range (μS/cm),
-  # Temp (°C)  #21095959,Specific Conductance (μS/cm),Salinity (ppt)
+  # Temp (°C)  #21095959,Specific Conductance (μS/cm),Salinity (ppt) # nolint
 
   paths <- local_example_dir(site_filter = "BD1",
                              deployment_filter = "2024-06-21")
@@ -199,9 +199,8 @@ test_that("man/qc_deployment() works with MX801 data", {
   #  Input file with different internal line endings
   #----------------------------------------------------------------------------#
   skip("Skipping extra MX801 test - always skipped.")
-
   paths4 <-  lookup_paths(deployment_dir = deployment_dirs[4])
-  expect_no_error(res4 <- qc_deployment(paths3$deployment_dir))
+  expect_no_error(res4 <- qc_deployment(paths4$deployment_dir))
 
 
 })
