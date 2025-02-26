@@ -1,0 +1,10 @@
+# hands off Brad's code!
+
+exclusions: list(
+   'R/stitch_site.R',
+   'R/check_site.R',
+   'R/report_site.R',
+   'R/report_site.R',
+   'R/daily_stats.R',
+   'R/seasonal_stats.R'
+  )

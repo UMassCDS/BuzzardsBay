@@ -20,11 +20,13 @@ complete season, and hash files for use by \code{check_site}.
 \details{
 Three versions of the data file are written:
 \enumerate{
-\item archive_\if{html}{\out{<site>}}_\if{html}{\out{<year>}}.csv - contains all columns, for complete archival.
-\item WPP_\if{html}{\out{<site>}}_\if{html}{\out{<year>}}.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file).
-\item core_\if{html}{\out{<site>}}_\if{html}{\out{<year>}} - just the good stuff. This is the file used for producing summaries and reports.
+\item \verb{archive_<site>_<year>.csv} - contains all columns, for complete archival.
+\item \verb{WPP_<site>_<year>.csv} - contains only columns required by MassDEP (a.k.a. the "WPP" file).
+\item \verb{core_<site>_<year>} - just the good stuff. This is the file used for producing summaries and reports.
 }
 
 An additional file is written for internal use by \code{check_site}:
-2. hash.txt - a tab-delimited file lists paths to deployment files and md5 hashes.
+\enumerate{
+\item \code{hash.txt} - a tab-delimited file lists paths to deployment files and md5 hashes.
+}
 }

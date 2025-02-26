@@ -8,16 +8,17 @@
   #' complete season, and hash files for use by `check_site`.
   #'
   #' Three versions of the data file are written:
-  #' 1. archive_<site>_<year>.csv - contains all columns, for complete archival.
-  #' 2. WPP_<site>_<year>.csv - contains only columns required by MassDEP (a.k.a. the "WPP" file).
-  #' 3. core_<site>_<year> - just the good stuff. This is the file used for producing summaries and reports.
+  #' 1. `archive_<site>_<year>.csv` - contains all columns, for complete archival.
+  #' 2. `WPP_<site>_<year>.csv` - contains only columns required by MassDEP (a.k.a. the "WPP" file).
+  #' 3. `core_<site>_<year>` - just the good stuff. This is the file used for producing summaries and reports.
   #'
   #' An additional file is written for internal use by `check_site`:
-  #' 2. hash.txt - a tab-delimited file lists paths to deployment files and md5 hashes.
+  #' 1. `hash.txt` - a tab-delimited file lists paths to deployment files and md5 hashes.
   #'
   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
   #' @importFrom lubridate interval dminutes date duration dhours year yday
+  #' @import utils
   #' @export
 
 
@@ -32,6 +33,8 @@
   wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
   core_cols <- get_expected_columns('final_core')
   sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
+  qc_codes <- read.csv('inst/extdata/qc_codes.csv')                                   # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+
 
   t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
   deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
@@ -86,16 +89,23 @@
   z$Julian_Date <- yday(z$Date)                                                       #  Julian date, really day in year
 
 
-#  z <<- z; qc_codes <<- qc_codes; return()
-
-
-
 ## I think we're dropping Exclude, so need to remove it from expected_column_names
 #  z$Exclude <- 123456                   # TRUE if excluded for any reason (only for 1st 2 files, not core). Pull if any DRs (actually base DR on this)
 
 
   # check for values outside of calibration ranges  *** waiting for ranges from COMBBers ****************************************************************************
 
+  'element' <- function(x, l)                                                         # proper element function that does %in% as in APL
+    Reduce('|', lapply(l, FUN = function(l, x) x == l, x))
+
+  fatal <- qc_codes$QC_Code[qc_codes$Rejection == 3]                                  # check for fatal 9999s (or whatever; it's rejection code 3)
+  if(any(t <- element(z[, c('Gen_QC', paste0(sensor_cols, '_QC'))], fatal), na.rm = TRUE)) {
+    w <- paste(unique(z$Date[apply(t, 1, FUN = any, na.rm = TRUE)]), collapse = ', ')
+    s <- sum(t, na.rm = TRUE)
+    p <- ifelse(s > 1, 's ', ' ')
+    fatal2 <- paste(fatal, collapse = ', ')
+    stop(paste0('QC code', ifelse(length(fatal) > 1, 's ', ' '), fatal2, ' found in ', s, ' place', p, 'on date', p, w, '. Review and edit the deployments before rerunning.'))
+  }
 
 
   # write three versions of data file
@@ -104,7 +114,6 @@
 
 
   # now replace rejected values
-  qc_codes <- read.csv('inst/extdata/qc_codes.csv')                                   # read QC rejection codes (see inst/extdata/README_QC_codes.md)
   r <- qc_codes$Rejection[match(z$Gen_QC, qc_codes$QC_Code)]                          # Gen_QC has rejection code for entire row
   z[as.logical(r), sensor_cols] <- 'DR'
 

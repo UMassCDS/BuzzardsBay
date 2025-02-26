@@ -16,14 +16,17 @@
 
   hash <- read.table(f, sep = '\t', header = TRUE)                        # read hash table from previous run
 
+
   paths <- lookup_site_paths(site_dir, warn = TRUE)                       # and get hashes for current files
   if(dim(paths$deployments)[1] == 0)
     stop(paste0('There are no valid deployments (both QC and Metadata files) for ', site_dir))
+
 
   m <- match(basename(hash$QC), basename(paths$deployments$QCpath))       # match deployment QC files
   if(any(is.na(m)))
     stop(paste0('Missing deployment files: ',
                 paste0(basename(paths$deployments$QCpath)[is.na(m)], collapse = ', ')))
+
 
   ok <- paths$deployments$hash[m] == hash$hash                            # are hashes the same?
   if(all(ok))

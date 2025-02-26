@@ -1,14 +1,15 @@
 QC_Code,Rejection,Description
-9999,NA,Placeholder created by automatic QC to indicate that there is an issue that needs review. Should not exisit in final data. Throw error if found.
+9999,3,Placeholder created by automatic QC to indicate that there is an issue that needs review. Should not exisit in final data. Throw error if found.
+9,1,Immediate rejection by automatic QC.
 1,0,Timepoint of calibration
 3,1,Value reviewed then confirmed (see comment fields for any details)
-4,0,"Flagged as an unusual value, see comments about possible reasons if given. *** WAS MARKED AS ?; RESOLVE ***"
-7,0,Data below method detection limits. Changed data to BDL. *** WAS MARKED AS ?; RESOLVE ***
+4,0,"Flagged as an unusual value, see comments about possible reasons if given."
+7,0,Data below method detection limits. Changed data to BDL.
 9,1,Confirmed bad value; omit value from calculations and graphs (look for explanation in comment field). Could be based on Automatic QC or human decision.
 90,1,Data affected by fouling that was observed visually (use in conjunction with 9)
 91,1,Logger out of water (based on data analysis and collector’s notes)
 11,0,End of deployment for data logger under GEN_QC
 12,0,Start of deployment for data logger under GEN_QC
 13,0,Estimated salinity substituted for missing field conductivity/salinity - based on nearby stations and historical data.
-14,0,For situation in which Salinity datapoint was rejected but associated adjusted DO was accepted
+14,2,For situation in which Salinity datapoint was rejected but associated adjusted DO was accepted
 NA,0,No Gen_QC code; data are accepted

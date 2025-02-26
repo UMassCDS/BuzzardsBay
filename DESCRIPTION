@@ -22,8 +22,8 @@ Imports:
     slider,
     suncalc,
     yaml,
-    digest,
-    readr
+    digest, 
+    utils
 Encoding: UTF-8
 Language: en-US
 LazyData: true
