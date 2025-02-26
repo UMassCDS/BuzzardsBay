@@ -5,7 +5,7 @@
 
 
 expected_column_names <- list(
-# nolint start: indentation_linter
+  # nolint start: indentation_linter
   calibrated =
     c("Date_Time",
       "Raw_DO",
@@ -117,11 +117,10 @@ expected_column_names <- list(
                  "DO",
                  "DO_Pct_Sat",
                  "Salinity",
-                 "High_Range",
-                 "QA_Comment",
-                 "Field_Comment"),
+                 "High_Range"),
 
-  final_sensors = c("Temp_DOLog",                       # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
+  final_sensors = c("Depth",                            # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
+                    "Temp_DOLog",
                     "Temp_CondLog",
                     "Raw_DO",
                     "DO",
@@ -129,7 +128,7 @@ expected_column_names <- list(
                     "Salinity",
                     "High_Range",
                     "Spec_Cond")
-    )
+)
 # nolint end
 
 expected_column_names$final_WPP <- expected_column_names$final_all    # final_WPP the same as final_all for now

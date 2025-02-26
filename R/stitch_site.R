@@ -7,7 +7,7 @@
   #' that are out range for their sensor are flagged. Writes three versions of the data file for the
   #' complete season, and hash files for use by `check_site`.
   #'
-  #' Three versions of the data file are written:
+  #' Three versions of the data file are written to <site_dir>/combined/:
   #' 1. `archive_<site>_<year>.csv` - contains all columns, for complete archival.
   #' 2. `WPP_<site>_<year>.csv` - contains only columns required by MassDEP (a.k.a. the "WPP" file).
   #' 3. `core_<site>_<year>` - just the good stuff. This is the file used for producing summaries and reports.
@@ -109,7 +109,11 @@
 
 
   # write three versions of data file
-  f <- file.path(site_dir, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
+
+  if(!dir.exists(rpath <- file.path(site_dir, 'combined')))                           # create result combined/ directory
+    dir.create(rpath)
+
+  f <- file.path(rpath, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
   write.csv(z, file = f, row.names = FALSE, quote = FALSE, na = '#N/A')               # "archive" result file, with all columns and all data, including rejected values
 
 
@@ -122,11 +126,11 @@
     z[as.logical(r), sensor] <- 'DR'
   }
 
-  f <- file.path(site_dir, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))        # "WPP" result file, with all columns, rejected values as "DR"
+  f <- file.path(rpath, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))        # "WPP" result file, with all columns, rejected values as "DR"
   write.csv(z[, wpp_cols], file = f, row.names = FALSE, quote = FALSE, na = '#N/A')
 
   z[z == 'DR'] <- NA
-  f <- file.path(site_dir, paste0('core_', site, '_', year(z$Date[1]), '.csv'))       # "core" result file, with selected columns, rejected values as NA
+  f <- file.path(rpath, paste0('core_', site, '_', year(z$Date[1]), '.csv'))       # "core" result file, with selected columns, rejected values as NA
   write.csv(z[, core_cols], file = f, row.names = FALSE, quote = FALSE, na = '')
 
 
@@ -134,7 +138,7 @@
   x <- paths$deployments$QCpath
   x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files
   hash <- data.frame(QC = x, hash = paths$deployments$hash)                           # write hashes
-  write.table(hash, file = file.path(site_dir, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
+  write.table(hash, file = file.path(rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
   cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
   cat('Results are in ', site_dir, '/\n', sep = '')
