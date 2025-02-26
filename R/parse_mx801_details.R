@@ -51,9 +51,9 @@ parse_mx801_details <- function(file) {
   # Delete all but the last colon on every line.
   # And convert to a list with read_yaml()
 
-
-  d <- readxl::read_excel(file, sheet = 3, col_types = "text",
-                          col_names = FALSE)
+  suppressMessages( # Suppress New Names message
+    d <- readxl::read_excel(file, sheet = 3, col_types = "text", # nolint
+                            col_names = FALSE))
   d2 <- lapply(d, function(x) paste0(x, ":")) |> as.data.frame()
 
   restore_na <- function(x) {
@@ -249,7 +249,6 @@ parse_mx801_details <- function(file) {
   cc$measured_cond <- numeric(0)
   cc$temperature <- numeric(0)
   for (i in calibration_pt_i) {
-    cat(i, "\n")
     cp <- cond$Channel_Parameters[[i]]
     cc$spec_cond_25c <- c(cc$spec_cond_25c,
                           cp$Specific_Conductance_at_25C |> extract_number())

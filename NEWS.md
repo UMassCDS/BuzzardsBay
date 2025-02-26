@@ -1,3 +1,23 @@
+# BuzzardsBay 0.1.0.9018
+
+* Fixed bug in Salinity check that could cause 
+  the low variation in salinity flag (`Slv`) to overwrite or duplicate 
+  other salinity flags.
+  This bug was first detected in the MX801 import but 
+  has been present for all previously run QAQC. 
+  It only affects salinity, and only in rows 
+  where low variation in salinity is detected. 
+  The low variation flag should always be correct but 
+  other salinity flags might be either dropped or erroneously show up 
+  along with the low variation in salinity flag. 
+  Non-salinity flags were not affected. 
+  
+* Suppressed confusing chatter from `readxls::read_excel()` that showed up when
+  calling `qc_deployment()` on output from MX801 logger.
+  
+* Updated test for MX801 logger output. 
+  
+  
 # BuzzardsBay 0.1.0.9017
 
 * Documentation edits
