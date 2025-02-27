@@ -20,10 +20,10 @@
   site <- basename(site_dir)
   year <- basename(dirname(site_dir))
 
-  core <- read.csv(file.path(site_dir, paste0('core_', site, '_', year, '.csv')))
+  core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
   daily <- daily_stats(site, year, core)                                                  # calculate daily stats
-  f <- file.path(site_dir, paste0('daily_stats_', site, '_', year, '.csv'))
+  f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
   write.csv(daily, file = f, row.names = FALSE, quote = FALSE, na = '')
   cat('Daily stats written to ', f, '\n', sep = '')
 
@@ -34,7 +34,7 @@
 
 
 
-  f <- file.path(site_dir, paste0('report_', site, '_', year, '.csv'))
+  f <- file.path(site_dir, paste0('combined/report_', site, '_', year, '.csv'))
 
   # ***** write PDF
 

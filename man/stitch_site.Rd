@@ -18,7 +18,7 @@ that are out range for their sensor are flagged. Writes three versions of the da
 complete season, and hash files for use by \code{check_site}.
 }
 \details{
-Three versions of the data file are written:
+Three versions of the data file are written to <site_dir>/combined/:
 \enumerate{
 \item \verb{archive_<site>_<year>.csv} - contains all columns, for complete archival.
 \item \verb{WPP_<site>_<year>.csv} - contains only columns required by MassDEP (a.k.a. the "WPP" file).

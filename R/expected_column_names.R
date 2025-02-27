@@ -69,11 +69,11 @@ expected_column_names <- list(
 
 
   final_all = c("Waterbody",                              # This is the full set of final columns, used in the archive result file
-                "WPP_Station_Identifier",
                 "Site",
                 "Latitude",
                 "Longitude",
                 "Depth",
+                "Depth_QC",
                 "Unique_ID",
                 "Date",
                 "Date_Time",
@@ -111,6 +111,7 @@ expected_column_names <- list(
   final_core = c("Site",                                # A concise subset of columns for the core result file
                  "Depth",
                  "Unique_ID",
+                 "Date",
                  "Date_Time",
                  "Julian_Date",
                  "Temp_CondLog",

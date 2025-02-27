@@ -11,7 +11,7 @@
 
 
 
-  if(!file.exists(f <- file.path(site_dir, 'hash.txt')))
+  if(!file.exists(f <- file.path(site_dir, 'combined/hash.txt')))
     stop(paste0('Hash file ', f, ' is missing. Most likely stitch_site hasn\'t been run for this deployment.'))
 
   hash <- read.table(f, sep = '\t', header = TRUE)                        # read hash table from previous run

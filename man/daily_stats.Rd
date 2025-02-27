@@ -11,7 +11,7 @@ daily_stats(site, year, core)
 
 \item{year}{Year of deployment}
 
-\item{core}{Core data file, produced by \code{stitch_site}}
+\item{core}{Core data frame, produced by \code{stitch_site}}
 }
 \value{
 Data frame with one row for each day of depolyment, and columns with a number of statistics
