@@ -18,59 +18,64 @@
 
   # aggregate helper: ignore NAs; return NA if all in group are Inf or NaN; no warnings; sort and return only result column
   'aggreg' <- function(x, by, FUN, drop_by = TRUE) {
-    z <- suppressWarnings(aggregate(x, list(by), FUN, na.rm = TRUE))          # no whining on min or max on all NAs
-    z$x[is.infinite(z$x) | is.nan(z$x)] <- NA                                 # replace crap with NA
+    z <- suppressWarnings(aggregate(x, list(by), FUN, na.rm = TRUE))            # no whining on min or max on all NAs
+    z$x[is.infinite(z$x) | is.nan(z$x)] <- NA                                   # replace crap with NA
     if(drop_by)
-      z$x[order(z$Group.1)]                                                   # sort because I don't trust this thing
+      z$x[order(z$Group.1)]                                                     # sort because I don't trust this thing
     else
       z[order(z$Group.1), ]
   }
 
 
   z <- aggreg(core$DO, core$Date, min, drop_by = FALSE)
-  names(z) <- c('Date', 'Min_DO')                                             # Date and min DO
+  names(z) <- c('Date', 'Min_DO')                                               # Date and min DO
 
-
-  x <- merge(z, core, by = 'Date')[, c('Date', 'Date_Time', 'DO', 'Min_DO')]  # time and date of minimum DO
+  x <- merge(z, core, by = 'Date')[, c('Date', 'Date_Time', 'DO', 'Min_DO')]    # time and date of minimum DO
   x <- x[(!is.na(x$DO)) & x$DO == x$Min_DO, ]
   x <- aggreg(x$Date_Time, x$Date, min, drop_by = FALSE)
   x <- merge(z, x, by.x = 'Date', by.y = 'Group.1', all = TRUE)
-  x$x <- substring(x$x, regexpr('\\d{2}:\\d{2}:\\d{2}$', x$x))                #        ********************** pull this if they really want date_time, not just time
+  x$x <- substring(x$x, regexpr('\\d{2}:\\d{2}:\\d{2}$', x$x))                  # we'll report this as time, not date and time
   z$Min_DO_Time <- x$x
 
-
-  core$DO6 <- core$DO < 6                                                     # proportion with DO < 6 mg/L
+  core$DO6 <- core$DO < 6                                                       # proportion with DO < 6 mg/L
   z$Prop_Under_6 <- aggreg(core$DO6, core$Date, sum) /
     aggreg(!is.na(core$DO), core$Date, sum)
   z$Prop_Under_6[is.nan(z$Prop_Under_6)] <- NA
 
+  z$Duration_Under_6 <- longest_duration(core[, c('Date', 'Date_Time', 'DO6')]) # duration of longest run under 6 mg/L
 
-  x <- core[, c('Date_Time', 'DO6')]
-  names(x)[2] <- 'trigger'
-  z$Duration_Under_6 <- aggregate(x, by = list(core$Date), FUN = longest_duration)   # *** deal with missing values ***********************************
-                                                 # duration of longest run under 6 mg/L
-
-  core$DO3 <- core$DO < 3                                                     # proportion with DO < 3 mg/L
+  core$DO3 <- core$DO < 3                                                       # proportion with DO < 3 mg/L
   z$Prop_Under_3 <- aggreg(core$DO6, core$Date, sum) /
     aggreg(!is.na(core$DO), core$Date, sum)
   z$Prop_Under_3[is.nan(z$Prop_Under_3)] <- NA
 
-  z$Duration_Under_3 <- NA                               #*************                     # duration of longest run under 3 mg/L
+  z$Duration_Under_3 <- longest_duration(core[, c('Date', 'Date_Time', 'DO3')]) # duration of longest run under 3 mg/L
 
-
-  z$Mean_DO <- aggreg(core$DO, core$Date, mean)                               # mean DO
-  z$SD_DO <- aggreg(core$DO, core$Date, sd)                                   # sd DO
-  z$Mean_Salinity <- aggreg(core$Salinity, core$Date, mean)                   # mean salinity
-  z$SD_Salinity <- aggreg(core$Salinity, core$Date, sd)                       # sd salinity
-  z$Range_DO <- aggreg(core$DO, core$Date, max) - z$Min_DO                    # range of DO
+  z$Mean_DO <- aggreg(core$DO, core$Date, mean)                                 # mean DO
+  z$SD_DO <- aggreg(core$DO, core$Date, sd)                                     # sd DO
+  z$Mean_Salinity <- aggreg(core$Salinity, core$Date, mean)                     # mean salinity
+  z$SD_Salinity <- aggreg(core$Salinity, core$Date, sd)                         # sd salinity
+  z$Range_DO <- aggreg(core$DO, core$Date, max) - z$Min_DO                      # range of DO
   z$Range_DO_Sat <- aggreg(core$DO_Pct_Sat, core$Date, max) -
-    aggreg(core$DO_Pct_Sat, core$Date, min)                                   # range of DO % saturation
+    aggreg(core$DO_Pct_Sat, core$Date, min)                                     # range of DO % saturation
 
 
-  z <- z[, cols]                                                              # just return the good stuff, in canonical order
+  # do a slew of rounding
+  co <- c('Min_DO', 'Mean_DO', 'SD_DO', 'Range_DO')
+  z[, co] <- round(z[, co], 1)                                                  # round DO stats to 0.1
 
-  num <- sapply(z, class) == 'numeric'                                        # round all numeric columns
-  z[, num] <- signif(z[, num], 3)
+  z$Range_DO_Sat <- round(z$Range_DO_Sat, 0)                                    # round percent saturation to whole number
 
+  co <- c('Mean_Salinity', 'SD_Salinity')
+  z[, co] <- round(z[, co], 1)                                                  # round salinity stats to 0.1
+
+  co <- c('Prop_Under_6', 'Prop_Under_3')
+  z[, co] <- round(z[, co], 2)                                                  # round proportion to 0.01
+
+  co <- c('Duration_Under_6', 'Duration_Under_3')
+  z[, co] <- round(z[, co], 1)                                                  # round duration to 0.1
+
+
+  z <- z[, cols]                                                                # just return the good stuff, in canonical order
   z
 }

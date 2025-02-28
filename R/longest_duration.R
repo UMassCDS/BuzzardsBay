@@ -1,39 +1,41 @@
 'longest_duration' <- function(x) {
 
-   #' Give the longest run of TRUEs
+   #' Give duration of the longest run of low DO for each day
    #'
-   #' Used to find the longest run of DO below a threshold.
+   #' Finds the longest run of DO below a threshold for each day.
    #
-   #' @param x Data frame with columns `Date_Time` and `trigger` (TRUE when the trigger condition is met)
-   #' @return Length of the longest run of TRUEs in hh:mm
+   #' @param x A data frame with three columns:
+   #' 1. `Date` The date, in format 2024-05-30
+   #' 2. `Date_Time` The date and time, in format 2024-05-30 16:20:00
+   #' 3. `trigger` TRUE when DO is below the selected threshold (the name of this column varies)
+   #' @return Length of the longest run of TRUEs in fractional hours
    # Source: sensemaking app, buzz.stats
 
 
 
-   'fmt.hm' <- function(x) {                                                              # format minutes as h:mm
-      x <- round(x, 0)
-      paste(floor(x / 60), sprintf('%02d', x - floor(x / 60) * 60), sep = ':')
+   names(x)[3] <- 'source_trigger'                                                        # the trigger column doesn't have a consistent name, so give it one
+   x$trigger <- replace_na_runs(x$source_trigger, 6, TRUE)                                # runs of up to six NA surrounded by TRUE become TRUE; others FALSE
+
+   x$Date_Time <- as.POSIXct(x$Date_Time)                                                 # convert time from text to time object
+
+   days <- unique(x$Date)                                                                 # we'll loop through days
+   z <- rep(NA, length(days))                                                             # result is a vector with a value for each day
+   for(i in 1:length(days)) {                                                             # for each day,
+      y <- x[x$Date == days[i], ]
+      if(!all(is.na(y$source_trigger))) {                                                 #    if we have any non-NA triggers,
+         g <- cumsum(y$trigger & !c(FALSE, y$trigger[-length(y$trigger)])) * y$trigger    #    make grouping variable of runs of TRUEs
+         for(j in length(g):2)                                                            #    extend each group to the next sample so we get proper periods
+            if(g[j] == FALSE)
+               g[j] <- g[j - 1]
+         d <- cbind(aggregate(y$Date_Time, by = list(g), FUN = 'max'),
+                    aggregate(y$Date_Time, by = list(g), FUN = 'min'))                    #    deltas in sec
+         d <- d[d$Group.1 != 0,]                                                          #    drop group 0
+         if(dim(d)[1] > 0) {                                                              #       if we
+            m <- as.numeric((lubridate::as.duration(d[, 2] - d[, 4]))) / 60 ^ 2           #    duration below threshold in fractional hours
+            z[i] <- max(c(m, 0))                                                          #    if no runs, duration is 0
+         }
+      }
    }
 
-
-   x$Date_Time <- as.POSIXct(x$Date_Time)
-
-   se <- x$trigger
-   #  se[is.na(se)] <- FALSE                                                                                      # treat missing values as NOT below CT
-   #  *** need to treat runs of NA surrounded by TRUE as TRUE
-
-   g <- cumsum(se & !c(FALSE, se[-length(se)])) * se                                                           # make grouping variable of runs of TRUEs
-   for(i in length(g):2)                                                                                       # extend each group to the next sample so we get proper periods
-      if(g[i] == FALSE)
-         g[i] <- g[i - 1]
-   d <- cbind(aggregate(x$Date_Time, by = list(g), FUN = 'max'),
-              aggregate(x$Date_Time, by = list(g), FUN = 'min'))                                               # deltas in sec
-   d <- d[d$Group.1 != 0,]                                                                                     # drop group 0
-   z <- as.numeric(lubridate::as.duration(d[, 2] - d[, 4])) / 60                                               # duration below threshold in minutes
-   z <- z[z != 0]                                                                                              # this can happen if the last point is below the threshold
-
-   if(length(z) > 0) {
-      z <- fmt.hm(max(z))                                                                            # max minutes below CT threshold
-   }
    z
 }

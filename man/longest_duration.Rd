@@ -2,16 +2,21 @@
 % Please edit documentation in R/longest_duration.R
 \name{longest_duration}
 \alias{longest_duration}
-\title{Give the longest run of TRUEs}
+\title{Give duration of the longest run of low DO for each day}
 \usage{
 longest_duration(x)
 }
 \arguments{
-\item{x}{Data frame with columns \code{Date_Time} and \code{trigger} (TRUE when the trigger condition is met)}
+\item{x}{A data frame with three columns:
+\enumerate{
+\item \code{Date} The date, in format 2024-05-30
+\item \code{Date_Time} The date and time, in format 2024-05-30 16:20:00
+\item \code{trigger} TRUE when DO is below the selected threshold (the name of this column varies)
+}}
 }
 \value{
-Length of the longest run of TRUEs in hh:mm
+Length of the longest run of TRUEs in fractional hours
 }
 \description{
-Used to find the longest run of DO below a threshold.
+Finds the longest run of DO below a threshold for each day.
 }

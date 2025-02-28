@@ -40,8 +40,8 @@
    deployments <- sub('\\.csv$', '', tolower(substring(t, regexpr('\\d{4}-\\d{2}-\\d{2}', t))))
 
    for(i in 1:length(qc)) {                                                            # clean up data: for each deployment,
-      qc[[i]][, all_cols[!all_cols %in% names(qc[[i]])]] <- NA                          #    add missing required columns
-      qc[[i]] <- qc[[i]][, all_cols]                                                    #    get the columns we want in canonical order and drop the junk
+      qc[[i]][, all_cols[!all_cols %in% names(qc[[i]])]] <- NA                         #    add missing required columns
+      qc[[i]] <- qc[[i]][, all_cols]                                                   #    get the columns we want in canonical order and drop the junk
 
       qc[[i]]$Date_Time <- format_csv_date_time(qc[[i]]$Date_Time, format = 'character')#    reformat dates and dates/times that may have been damaged by Excel
       qc[[i]]$Date <- substring(qc[[i]]$Date_Time, regexpr('\\d{4}-\\d{2}-\\d{2}', qc[[i]]$Date_Time), 10)
@@ -51,25 +51,25 @@
    z <- qc[[1]]
 
    if(length(qc) > 1)                                                                  # if we have more than one deployment in season,
-      for(i in 1:(length(qc) - 1)) {                                                    #    Fill gaps: for each pair of deployments,
-         x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))              #       date of tail of first deployment in pair, head of second one
-         x <- as.POSIXct(x)                                                              #       dates to POSIX
-         gap <- interval(x[1], x[2]) / dminutes(1)                                       #       gap to fill, in minutes
-         m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min          #       logging interval of first deployment in pair (min)
-         need <- ceiling(gap / m) - 1                                                    #       how many dates do we need to interpolate?
-         fill <- x[1] + dminutes(1:need * m)                                             #       here are our interpolated times
-         fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                              #       formatted in the final form
+      for(i in 1:(length(qc) - 1)) {                                                   #    Fill gaps: for each pair of deployments,
+         x <- c(tail(qc[[i]]$Date_Time, 1), head(qc[[i + 1]]$Date_Time, 1))            #       date of tail of first deployment in pair, head of second one
+         x <- as.POSIXct(x)                                                            #       dates to POSIX
+         gap <- interval(x[1], x[2]) / dminutes(1)                                     #       gap to fill, in minutes
+         m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min        #       logging interval of first deployment in pair (min)
+         need <- ceiling(gap / m) - 1                                                  #       how many dates do we need to interpolate?
+         fill <- x[1] + dminutes(1:need * m)                                           #       here are our interpolated times
+         fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                            #       formatted in the final form
 
-         y <- data.frame(matrix(NA, length(fill), length(all_cols)))                     #       create data frame to fill the gap, with Site, Date, and Date_Time, all others NA
+         y <- data.frame(matrix(NA, length(fill), length(all_cols)))                   #       create data frame to fill the gap, with Site, Date, and Date_Time, all others NA
          names(y) <- all_cols
          y$Site <- site
          y$Date <- format(date(fill), format = '%Y-%m-%d')
          y$Date_Time <- fill
          y$Time <- sub('\\d{4}-\\d{2}-\\d{2} ', '', fill)
 
-         z <- rbind(z, y, qc[[i + 1]])                                                   #       build up result: what we've already got, gap fill, and second deployment of pair
+         z <- rbind(z, y, qc[[i + 1]])                                                 #       build up result: what we've already got, gap fill, and second deployment of pair
 
-         if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                    #       warn if there's a large gap between deployments
+         if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                  #       warn if there's a large gap between deployments
             cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
       }
 
@@ -118,7 +118,7 @@
    z[as.logical(r), sensor_cols] <- 'DR'
 
    for(sensor in sensor_cols) {                                                        # For each sensor column,
-      r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]      #    reject sensor metrics based on individual sensor QC columns
+      r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns
       z[as.logical(r), sensor] <- 'DR'
    }
 

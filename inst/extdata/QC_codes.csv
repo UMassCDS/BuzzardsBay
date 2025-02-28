@@ -1,6 +1,6 @@
 "QC_Code,Rejection,Description"
 "9999,2,Placeholder created by automatic QC to indicate that there is an issue that needs review.  Should not exisit in final data.  Throw error if found."
-"1,0,Timepoint of calibration "
+"1,1,Timepoint of calibration 1 found in the cal column"
 "3,0,Value reviewed then confirmed (see comment fields for any details)"
 "4,0,Flagged as an unusual value, see comments about possible reasons if given."
 "7,1,Data below method detection limits. Changed data to BDL."
