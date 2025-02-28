@@ -1,4 +1,4 @@
-'stitch_site' <- function(site_dir, max_gap = 1) {
+'stitch_site' <- function(site_dir, max_gap = 1, report = FALSE) {
 
    #' Stitch all deployments for a site and year
    #'
@@ -17,6 +17,7 @@
    #'
    #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
    #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
+   #' @param report Run `report_site` if TRUE
    #' @importFrom lubridate interval dminutes date duration dhours year yday
    #' @import utils
    #' @export
@@ -137,4 +138,9 @@
 
    cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
    cat('Results are in ', site_dir, '/\n', sep = '')
+
+   if(report) {
+      cat('\n')
+      report_site(site_dir, check = FALSE)
+   }
 }

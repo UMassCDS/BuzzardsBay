@@ -1,4 +1,4 @@
-'report_site' <- function(site_dir) {
+'report_site' <- function(site_dir, check = TRUE) {
 
   #' Produce stats and a report for a site and year
   #'
@@ -13,8 +13,15 @@
   #' files haven't changed since the last `stitch_site` run.
   #'
   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
+  #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
   #' @export
 
+
+
+  if(check) {
+    check_site(site_dir)
+    cat('\n')
+  }
 
 
   site <- basename(site_dir)
