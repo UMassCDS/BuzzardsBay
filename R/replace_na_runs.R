@@ -24,8 +24,6 @@
    truebefore = c(istrue[-1], TRUE)                            # runs preceded by TRUE
    trueafter = c(TRUE, istrue[-length(istrue)])                # runs followed by TRUE
 
- #  data.frame(values = y$values, lengths = y$lengths, istrue = istrue, isna = isna, isshort = isshort, truebefore = truebefore, trueafter = trueafter)  # for debugging
-
    y$values[isna & isshort & truebefore & trueafter] <- TRUE   # put it all together - these are our qualifying runs
    y$values[is.na(y$values)] <- FALSE                          # non-qualifying NAs become FALSE
    inverse.rle(y)                                              # pull it back into the form of the original vector
