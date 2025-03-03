@@ -60,22 +60,13 @@
     aggreg(core$DO_Pct_Sat, core$Date, min)                                     # range of DO % saturation
 
 
-  # do a slew of rounding
-  co <- c('Min_DO', 'Mean_DO', 'SD_DO', 'Range_DO')
-  z[, co] <- round(z[, co], 1)                                                  # round DO stats to 0.1
-
-  z$Range_DO_Sat <- round(z$Range_DO_Sat, 0)                                    # round percent saturation to whole number
-
-  co <- c('Mean_Salinity', 'SD_Salinity')
-  z[, co] <- round(z[, co], 1)                                                  # round salinity stats to 0.1
-
-  co <- c('Prop_Under_6', 'Prop_Under_3')
-  z[, co] <- round(z[, co], 2)                                                  # round proportion to 0.01
-
-  co <- c('Duration_Under_6', 'Duration_Under_3')
-  z[, co] <- round(z[, co], 1)                                                  # round duration to 0.1
+  z <- z[, cols]                                                                # Just return the good stuff, in canonical order
 
 
-  z <- z[, cols]                                                                # just return the good stuff, in canonical order
+  r <- read.csv('inst/extdata/rounding.csv')                                    # Now do rounding - read rounding file
+  for(i in 1:dim(r)[1])                                                         # for each row in rounding file,
+    if(r$column[i] %in% cols)                                                   #    if it's one of our columns,
+      z[, r$column[i]] <- round(z[, r$column[i]], r$digits[i])                  #       round it
+
   z
 }

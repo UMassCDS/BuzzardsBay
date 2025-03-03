@@ -4,10 +4,12 @@
 \alias{report_site}
 \title{Produce stats and a report for a site and year}
 \usage{
-report_site(site_dir)
+report_site(site_dir, check = TRUE)
 }
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>})}
+
+\item{check}{If TRUE, runs \code{check_site} to make sure source files haven't been changed}
 }
 \description{
 Produces daily stats and a report with seasonal stats and a number of graphs for a specified site and year.
