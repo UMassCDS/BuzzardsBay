@@ -19,7 +19,7 @@
    #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
    #' @param report Run `report_site` if TRUE
    #' @importFrom lubridate interval dminutes date duration dhours year yday
-   #' @import utils
+   #' @dimport utils
    #' @export
 
 
@@ -35,6 +35,8 @@
    core_cols <- get_expected_columns('final_core')
    sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
    qc_codes <- read.csv('inst/extdata/qc_codes.csv')                                   # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+   if(!all(c('QC_Code', 'Rejection') %in% names(qc_codes)))
+      stop('Something is wrong with inst/extdata/qc_codes.csv.')
 
 
    t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
@@ -107,11 +109,14 @@
 
    # write three versions of data file
 
-   if(!dir.exists(rpath <- file.path(site_dir, 'combined')))                           # create result combined/ directory
-      dir.create(rpath)
+   rpath <- 'combined'
+   if(!dir.exists(f <- file.path(site_dir, rpath)))                     # create result combined/ directory
+      dir.create(f)
 
-   f <- file.path(rpath, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
-   write.csv(z, file = f, row.names = FALSE, quote = FALSE, na = '#N/A')               # "archive" result file, with all columns and all data, including rejected values
+   res <- NULL
+   res[1] <- file.path(rpath, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
+   write.csv(z, file = file.path(site_dir, res[1]), row.names = FALSE,
+             quote = FALSE, na = '#N/A')                                               # "archive" result file, with all columns and all data, including rejected values
 
 
    # now replace rejected values
@@ -123,18 +128,21 @@
       z[as.logical(r), sensor] <- 'DR'
    }
 
-   f <- file.path(rpath, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))           # "WPP" result file, with all columns, rejected values as "DR"
-   write.csv(z[, wpp_cols], file = f, row.names = FALSE, quote = FALSE, na = '#N/A')
+   res[2] <- file.path(rpath, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))
+   write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
+             quote = FALSE, na = '#N/A')
 
    z[z == 'DR'] <- NA
-   f <- file.path(rpath, paste0('core_', site, '_', year(z$Date[1]), '.csv'))          # "core" result file, with selected columns, rejected values as NA
-   write.csv(z[, core_cols], file = f, row.names = FALSE, quote = FALSE, na = '')
+   res[3] <- file.path(rpath, paste0('core_', site, '_', year(z$Date[1]), '.csv'))
+   write.csv(z[, core_cols], file = file.path(site_dir, res[3]), row.names = FALSE,
+             quote = FALSE, na = '')
 
 
    x <- paths$deployments$QCpath
    x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files
-   hash <- data.frame(QC = x, hash = paths$deployments$hash)                           # write hashes
-   write.table(hash, file = file.path(rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
+   hash <- data.frame(file = x, hash = paths$deployments$hash)                           # write hashes
+   hash <- rbind(hash, data.frame(file = res, hash = get_file_hashes(file.path(site_dir, res))))
+   write.table(hash, file = file.path(site_dir, rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
    cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
    cat('Results are in ', site_dir, '/\n', sep = '')

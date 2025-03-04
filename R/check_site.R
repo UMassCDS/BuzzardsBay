@@ -22,7 +22,7 @@
     stop(paste0('There are no valid deployments (both QC and Metadata files) for ', site_dir))
 
 
-  m <- match(basename(hash$QC), basename(paths$deployments$QCpath))       # match deployment QC files
+  m <- match(basename(hash$file), basename(paths$deployments$QCpath))       # match deployment QC files
   if(any(is.na(m)))
     stop(paste0('Missing deployment files: ',
                 paste0(basename(paths$deployments$QCpath)[is.na(m)], collapse = ', ')))

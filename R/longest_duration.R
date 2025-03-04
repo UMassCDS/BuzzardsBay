@@ -4,6 +4,9 @@
    #'
    #' Finds the longest run of DO below a threshold for each day.
    #'
+   #' Looks into the previous day for the start of runs, as many low-DO events start in the
+   #' evening. Reported durations are no longer than 24 hours.
+   #'
    #' If trigger is all false for a day, the result is 0. If trigger is all NA
    #' for a day, the result is NA.
    #'
@@ -42,6 +45,7 @@
          }
          if(is.na(z[i]))                                                                     #    if no low-DO events, return 0
             z[i] <- 0
+         z[i] <- min(z[i], 24)                                                               #    max time to report is 24 hours
       }
    }
    z

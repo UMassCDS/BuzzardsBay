@@ -38,15 +38,12 @@
       z$deployments <- z$deployments[!t[, 1] | t[, 2], ]                  #    drop offending rows and whine
       cat('Note: ', m, '\n', sep = '')
     }
-    else                                                                  #else, throw an error
+    else                                                                  # else, throw an error
       stop(m)
   }
 
 
-  for(i in 1:dim(z$deployments)[1]) {                                     # now get hashes of QC files. For each file,
-    x <- readr::read_file(z$deployments$QCpath[i])
-    z$deployments$hash[i] <- digest::digest(x, algo = 'md5')
-  }
+  z$deployments$hash <- get_file_hashes(z$deployments$QCpath)             # get hashes of QC files
 
   z
 }
