@@ -10,7 +10,11 @@ check_site(site_dir)
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include
 QCed results and result files from \code{stitch_site}.}
 }
+\value{
+Silently returns TRUE if validation was successful.
+}
 \description{
 Check that source files for a site and year haven't changed since \code{stitch_site} was used
-to create result files. Uses \code{hash.txt}, created by \code{check_site}.
+to create result files. Uses \code{hash.txt}, created by \code{check_site}. Separately reports on
+missing hash file, missing source or result files, and changed source or result files.
 }

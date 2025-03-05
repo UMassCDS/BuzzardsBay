@@ -19,8 +19,10 @@
 
 
   if(check) {
-    check_site(site_dir)
-    cat('\n')
+    if(!check_site(site_dir))
+      stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
+    else
+      cat('\n')
   }
 
 

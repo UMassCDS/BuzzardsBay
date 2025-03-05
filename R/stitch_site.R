@@ -140,8 +140,8 @@
 
    x <- paths$deployments$QCpath
    x <- substring(x, regexpr('\\d{4}-\\d{2}-\\d{2}', x))                               # pull relative paths for QC files
-   hash <- data.frame(file = x, hash = paths$deployments$hash)                           # write hashes
-   hash <- rbind(hash, data.frame(file = res, hash = get_file_hashes(file.path(site_dir, res))))
+   hash <- data.frame(file = x, type = 'source', hash = paths$deployments$hash)        # write hashes
+   hash <- rbind(hash, data.frame(file = res, type = 'result', hash = get_file_hashes(file.path(site_dir, res))))
    write.table(hash, file = file.path(site_dir, rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
    cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
