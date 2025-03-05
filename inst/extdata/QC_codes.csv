@@ -10,5 +10,5 @@ QC_Code,Rejection,Description
 11,0,End of deployment for data logger under GEN_QC
 12,0,Start of deployment for data logger under GEN_QC
 13,0,Estimated salinity substituted for missing field conductivity/salinity - based on nearby stations and historical data.
-14,0,For situation in which Salinity datapoint was rejected but associated adjusted DO was accepted. Always matched with 9s for salinity, so no rejection.
+14,0,For situation in which Salinity datapoint was rejected but associated adjusted DO was accepted. Always matched with 9s for salinity so no rejection.
 NA,0,No Gen_QC code; data are accepted

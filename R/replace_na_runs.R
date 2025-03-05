@@ -1,4 +1,4 @@
-'replace_na_runs' <- function(x, max_run = 6, boundary = TRUE) {
+'replace_na_runs' <- function(x, max_run = 6, boundary = FALSE) {
 
    #' Replace short runs of NA in logical vector
    #'
@@ -21,8 +21,8 @@
 
    isna <- is.na(y$values)                                     # runs that are NA
    isshort = y$lengths <= max_run                              # runs that are no longer than max_run
-   truebefore = c(istrue[-1], TRUE)                            # runs preceded by TRUE
-   trueafter = c(TRUE, istrue[-length(istrue)])                # runs followed by TRUE
+   truebefore = c(istrue[-1], boundary)                        # runs preceded by TRUE
+   trueafter = c(boundary, istrue[-length(istrue)])            # runs followed by TRUE
 
    y$values[isna & isshort & truebefore & trueafter] <- TRUE   # put it all together - these are our qualifying runs
    y$values[is.na(y$values)] <- FALSE                          # non-qualifying NAs become FALSE

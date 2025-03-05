@@ -4,7 +4,7 @@
 \alias{replace_na_runs}
 \title{Replace short runs of NA in logical vector}
 \usage{
-replace_na_runs(x, max_run = 6, boundary = TRUE)
+replace_na_runs(x, max_run = 6, boundary = FALSE)
 }
 \arguments{
 \item{x}{A logical vector that may have NAs}

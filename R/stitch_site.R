@@ -19,7 +19,7 @@
    #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
    #' @param report Run `report_site` if TRUE
    #' @importFrom lubridate interval dminutes date duration dhours year yday
-   #' @dimport utils
+   #' @import utils
    #' @export
 
 
@@ -34,9 +34,9 @@
    wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
    core_cols <- get_expected_columns('final_core')
    sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
-   qc_codes <- read.csv('inst/extdata/qc_codes.csv')                                   # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+   qc_codes <- read.csv(system.file('extdata/QC_codes.csv', package = 'BuzzardsBay'))  # read QC rejection codes (see inst/extdata/README_QC_codes.md)
    if(!all(c('QC_Code', 'Rejection') %in% names(qc_codes)))
-      stop('Something is wrong with inst/extdata/qc_codes.csv.')
+      stop('Something is wrong with qc_codes.csv')
 
 
    t <- basename(paths$deployments$QCpath)                                             # pull deployment names out of paths
@@ -79,9 +79,12 @@
 
    #Add additional columns and put everything in the right order
 
-   x <- read.csv('inst/extdata/sites.csv')                                             # insert site-level columns from sites.csv
+   f <- file.path(dirname(site_dir), 'Metadata/sites.csv')
+   if(!file.exists(f))
+      stop('sites.csv is missing')
+   x <- read.csv(f)                                                                    # insert site-level columns from sites.csv
    if(!site %in% x$site)                                                               # being careful
-      stop(paste0('Site ', site, ' is not in sites.csv!\n'))
+      stop(paste0('Site ', site, ' is not in sites.csv'))
 
    z$Waterbody <- x$WaterBody[x$site == site]                                          # get waterbody
 
@@ -123,10 +126,19 @@
    r <- qc_codes$Rejection[match(z$Gen_QC, qc_codes$QC_Code)]                          # Gen_QC has rejection code for entire row
    z[as.logical(r), sensor_cols] <- 'DR'
 
+   failure <- FALSE
    for(sensor in sensor_cols) {                                                        # For each sensor column,
       r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns
+      if(any(is.na(r))) {
+         cat('*** Invalid QC code for ', sensor, ' on ', paste0(z$Date[is.na(r)], collapse = ', '), '\n', sep = '')
+         failure <- TRUE
+      }
+      r[is.na(r)] <- 0
       z[as.logical(r), sensor] <- 'DR'
    }
+
+   if(failure)
+      stop('Invalid QC codes')
 
    res[2] <- file.path(rpath, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))
    write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,

@@ -7,5 +7,5 @@ This file is used in stitch_site to reject data based on `Gen_QC` or `<metric>_Q
 - `NA` - throw an error if found
 - `0` - do not reject
 - `1` - reject value: set to DR in WPP result file, and NA in core result file
-- `2` - reject Salinity, High_Range, and Spec_Cond only
+- `2` - fatal: stop processing with an informative error
 3. `Description` - text description of the `*_QC` value

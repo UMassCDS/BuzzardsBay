@@ -63,7 +63,7 @@
   z <- z[, cols]                                                                # Just return the good stuff, in canonical order
 
 
-  r <- read.csv('inst/extdata/rounding.csv')                                    # Now do rounding - read rounding file
+  r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay'))   # Now do rounding - read rounding file
   for(i in 1:dim(r)[1])                                                         # for each row in rounding file,
     if(r$column[i] %in% cols)                                                   #    if it's one of our columns,
       z[, r$column[i]] <- round(z[, r$column[i]], r$digits[i])                  #       round it

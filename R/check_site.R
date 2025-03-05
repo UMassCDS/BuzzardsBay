@@ -14,7 +14,7 @@
 
 
   if(!file.exists(f <- file.path(site_dir, 'combined/hash.txt'))) {
-    cat(paste0('*** Hash file ', f, ' is missing.\nMost likely either your path is wrong or stitch_site hasn\'t been run for this deployment.\n'))
+    message('*** Hash file ', f, ' is missing.\nMost likely either your path is wrong or stitch_site hasn\'t been run for this deployment.')
     ok <- FALSE
   }
   else {
@@ -27,25 +27,25 @@
     ok <- !any(changed | missing)                                           # are we good?
 
     if(!ok)
-      cat('*** Errors validating site ', site_dir, '\n', sep = '')
+      message('*** Errors validating site ', site_dir)
 
     if(any(missing & hash$type == 'source'))
-      cat('Source files used in the previous run have apparently been deleted. If this was intentional, rerun stitch_site.\n')
+      message('Source files used in the previous run have apparently been deleted. If this was intentional, rerun stitch_site.')
 
     if(any(changed & hash$type == 'source'))
-      cat('Source files have changed since stitch_site was run. Rerun stitch_site to update.\n')
+      message('Source files have changed since stitch_site was run. Rerun stitch_site to update.')
 
     if(any(missing & hash$type == 'result'))
-      cat('Result files are missing. Rerun stitch_site to recreate them.\n')
+      message('Result files are missing. Rerun stitch_site to recreate them.')
 
     if(any(changed & hash$type == 'result'))
-      cat('Result files have been changed since stitch_site was run. Rerun stitch_site to replace them.\n')
+      message('Result files have been changed since stitch_site was run. Rerun stitch_site to replace them.')
 
 
     if(ok)
-      cat('Site ', site_dir, ' validated. Result files are up to date.\n', sep = '')
+      message('Site ', site_dir, ' validated. Result files are up to date.')
     else {
-      cat('\n')
+      #message('\n')
       print(data.frame(file = hash$file, status = ifelse(missing, 'missing', ifelse(changed, 'changed', 'ok'))))
     }
   }
