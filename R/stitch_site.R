@@ -79,7 +79,9 @@
 
    #Add additional columns and put everything in the right order
 
-   f <- file.path(dirname(site_dir), 'Metadata/sites.csv')
+   year <- year(z$Date[1])
+   f <- lookup_paths(dirname(dirname(site_dir)), year)$sites
+
    if(!file.exists(f))
       stop('sites.csv is missing')
    x <- read.csv(f)                                                                    # insert site-level columns from sites.csv
@@ -117,7 +119,7 @@
       dir.create(f)
 
    res <- NULL
-   res[1] <- file.path(rpath, paste0('archive_', site, '_', year(z$Date[1]), '.csv'))
+   res[1] <- file.path(rpath, paste0('archive_', site, '_', year, '.csv'))
    write.csv(z, file = file.path(site_dir, res[1]), row.names = FALSE,
              quote = FALSE, na = '#N/A')                                               # "archive" result file, with all columns and all data, including rejected values
 
@@ -140,12 +142,12 @@
    if(failure)
       stop('Invalid QC codes')
 
-   res[2] <- file.path(rpath, paste0('WPP_', site, '_', year(z$Date[1]), '.csv'))
+   res[2] <- file.path(rpath, paste0('WPP_', site, '_', year, '.csv'))
    write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
              quote = FALSE, na = '#N/A')
 
    z[z == 'DR'] <- NA
-   res[3] <- file.path(rpath, paste0('core_', site, '_', year(z$Date[1]), '.csv'))
+   res[3] <- file.path(rpath, paste0('core_', site, '_', year, '.csv'))
    write.csv(z[, core_cols], file = file.path(site_dir, res[3]), row.names = FALSE,
              quote = FALSE, na = '')
 
@@ -156,7 +158,7 @@
    hash <- rbind(hash, data.frame(file = res, type = 'result', hash = get_file_hashes(file.path(site_dir, res))))
    write.table(hash, file = file.path(site_dir, rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
-   cat('\nSite ', site, ' processed for ', year(z$Date[1]), '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
+   cat('\nSite ', site, ' processed for ', year, '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
    cat('Results are in ', site_dir, '/\n', sep = '')
 
    if(report) {
