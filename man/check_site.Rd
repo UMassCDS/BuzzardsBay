@@ -18,3 +18,7 @@ Check that source files for a site and year haven't changed since \code{stitch_s
 to create result files. Uses \code{hash.txt}, created by \code{check_site}. Separately reports on
 missing hash file, missing source or result files, and changed source or result files.
 }
+\details{
+Note that check_site does not throw errors--it simply tells you what's wrong. A calling
+function (currently, just report_site) can use the silent return value to throw appropriate errors.
+}

@@ -7,6 +7,7 @@
 #' @param env Leave this argument alone.
 #' @inherit setup_example_dir returns
 #' @inheritDotParams setup_example_dir
+
 local_example_dir <- function(subdir = "bb_test", env = parent.frame(), ...) {
   test_dir <- file.path(tempdir(), subdir)
   if (file.exists(test_dir))

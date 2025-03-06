@@ -102,7 +102,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
    'element' <- function(x, l)                                                         # proper element function that does %in% as in APL
       Reduce('|', lapply(l, FUN = function(l, x) x == l, x))
 
-   fatal <- qc_codes$QC_Code[qc_codes$Rejection == 3]                                  # check for fatal 9999s (or whatever; it's rejection code 3)
+   fatal <- qc_codes$QC_Code[qc_codes$Rejection == 2]                                  # check for fatal 9999s (or whatever; it's rejection code 3)
    if(any(t <- element(z[, c('Gen_QC', paste0(sensor_cols, '_QC'))], fatal), na.rm = TRUE)) {
       w <- paste(unique(z$Date[apply(t, 1, FUN = any, na.rm = TRUE)]), collapse = ', ')
       s <- sum(t, na.rm = TRUE)

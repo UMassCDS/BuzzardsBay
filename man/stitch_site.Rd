@@ -9,7 +9,7 @@ stitch_site(site_dir, max_gap = 1, report = FALSE)
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results}
 
-\item{max_gap}{Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded}
+\item{max_gap}{Maximum gap to quietly accept between deployments (hours); a msg will be printed if this gap is exceeded}
 
 \item{report}{Run \code{report_site} if TRUE}
 }
