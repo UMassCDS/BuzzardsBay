@@ -16,10 +16,14 @@ test_that("parse_mx801_details() works", {
   f <- list.files(paths$deployment_cal_dir, full.names = TRUE)
   expect_no_error(md <- parse_mx801_details(f))
 
-
   paths <- lookup_paths(deployment_dir = deployment_dirs[3])
   f <- list.files(paths$deployment_cal_dir, full.names = TRUE)
   expect_no_error(md <- parse_mx801_details(f))
+
+  paths <- lookup_paths(deployment_dir = deployment_dirs[4])
+  f <- list.files(paths$deployment_cal_dir, full.names = TRUE)
+  expect_no_error(md4 <- parse_mx801_details(f))
+  expect_snapshot(md4$do_calibration)
 
 
 

@@ -1,3 +1,49 @@
+# BuzzardsBay 0.1.0.9019
+
+This update and the bug this fixes have no impact on users.
+
+* Fixed bug [#11](https://github.com/UMassCDS/BuzzardsBay/issues/11) in 
+  `lookup_paths()` that caused it to fail when using arguments other than
+  `deployment_dir`.  Also now it requires either `deployment_dir` or
+  `base_dir` arguments - but not necessarily `year`, `site`, or 
+  `deployment_date` and it will return the paths to all items that it 
+  is able to resolve.  
+  
+* Added unit test for `lookup_paths()`.
+
+# BuzzardsBay 0.1.0.9018
+
+* Fixed bug in Salinity check that could cause 
+  the low variation in salinity flag (`Slv`) to overwrite or duplicate 
+  other salinity flags.
+  This bug was first detected in the MX801 import but 
+  has been present for all previously run QAQC. 
+  It only affects salinity, and only in rows 
+  where low variation in salinity is detected. 
+  The low variation flag should always be correct but 
+  other salinity flags might be either dropped or erroneously show up 
+  along with the low variation in salinity flag. 
+  Non-salinity flags were not affected. 
+  
+* Suppressed confusing chatter from `readxls::read_excel()` that showed up when
+  calling `qc_deployment()` on output from MX801 logger.
+  
+* Updated test for MX801 logger output. 
+  
+  
+# BuzzardsBay 0.1.0.9017
+
+* Documentation edits
+* Added additional options to `get_expected_column_names()` to support 
+  aggregation and analysis modules.
+* Fixed bug in `parse_mx801_details()` so that it works regardless of how the 
+  the carriage returns or new lines within cells are encoded.  It previously 
+  worked with carriage return ("\r") but not new line ("\n").  I expect 
+  the differences in the input files may trace back to whether calibration was
+  done on a mac or PC but that's just a guess.
+  
+
+
 # BuzzardsBay 0.1.0.9016
 
 Fixed bug in `format_csv_date_time()` that caused it to drop the time component
@@ -63,13 +109,13 @@ In the YAML file the following items are required:
   software. 
   The output from HOBOware uses a GMT offset like “GMT-04:00”,
   which is not a broadly supported timezone but is accepted here.
-  The MX801 uses a timezone code “EST” which is also accepted here.
+  The MX801 uses a timezone code "EST" which is also accepted here.
 * **do_device:** Information on the DO sensor or logger with items:
-  * **product:** The dissolved oxygen sensor e.g. “HOBO U26-001 Dissolved Oxygen”,
-    "U26-01", or “MX801”.
+  * **product:** The dissolved oxygen sensor e.g. 
+  "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
   * **serial_number:** The device serial number.
 * **cond_device:** List with information on the conductivity sensor with items:
-  * **product:** The conductivity sensor e.g. “HOBO U24-002 Conductivity” or 
+  * **product:** The conductivity sensor e.g. "HOBO U24-002 Conductivity" or 
   "U24-002"
   * **serial_number:** Conductivity sensor serial number.
   

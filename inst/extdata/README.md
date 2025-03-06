@@ -59,8 +59,8 @@ but NOT the calibration files. Thus these don't work with `qc_deployment()`.
 
 ### BBC 2025-01- (04, 06, 27)
 
-Example output from the new MX8011 logger which has a different format from 
-the U24 and U26 loggers, and logges both conductivity and DO on one device.
+Example output from the new MX801 logger which has a different format from 
+the U24 and U26 loggers, and logs both conductivity and DO on one device.
 There are several possible calibration possibilities.
 
  * 2025-01-04 (2, 2) - two point calibration for both DO and Cond. calibration.
@@ -70,3 +70,11 @@ There are several possible calibration possibilities.
 Note, I think BBC might be a fake site.  These are real data from short tsests
 of the loggers.ss
 See: the  [BBC README.md file](./2025/BBC/README.md) for more details.
+
+### BBC 2025-02-14 
+
+More example output from MX801 logger. This one uses different line endings 
+inside cells than the previous three files.  
+The change in line endings prevented if from being processed correctly with
+`parse_mx901_details()` prior to bug fixed in 0.1.0.9017.
+

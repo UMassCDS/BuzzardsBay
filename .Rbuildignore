@@ -4,4 +4,8 @@
 ^README\.Rmd$
 ^data-raw$
 ^inst/rmd/*.html$
+<<<<<<< HEAD
 .lintr
+=======
+scripts/*
+>>>>>>> f0d0d31a6fc451c203af99c60bccb931a4fd5634
