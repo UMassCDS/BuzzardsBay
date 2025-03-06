@@ -61,16 +61,16 @@
 #' calibrated window.
 #' * **timezone:** The timezone as reported by the logger and/or calibration
 #' software.
-#' The output from HOBOware uses a GMT offset like “GMT-04:00”,
+#' The output from HOBOware uses a GMT offset like "GMT-04:00",
 #' which is not a broadly supported timezone but is accepted here.
-#' The MX801 uses a timezone code “EST” which is also accepted here.
+#' The MX801 uses a timezone code "EST" which is also accepted here.
 #' * **do_device:** Information on the DO sensor or logger with items:
 #'   * **product:** The dissolved oxygen sensor e.g.
-#'  “HOBO U26-001 Dissolved Oxygen”, "U26-01", or “MX801”.
+#'  "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
 #' * **serial_number:** The device serial number.
 #' * **cond_device:** List with information on the conductivity sensor with
 #'   items:
-#'   * **product:** The conductivity sensor e.g. “HOBO U24-002 Conductivity”
+#'   * **product:** The conductivity sensor e.g. "HOBO U24-002 Conductivity"
 #'   * **serial_number:** Conductivity sensor serial number
 #' Additional items that appear in the
 #' [metadata documentation](https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?tab=t.0)
