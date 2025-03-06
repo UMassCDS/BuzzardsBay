@@ -3,6 +3,10 @@
 # but not immediate rejection (see immediate_rejection_checks.R)
 # These all take the form of check_<data_col>()
 
+# Note depth is a little funky because it can throw a 7 which results in
+# immediate rejection, and because it potentially adds flags to two columns.
+# It is included here.
+
 # Temperature
 #  This is called both on the Dissolved O2 logger temperature and on the
 #   Conductivity logger temperature.
@@ -170,4 +174,35 @@ has_low_variation <- function(x, max_range = 0.01, n = 5) {
 
   low_var <- slider::slide_vec(end_of_low_streak, .after = n - 1, .f = any)
   return(low_var)
+}
+
+
+# depth <- c(seq(-0.1, 1, by = .1), seq(2, 10, by = 2))
+
+
+# Check Depth
+#  * If Depth is less than `min_depth` (defaults to 0) write 7 to `Depth_QC`,
+#    add `Wl` flag, and write `91` in `GEN_QC`.
+#  * If Depth is greater than `max_depth` (defaults to 9) write 7 to
+#   `Depth_QC`, add `Wh` to flags, and write `9999` to `GEN_QC`
+#  With regards to Gen_QC  which could be NA, 9, or 9999 due to other checks
+#  *  A 91 from depth does NOT overwrite a 9999 from other flags
+#  *  A 9999 from depth does NOT overwrite a 9 from other flags
+#  *  A 91 from depth DOES overwrite a 9 from other flags
+#  (Precedence is handled in qc_deployment() )
+check_depth <- function(depth) {
+  res <- data.frame(Depth_Flag = rep("", length(depth)),
+                    Gen_QC = NA,
+                    Depth_QC = NA)
+  water_low <- depth < bbp$min_depth
+  water_high <- depth > bbp$max_depth
+  res$Depth_Flag[water_low] <- "Wl:"
+  res$Gen_QC[water_low] <- 91
+
+  res$Depth_Flag[water_high] <- "Wh:"
+  res$Gen_QC[water_high] <- 9999
+
+  res$Depth_QC[water_high | water_low] <- 7
+
+  return(res)
 }
