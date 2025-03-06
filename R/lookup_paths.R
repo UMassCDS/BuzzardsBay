@@ -1,5 +1,5 @@
 
-
+# nolint start:cyclocomp_linter
 #' Lookup paths for data and parameter files
 #'
 #' This includes all the paths that relate to a deployment, site, year, or
@@ -105,144 +105,138 @@ lookup_paths <- function(base_dir = NULL, year = NULL, site = NULL,
 
   expected_names <- names(p)
 
-
-  d_dir <- deployment_dir # for succinct code
-
-  dep_defined <- TRUE # flag to indicate deployment is defined
-  # The deployment directory implies a base_dir, year, site, and deployment
-  # and those areguments are ignored when deployment_dir is supplied
-  if (!is.null(d_dir)) {
-
+  # If deployment directory is defined then use it to define all other
+  # arguments (base_dir, year, site, deployment_date)
+  if (!is.null(deployment_dir)) {
     # Standardize deployment dir path
-    d_dir <- gsub("[/\\\\]+", .Platform$file.sep, d_dir)
-    d_dir <- gsub("[/\\\\]$", "", d_dir) # drop trailing /
+    deployment_dir <- gsub("[/\\\\]+", .Platform$file.sep, deployment_dir)
+    deployment_dir <- gsub("[/\\\\]$", "", deployment_dir) # drop trailing /
 
-    base_dir <- cut_path_items(d_dir, 3)
-
-    dirs <- strsplit(d_dir, "[/\\\\]+")[[1]]
+    base_dir <- cut_path_items(deployment_dir, 3)
+    dirs <- strsplit(deployment_dir, "[/\\\\]+")[[1]]
     deployment_date <- dirs[length(dirs)]
     site <- dirs[length(dirs) - 1]
     year <- dirs[length(dirs) - 2]
     rm(dirs) # just used for three lines above
-  } else {
-    # No deployment dir then we expect all other arguments to be defined
-    if (is.null(base_dir) || is.null(year) || is.null(site)) {
-      stop("Need to define base_dir, year, site;
-           or deployment_dir")
-    }
-
-    if (is.null(deployment_date)) {
-      dep_defined <- FALSE
-    } else {
-      d_dir <- file.path(base_dir, year, site, deployment_date)
-    }
-
   }
 
-
-  if (!all(grepl("^[[:digit:]]{4}", year))) {
-    stop("year should be a four digit number")
+  if (is.null(base_dir)) {
+    stop("Need to define base_dir or or deployment_dir")
   }
 
+  # base files (don't need year, site, or deployment_date)
   p$base_dir <- base_dir
-  p$year_dir <- cut_path_items(d_dir, 2)
-  p$site_dir <- cut_path_items(d_dir, 1)
-
-  p$md_dir <- file.path(p$year_dir, "Metadata")
-
-  # Parameter files
-  p$sites <- file.path(p$md_dir, "sites.csv")
-  p$placements <- file.path(p$md_dir, "placements.csv")
-  p$import_types <- file.path(p$base_dir, "import_types.csv")
   p$global_parameters <-  file.path(p$base_dir, "bb_parameters.yml")
-  p$site_parameters <-  file.path(p$site_dir, "bb_parameters.yml")
+
+  # Year specific stuff
+  if (!is.null(year)) {
+    if (!all(grepl("^[[:digit:]]{4}", year))) {
+      stop("year should be a four digit number")
+    }
+    p$year <- year
+    p$year_dir <- file.path(base_dir, year)
+    p$md_dir <- file.path(p$year_dir, "Metadata")
+    p$sites <- file.path(p$md_dir, "sites.csv")
+    p$placements <- file.path(p$md_dir, "placements.csv")
+    p$import_types <- file.path(p$base_dir, "import_types.csv")
+  }
+
+  # Site specific stuff (also requires year)
+  if (!is.null(year) && !is.null(site)) {
+    p$site <- site
+    p$site_dir <- file.path(base_dir, year, site)
+    p$site_parameters <- file.path(p$site_dir, "bb_parameters.yml")
+  }
 
 
-  # These aren't paths but are useful
-  p$year <- year
-  p$site <- site
-
-
-
-  # Deployment specific stuff if the deployment is defined
-  if (dep_defined) {
+  # Deployment specific
+  if (!is.null(year) && !is.null(site) && !is.null(deployment_date)) {
 
     if (!all(grepl("^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$",
                    deployment_date))) {
-      stop("The deployment folder (", deployment_date, ") does not meet the ",
+      stop("The deployment date (", deployment_date, ") does not meet the ",
            "expected yyyy-mm-dd format.",
            " It should represent year-month-day with four digits for year and ",
            "2 digits for both month and day.")
     }
-    p$deployment_date <- deployment_date
 
-    p$deployment_dir <- d_dir
-    p$deployment_cal_dir <-  file.path(d_dir, "Calibrated")
+
+    deployment_dir <- file.path(base_dir, year, site, deployment_date)
+    p$deployment_date <- deployment_date
+    p$deployment_dir <- deployment_dir
+    p$deployment_cal_dir <-  file.path(deployment_dir, "Calibrated")
     p$deployment_auto_qc <-
-      file.path(d_dir,
+      file.path(deployment_dir,
                 paste0("Auto_QC_", site, "_", deployment_date, ".csv"))
     p$deployment_prelim_qc <-
-      file.path(d_dir,
+      file.path(deployment_dir,
                 paste0("Preliminary_QC_", site, "_",
                        deployment_date, ".csv"))
     p$deployment_final_qc <-
-      file.path(d_dir,
+      file.path(deployment_dir,
                 paste0("QC_", site, "_", deployment_date, ".csv"))
     p$deployment_metadata <-
-      file.path(d_dir,
+      file.path(deployment_dir,
                 paste0("Metadata_", site, "_", deployment_date, ".yml"))
     p$deployment_report <-
-      file.path(d_dir,
+      file.path(deployment_dir,
                 paste0("QC_", site, "_", deployment_date, "_report.html"))
 
-    p$deployment_auto_qc <- file.path(d_dir, paste0("Auto_QC_", site, "_",
-                                                    deployment_date, ".csv"))
-    p$deployment_prelim_qc <- file.path(d_dir, paste0("Preliminary_QC_", site,
-                                                      "_", deployment_date,
-                                                      ".csv"))
-    p$deployment_final_qc <- file.path(d_dir, paste0("QC_", site, "_",
-                                                     deployment_date, ".csv"))
-    p$deployment_metadata <- file.path(d_dir, paste0("Metadata_", site, "_",
-                                                     deployment_date, ".yml"))
-    p$deployment_report <- file.path(d_dir, paste0("QC_", site, "_",
-                                                   deployment_date,
-                                                   "_report.html"))
-  }
+    p$deployment_auto_qc <- file.path(deployment_dir,
+                                      paste0("Auto_QC_", site, "_",
+                                             deployment_date, ".csv"))
+    p$deployment_prelim_qc <- file.path(deployment_dir,
+                                        paste0("Preliminary_QC_", site,
+                                               "_", deployment_date,
+                                               ".csv"))
+    p$deployment_final_qc <- file.path(deployment_dir,
+                                       paste0("QC_", site, "_",
+                                              deployment_date, ".csv"))
+    p$deployment_metadata <- file.path(deployment_dir,
+                                       paste0("Metadata_", site, "_",
+                                              deployment_date, ".yml"))
+    p$deployment_report <- file.path(deployment_dir,
+                                     paste0("QC_", site, "_",
+                                            deployment_date,
+                                            "_report.html"))
 
+    #--------------------------------------------------------------------------#
+    # Identify preceding deployment auto qc file
+    # This is used when making reports
+    #--------------------------------------------------------------------------#
 
-  #----------------------------------------------------------------------------#
-  # Identify preceding deployment auto qc file
-  # This is used when making reports
-  #----------------------------------------------------------------------------#
-  deps <- list.files(p$site_dir,
-                     pattern =
-                       "^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$")
-  other_deps <- setdiff(deps, deployment_date) |>
-    lubridate::as_date()
-  preceding_deps <-
-    other_deps[other_deps < lubridate::as_date(deployment_date)]
-  if (length(preceding_deps > 0)) {
-    preceding_dep <-  max(preceding_deps)
-    preceding_dep_dir <- file.path(p$site_dir, preceding_dep)
-    # data_names are possible files for the preceding deployment
-    data_names <- paste0(c("QC", "Auto_QC"),
-                         "_", site, "_",
-                         preceding_dep, ".csv")
-    data_paths <- file.path(preceding_dep_dir, data_names)
+    deps <- list.files(p$site_dir,
+                       pattern =
+                         "^[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}$")
+    other_deps <- setdiff(deps, deployment_date) |>
+      lubridate::as_date()
+    preceding_deps <-
+      other_deps[other_deps < lubridate::as_date(deployment_date)]
 
-    p$preceding_auto_qc <- data_paths[file.exists(data_paths)][1]
+    if (length(preceding_deps > 0)) {
+      preceding_dep <-  max(preceding_deps)
+      preceding_dep_dir <- file.path(p$site_dir, preceding_dep)
+      # data_names are possible files for the preceding deployment
+      data_names <- paste0(c("QC", "Auto_QC"),
+                           "_", site, "_",
+                           preceding_dep, ".csv")
+      data_paths <- file.path(preceding_dep_dir, data_names)
 
-    rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
-  } else {
-    p$preceding_auto_qc <- NA
-  }
-  rm(deps, other_deps, preceding_deps)
+      p$preceding_auto_qc <- data_paths[file.exists(data_paths)][1]
 
+      rm(preceding_dep, preceding_dep_dir, data_names, data_paths)
+    }
+
+    rm(deps, other_deps, preceding_deps)
+
+  } # END deployment specific stuff
 
 
   if (!isTRUE(all.equal(names(p), expected_names))) {
     stop("Path lookup failed to produce expected list.",
-         "This is likely a problem with the code.")
+         "This is likely a problem with the package code.")
   }
+
   return(p)
 }
+#nolint end

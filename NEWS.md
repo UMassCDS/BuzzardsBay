@@ -1,3 +1,16 @@
+# BuzzardsBay 0.1.0.9019
+
+This update and the bug this fixes have no impact on users.
+
+* Fixed bug [#11](https://github.com/UMassCDS/BuzzardsBay/issues/11) in 
+  `lookup_paths()` that caused it to fail when using arguments other than
+  `deployment_dir`.  Also now it requires either `deployment_dir` or
+  `base_dir` arguments - but not necessarily `year`, `site`, or 
+  `deployment_date` and it will return the paths to all items that it 
+  is able to resolve.  
+  
+* Added unit test for `lookup_paths()`.
+
 # BuzzardsBay 0.1.0.9018
 
 * Fixed bug in Salinity check that could cause 
@@ -96,13 +109,13 @@ In the YAML file the following items are required:
   software. 
   The output from HOBOware uses a GMT offset like “GMT-04:00”,
   which is not a broadly supported timezone but is accepted here.
-  The MX801 uses a timezone code “EST” which is also accepted here.
+  The MX801 uses a timezone code "EST" which is also accepted here.
 * **do_device:** Information on the DO sensor or logger with items:
-  * **product:** The dissolved oxygen sensor e.g. “HOBO U26-001 Dissolved Oxygen”,
-    "U26-01", or “MX801”.
+  * **product:** The dissolved oxygen sensor e.g. 
+  "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
   * **serial_number:** The device serial number.
 * **cond_device:** List with information on the conductivity sensor with items:
-  * **product:** The conductivity sensor e.g. “HOBO U24-002 Conductivity” or 
+  * **product:** The conductivity sensor e.g. "HOBO U24-002 Conductivity" or 
   "U24-002"
   * **serial_number:** Conductivity sensor serial number.
   
