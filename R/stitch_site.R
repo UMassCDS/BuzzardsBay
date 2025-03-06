@@ -1,4 +1,4 @@
-'stitch_site' <- function(site_dir, max_gap = 1, report = FALSE) {
+stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
 
    #' Stitch all deployments for a site and year
    #'
@@ -16,7 +16,7 @@
    #' 1. `hash.txt` - a tab-delimited file lists paths to deployment files and md5 hashes.
    #'
    #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
-   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
+   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a msg will be printed if this gap is exceeded
    #' @param report Run `report_site` if TRUE
    #' @importFrom lubridate interval dminutes date duration dhours year yday
    #' @import utils
@@ -73,14 +73,14 @@
          z <- rbind(z, y, qc[[i + 1]])                                                 #       build up result: what we've already got, gap fill, and second deployment of pair
 
          if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                  #       warn if there's a large gap between deployments
-            cat('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d), '\n', sep = '')
+            msg('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d))
       }
 
 
    #Add additional columns and put everything in the right order
 
-   year <- year(z$Date[1])
-   f <- lookup_paths(dirname(dirname(site_dir)), year)$sites
+   # f <- lookup_paths(dirname(dirname(site_dir)), year)$sites
+   f <- paths$sites
 
    if(!file.exists(f))
       stop('sites.csv is missing')
@@ -114,6 +114,8 @@
 
    # write three versions of data file
 
+   year <- year(z$Date[1])
+
    rpath <- 'combined'
    if(!dir.exists(f <- file.path(site_dir, rpath)))                     # create result combined/ directory
       dir.create(f)
@@ -132,7 +134,7 @@
    for(sensor in sensor_cols) {                                                        # For each sensor column,
       r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns
       if(any(is.na(r))) {
-         cat('*** Invalid QC code for ', sensor, ' on ', paste0(z$Date[is.na(r)], collapse = ', '), '\n', sep = '')
+         msg('*** Invalid QC code for ', sensor, ' on ', paste0(z$Date[is.na(r)], collapse = ', '))
          failure <- TRUE
       }
       r[is.na(r)] <- 0
@@ -158,11 +160,11 @@
    hash <- rbind(hash, data.frame(file = res, type = 'result', hash = get_file_hashes(file.path(site_dir, res))))
    write.table(hash, file = file.path(site_dir, rpath, 'hash.txt'), sep = '\t', row.names = FALSE, quote = FALSE)
 
-   cat('\nSite ', site, ' processed for ', year, '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.\n', sep = '')
-   cat('Results are in ', site_dir, '/\n', sep = '')
+   msg('\nSite ', site, ' processed for ', year, '. There were ', length(qc), ' deployments and a total of ', format(dim(z)[1], big.mark = ','), ' rows.')
+   msg('Results are in ', site_dir, '/')
 
    if(report) {
-      cat('\n')
+      msg('')
       report_site(site_dir, check = FALSE)
    }
 }

@@ -1,4 +1,4 @@
-'daily_stats' <- function(site, year, core) {
+daily_stats <- function(site, year, core) {
 
   #' Produce daily stats for a site
   #'

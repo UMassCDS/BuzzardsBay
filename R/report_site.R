@@ -1,4 +1,4 @@
-'report_site' <- function(site_dir, check = TRUE) {
+report_site <- function(site_dir, check = TRUE) {
 
   #' Produce stats and a report for a site and year
   #'
@@ -22,7 +22,7 @@
     if(!check_site(site_dir))
       stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
     else
-      cat('\n')
+      msg('')
   }
 
 
@@ -34,7 +34,7 @@
   daily <- daily_stats(site, year, core)                                                  # calculate daily stats
   f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
   write.csv(daily, file = f, row.names = FALSE, quote = FALSE, na = '')
-  cat('Daily stats written to ', f, '\n', sep = '')
+  msg('Daily stats written to ', f)
 
 
   # seasonal <- seasonal_stats(...)                                              *****    # calculate seasonal stats
@@ -47,5 +47,5 @@
 
   # ***** write PDF
 
-  cat('Seasonal report written to ', f, '\n', sep = '')
+  msg('Seasonal report written to ', f)
 }

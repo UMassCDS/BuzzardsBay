@@ -1,4 +1,4 @@
-'replace_na_runs' <- function(x, max_run = 6, boundary = FALSE) {
+replace_na_runs <- function(x, max_run = 6, boundary = FALSE) {
 
    #' Replace short runs of NA in logical vector
    #'

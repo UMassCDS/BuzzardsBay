@@ -1,4 +1,4 @@
-'get_file_hashes' <- function(files) {
+get_file_hashes <- function(files) {
 
    #' Get md5 hashes for a vector of files
    #'

@@ -1,10 +1,13 @@
-'check_site' <- function(site_dir) {
+check_site <- function(site_dir) {
 
   #' Check to be sure that result files from `stitch_site` are up to date
   #'
   #' Check that source files for a site and year haven't changed since `stitch_site` was used
   #' to create result files. Uses `hash.txt`, created by `check_site`. Separately reports on
   #' missing hash file, missing source or result files, and changed source or result files.
+  #'
+  #' Note that check_site does not throw errors--it simply tells you what's wrong. A calling
+  #' function (currently, just report_site) can use the silent return value to throw appropriate errors.
   #'
   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include
   #' QCed results and result files from `stitch_site`.
@@ -14,7 +17,7 @@
 
 
   if(!file.exists(f <- file.path(site_dir, 'combined/hash.txt'))) {
-    message('*** Hash file ', f, ' is missing.\nMost likely either your path is wrong or stitch_site hasn\'t been run for this deployment.')
+    msg('*** Hash file ', f, ' is missing.\nMost likely either your path is wrong or stitch_site hasn\'t been run for this deployment.')
     ok <- FALSE
   }
   else {
@@ -27,25 +30,25 @@
     ok <- !any(changed | missing)                                           # are we good?
 
     if(!ok)
-      message('*** Errors validating site ', site_dir)
+      msg('*** Errors validating site ', site_dir)
 
     if(any(missing & hash$type == 'source'))
-      message('Source files used in the previous run have apparently been deleted. If this was intentional, rerun stitch_site.')
+      msg('Source files used in the previous run have apparently been deleted. If this was intentional, rerun stitch_site.')
 
     if(any(changed & hash$type == 'source'))
-      message('Source files have changed since stitch_site was run. Rerun stitch_site to update.')
+      msg('Source files have changed since stitch_site was run. Rerun stitch_site to update.')
 
     if(any(missing & hash$type == 'result'))
-      message('Result files are missing. Rerun stitch_site to recreate them.')
+      msg('Result files are missing. Rerun stitch_site to recreate them.')
 
     if(any(changed & hash$type == 'result'))
-      message('Result files have been changed since stitch_site was run. Rerun stitch_site to replace them.')
+      msg('Result files have been changed since stitch_site was run. Rerun stitch_site to replace them.')
 
 
     if(ok)
-      message('Site ', site_dir, ' validated. Result files are up to date.')
+      msg('Site ', site_dir, ' validated. Result files are up to date.')
     else {
-      #message('\n')
+      msg('')
       print(data.frame(file = hash$file, status = ifelse(missing, 'missing', ifelse(changed, 'changed', 'ok'))))
     }
   }

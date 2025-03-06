@@ -1,4 +1,4 @@
-'longest_duration' <- function(x) {
+longest_duration <- function(x) {
 
    #' Give duration of the longest run of low DO for each day
    #'

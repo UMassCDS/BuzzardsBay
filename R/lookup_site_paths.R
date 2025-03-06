@@ -1,4 +1,4 @@
-'lookup_site_paths' <- function(site_dir, warn = FALSE) {
+lookup_site_paths <- function(site_dir, warn = FALSE) {
 
   #' Look up paths for a specified site
   #'
@@ -18,7 +18,7 @@
 
   z <- list(sites = file.path(dirname(site_dir), 'Metadata/sites.csv'))   # result$sites
   if(!file.exists(z$sites))
-    stop(paste0('The site metadata file is missing for ', site_dir))
+    stop(paste0('The sites metadata file is missing for ', site_dir))
 
   site <- toupper(basename(site_dir))                                     # pull 3 letter site code out of path
 
@@ -36,14 +36,12 @@
     m <- paste0('Missing deployment files: ', basename(c(z$deployments$QCpath[t[, 1]], z$deployments$mdpath[t[, 2]])), collapse = ', ')
     if(warn) {                                                            # if warn,
       z$deployments <- z$deployments[!t[, 1] | t[, 2], ]                  #    drop offending rows and whine
-      cat('Note: ', m, '\n', sep = '')
+      msg('Note: ', m)
     }
     else                                                                  # else, throw an error
       stop(m)
   }
 
-
   z$deployments$hash <- get_file_hashes(z$deployments$QCpath)             # get hashes of QC files
-
   z
 }
