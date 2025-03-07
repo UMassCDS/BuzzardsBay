@@ -47,5 +47,5 @@ report_site <- function(site_dir, check = TRUE) {
 
   # ***** write PDF
 
-  msg('Seasonal report written to ', f)
+ #### msg('Seasonal report written to ', f)
 }
