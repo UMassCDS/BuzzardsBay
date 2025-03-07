@@ -19,3 +19,15 @@ x <- lookup_site_paths('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/AB2')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/rb1')
+
+
+# check sites
+check_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/AB2')
+check_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
+check_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/rb1')
+
+
+# get reports
+report_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/AB2')
+report_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
+report_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/rb1')

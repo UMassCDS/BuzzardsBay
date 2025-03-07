@@ -5,7 +5,7 @@
 
 
 expected_column_names <- list(
-# nolint start: indentation_linter
+  # nolint start: indentation_linter
   calibrated =
     c("Date_Time",
       "Raw_DO",
@@ -69,11 +69,11 @@ expected_column_names <- list(
 
 
   final_all = c("Waterbody",                              # This is the full set of final columns, used in the archive result file
-                "WPP_Station_Identifier",
                 "Site",
                 "Latitude",
                 "Longitude",
                 "Depth",
+                "Depth_QC",
                 "Unique_ID",
                 "Date",
                 "Date_Time",
@@ -111,15 +111,14 @@ expected_column_names <- list(
   final_core = c("Site",                                # A concise subset of columns for the core result file
                  "Depth",
                  "Unique_ID",
+                 "Date",
                  "Date_Time",
                  "Julian_Date",
                  "Temp_CondLog",
                  "DO",
                  "DO_Pct_Sat",
                  "Salinity",
-                 "High_Range",
-                 "QA_Comment",
-                 "Field_Comment"),
+                 "High_Range"),
 
   final_sensors = c("Depth",                            # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
                     "Temp_DOLog",
@@ -130,7 +129,7 @@ expected_column_names <- list(
                     "Salinity",
                     "High_Range",
                     "Spec_Cond")
-    )
+)
 # nolint end
 
 # final_WPP the same as final_all for now

@@ -1,3 +1,28 @@
+# BuzzardsBay 0.1.0.9020
+
+This update introduces the **Analysis Module**. This extension stitches deployments
+for a site and year, producing three result data files (archive, WPP, and core). 
+It has a facility to check that result files are up to date. And it produces
+a daily statistics file and a report with seasonal stats and a series of 
+graphs.
+
+Included:
+
+- `stitch_site()`. Stitches deployments and creates result data files.
+
+- `check_site()`. Checks to see if deployment data have changed since 
+`stitch_site()` was run.
+
+- `report_site()`. Produces a CSV of daily stats and PDF report with
+seasonal stats and graphs. **This function is only partially implemented**
+at this point: it only produces the daily stats file.
+
+For more details, see `README`.
+
+**Note**: you'll need to update sites.csv in your `<year>\Metadata\` folders
+to include WaterBody. If WaterBody, Latitude, or Longitude are missing, 
+stitch_site will still run, but will report them as missing.
+
 # BuzzardsBay 0.1.0.9019
 
 This update and the bug this fixes have no impact on users.

@@ -10,6 +10,12 @@ The goal of **BuzzardsBay** (R package) is to process and analyze data
 for the [Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
 project](https://www.woodwellclimate.org/project/combb/).
 
+This package is split into two modules, the **QC Module**, which prepares calibrated 
+data and produces a report in preparation for a quality control editing of deployment files,
+and the **Analysis Module**, which stitches deployment files for a site and year into a set
+of result files, produces a daily statistical summary file, and a report with seasonal statistics
+and a set of graphs.
+
 ## Installation
 
 You can install or update **BuzzardsBay** from
@@ -19,10 +25,11 @@ You can install or update **BuzzardsBay** from
 # install.packages("devtools")
 devtools::install_github("UMassCDS/BuzzardsBay")
 ```
+## QC Module
 
-## Usage
+### Usage
 
-The primary function is `qc_deployment()` it reads in calibrated data
+The primary function in the QC Module is `qc_deployment()` it reads in calibrated data
 for a deployment and generates files containing merged and flagged
 copies of the data, and an html report with plots of the data.
 
@@ -54,7 +61,7 @@ deployment_dir <- ""  # Provide full path here. Don't include `Calibration/`
 qc_deployment(deployment_dir)
 ```
 
-## Running on example data
+### Running on example data
 
 Create an example data folder structure and deployment with
 `setup_example_dir()`. If you specify a path with the `parent_dir`
@@ -79,7 +86,7 @@ The code above will only work once as `qc_deployment()` will throw an
 error if the output already exists. To run again create a fresh example
 directory with: `setup_example_dir(delete_old = TRUE)`
 
-### Output
+#### Output
 
 `qc_deployment()` writes two identical CSV files, a metadata file, and
 an HTML report to the deployment directory.
@@ -97,7 +104,7 @@ an HTML report to the deployment directory.
   `make_deployment_report(deployment_dir)` as long as the Auto QC and
   metadata files are present.
 
-#### Tabular data
+##### Tabular data
 
 Here are a few lines of the data written to the two CSV files when using
 `setup_example_dir()`.
@@ -115,7 +122,7 @@ Here are a few lines of the data written to the two CSV files when using
 | RB1  | 2023-06-02 | 2023-06-02 19:10:00 |        |       | 19:10:00 |         |      21.40 |               |        22.42 |                 |   7.71 |           | 6.66 |       |                   |       89.3 |               |  29.1832 |             |                    |    30905.5 |               |   45118.5 |              |     |            |               |
 | RB1  | 2023-06-02 | 2023-06-02 19:20:00 |        |       | 19:20:00 |         |      21.48 |               |        22.55 |                 |   7.98 |           | 6.90 |       |                   |       92.6 |               |  29.1648 |             |                    |    30971.9 |               |   45093.0 |              |     |            |               |
 
-#### Metadata
+##### Metadata
 
 This is the metadata derived from the example.
 
@@ -168,3 +175,41 @@ This is the metadata derived from the example.
   - serial_number: 20636185
   - version_number: 1.52
   - header_created: 2019-06-10 08:05:37
+  
+## Analysis Module
+
+The Analysis Module consists of three primary functions: `stitch_site()`, `check_site()`, and 
+`report_site()`. Each takes the site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
+`"~/BB_Data/2022/AB2"`.
+
+1. `stitch_site()` reads the deployment files for the specified site and year and merges them into
+a single file. Gaps between deployments are filled with missing values (a warning is displayed if
+the gap is greater than 1 hour; this may be changed with the `max_gap` option, setting the maximum 
+gap (in hours) to accept silently. Three result files are written to 
+`/BB_Data/<year>/<site>/<combined>/`:
+
+   a. The **archive** file, e.g., `archive_AB2_2024.csv`, with all columns and values, including rejected
+data. Missing data are represented by `#N/A`. This file is intended to be for long-term storage of 
+the complete set of QCed data.
+
+   b. The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns. Rejected values are replaced with 
+`DR` (for "data rejected"). Missing data are represented by `#N/A`. This file is in the format
+that MassDEP wants.
+
+   c. The **core** file, e.g., `core_AB2_2024.csv`, with selected columns. Rejected values and missing
+values are represented by blanks. This is the file used for statistics and graphs in the report, and
+is also intended for sharing with collaboraters. 
+
+   `stitch_site()` can optionally run `report_site()` (use `report = TRUE`) to stitch and produce 
+a report for the site in one call.
+
+2. `check_site()`, intended to be run after some time has elapsed since running `stitch_site()`, checks
+to see if any of the deployment files have been updated or if any of the result data files have changed
+(likely through inadvertant editing). It also checks for missing files. If a site passes `check_site()`,
+the result data files are up to date. If it fails, result files and the report need to be recreated by
+running `stitch_site()` again.
+
+3. `report_site()` reads the `core` file produced by `stitch_site()` and produces the daily statistics 
+file, e.g., `combined\daily_stats_AB2_2024.csv` and the site report, `combined\site_report_AB2_2024.pdf`.
+**Note: the site report is not yet implemented**. `report_site()` normally runs `check_site()` before
+producing the report and throws an error if the check fails; you can override this with `check = FALSE`.
