@@ -1,27 +1,27 @@
+#' Stitch all deployments for a site and year
+#'
+#' Merges all QCed deployments for the specified site and year and writes result files. Missing
+#' dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
+#' that are out range for their sensor are flagged. Writes three versions of the data file for the
+#' complete season, and hash files for use by `check_site`.
+#'
+#' Three versions of the data file are written to <site_dir>/combined/:
+#' 1. `archive_<site>_<year>.csv` - contains all columns, for complete archival.
+#' 2. `WPP_<site>_<year>.csv` - contains only columns required by MassDEP (a.k.a. the "WPP" file).
+#' 3. `core_<site>_<year>` - just the good stuff. This is the file used for producing summaries and reports.
+#'
+#' An additional file is written for internal use by `check_site`:
+#' 1. `hash.txt` - a tab-delimited file lists paths to deployment files and md5 hashes.
+#'
+#' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
+#' @param max_gap Maximum gap to quietly accept between deployments (hours); a msg will be printed if this gap is exceeded
+#' @param report Run `report_site` if TRUE
+#' @importFrom lubridate interval dminutes date duration dhours year yday
+#' @import utils
+#' @export
+
+
 stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
-
-   #' Stitch all deployments for a site and year
-   #'
-   #' Merges all QCed deployments for the specified site and year and writes result files. Missing
-   #' dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
-   #' that are out range for their sensor are flagged. Writes three versions of the data file for the
-   #' complete season, and hash files for use by `check_site`.
-   #'
-   #' Three versions of the data file are written to <site_dir>/combined/:
-   #' 1. `archive_<site>_<year>.csv` - contains all columns, for complete archival.
-   #' 2. `WPP_<site>_<year>.csv` - contains only columns required by MassDEP (a.k.a. the "WPP" file).
-   #' 3. `core_<site>_<year>` - just the good stuff. This is the file used for producing summaries and reports.
-   #'
-   #' An additional file is written for internal use by `check_site`:
-   #' 1. `hash.txt` - a tab-delimited file lists paths to deployment files and md5 hashes.
-   #'
-   #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QCed results
-   #' @param max_gap Maximum gap to quietly accept between deployments (hours); a msg will be printed if this gap is exceeded
-   #' @param report Run `report_site` if TRUE
-   #' @importFrom lubridate interval dminutes date duration dhours year yday
-   #' @import utils
-   #' @export
-
 
 
    paths <- lookup_site_paths(site_dir, warn = TRUE)
@@ -78,8 +78,6 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
 
 
    #Add additional columns and put everything in the right order
-
-   # f <- lookup_paths(dirname(dirname(site_dir)), year)$sites
    f <- paths$sites
 
    if(!file.exists(f))
@@ -88,11 +86,13 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
    if(!site %in% x$site)                                                               # being careful
       stop(paste0('Site ', site, ' is not in sites.csv'))
 
-   z$Waterbody <- x$WaterBody[x$site == site]                                          # get waterbody
+   if(!all(is.na(x$WaterBody)))
+      z$Waterbody <- x$WaterBody[x$site == site]                                       # get waterbody
 
-   if(all(is.na(z$Latitude)))                                                          # If lat/long aren't present, pull from sites file - only if all missing
+   if(all(is.na(z$Latitude)) & !all(is.na(z$Latitude)))                                # If lat/long aren't present, pull from sites file - only if all missing
       z$Latitude <- x$latitude[x$site == site]
-   if(all(is.na(z$Longitude)))
+
+   if(all(is.na(z$Longitude)) & !all(is.na(z$Longitude)))
       z$Longitude <- x$longitude[x$site == site]
 
    z$Unique_ID <- 1:dim(z)[1]                                                          # unique ID is simply row number

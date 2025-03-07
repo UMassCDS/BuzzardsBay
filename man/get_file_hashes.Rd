@@ -16,3 +16,4 @@ A matching vector of md5 hashes
 Given one or more file paths and names, return md5 hashes for each. Returns
 NA for files that don't exist.
 }
+\keyword{internal}

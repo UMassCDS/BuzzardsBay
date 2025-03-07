@@ -27,3 +27,4 @@ evening. Reported durations are no longer than 24 hours.
 If trigger is all false for a day, the result is 0. If trigger is all NA
 for a day, the result is NA.
 }
+\keyword{internal}

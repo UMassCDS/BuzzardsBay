@@ -1,5 +1,3 @@
-check_site <- function(site_dir) {
-
   #' Check to be sure that result files from `stitch_site` are up to date
   #'
   #' Check that source files for a site and year haven't changed since `stitch_site` was used
@@ -14,6 +12,8 @@ check_site <- function(site_dir) {
   #' @return Silently returns TRUE if validation was successful.
   #' @export
 
+
+check_site <- function(site_dir) {
 
 
   if(!file.exists(f <- file.path(site_dir, 'combined/hash.txt'))) {

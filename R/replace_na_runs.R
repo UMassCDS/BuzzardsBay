@@ -1,5 +1,3 @@
-replace_na_runs <- function(x, max_run = 6, boundary = FALSE) {
-
    #' Replace short runs of NA in logical vector
    #'
    #' Any runs of NA not longer than `max_run` that are surrounded by TRUE are
@@ -12,7 +10,10 @@ replace_na_runs <- function(x, max_run = 6, boundary = FALSE) {
    #' @param max_run The maximum run length to replace
    #' @param boundary How to treat values beyond the edge of the data
    #' @return A vector corresponding to `x` where qualifying runs have been replaced with TRUE
+   #' @keywords internal
 
+
+replace_na_runs <- function(x, max_run = 6, boundary = FALSE) {
 
 
    y <- rle2(x)                                                # get lengths and values of runs (including runs of NA, thus rle2 and not base::rle)

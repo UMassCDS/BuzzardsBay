@@ -24,3 +24,4 @@ replaced with TRUE. All other NAs are replaced with FALSE.
 Use \code{boundary} to specify behavior at data boundaries. For instance, if bounadary = TRUE,
 then c(NA, TRUE) would result in c(TRUE, TRUE); otherwise the result would be c(FALSE, TRUE).
 }
+\keyword{internal}

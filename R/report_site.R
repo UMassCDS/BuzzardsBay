@@ -1,5 +1,3 @@
-report_site <- function(site_dir, check = TRUE) {
-
   #' Produce stats and a report for a site and year
   #'
   #' Produces daily stats and a report with seasonal stats and a number of graphs for a specified site and year.
@@ -16,6 +14,8 @@ report_site <- function(site_dir, check = TRUE) {
   #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
   #' @export
 
+
+report_site <- function(site_dir, check = TRUE) {
 
 
   if(check) {

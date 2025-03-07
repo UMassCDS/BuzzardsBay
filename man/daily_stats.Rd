@@ -19,3 +19,4 @@ Data frame with one row for each day of depolyment, and columns with a number of
 \description{
 Produces a data frame of daily stats.
 }
+\keyword{internal}
