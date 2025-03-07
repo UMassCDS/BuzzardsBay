@@ -117,7 +117,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
    year <- year(z$Date[1])
 
    rpath <- 'combined'
-   if(!dir.exists(f <- file.path(site_dir, rpath)))                     # create result combined/ directory
+   if(!dir.exists(f <- file.path(site_dir, rpath)))                                    # create result combined/ directory
       dir.create(f)
 
    res <- NULL
@@ -146,12 +146,12 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
 
    res[2] <- file.path(rpath, paste0('WPP_', site, '_', year, '.csv'))
    write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
-             quote = FALSE, na = '#N/A')
+             quote = FALSE, na = '#N/A')                                                # "WPP" result file, with all columns; rejected values replaced with "DR"
 
    z[z == 'DR'] <- NA
    res[3] <- file.path(rpath, paste0('core_', site, '_', year, '.csv'))
    write.csv(z[, core_cols], file = file.path(site_dir, res[3]), row.names = FALSE,
-             quote = FALSE, na = '')
+             quote = FALSE, na = '')                                                   # "core" result file, with selected columns; rejected values replaced with blank
 
 
    x <- paths$deployments$QCpath
