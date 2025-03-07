@@ -29,19 +29,24 @@ test_that('stitching works', {
    x$DO_QC[sek(50)] <- codes
    x$Salinity_QC[sek(70)] <- codes
    write.csv(x, f)
-
-   expect_no_error(stitch_site(site_dir))
+   expect_no_error(quiet(stitch_site(site_dir)))
    expect_snapshot(stitch_site(site_dir))
 
-   ### NOW READ STITCHED RESULTS AND COMPARE THOSE WITH A SNAPSHOT
+
+   r <- file.path(site_dir, 'combined', list.files(file.path(site_dir, 'combined')))
+   r <- r[grep('.csv$', r)]
+   expect_snapshot(get_file_hashes(r))                                                       # all 3 result files should match
 
 
    f <- file.path(site_dir, '2024-08-16/QC_AB2_2024-08-16.csv')                              # add a deadly 9999 QC code
    x <- read.csv(f)
    x$Gen_QC[17] <- 9999
    write.csv(x, f)
+   expect_error(quiet(stitch_site(site_dir)))
 
-   expect_error(stitch_site(site_dir))
-   expect_snapshot(stitch_site(site_dir))
+
+   x$Gen_QC[17] <- 137                                                                       # add a code that's not in the table
+   write.csv(x, f)
+   expect_error(quiet(stitch_site(site_dir)))
 
 })
