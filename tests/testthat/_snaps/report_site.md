@@ -6,7 +6,6 @@
       Site BB_Data/2024/AB2 validated. Result files are up to date.
       
       Daily stats written to BB_Data/2024/AB2/combined/daily_stats_AB2_2024.csv
-      Seasonal report written to BB_Data/2024/AB2/combined/report_AB2_2024.csv
 
 ---
 
