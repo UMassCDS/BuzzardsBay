@@ -209,8 +209,7 @@ to see if any of the deployment files have been updated or if any of the result 
 the result data files are up to date. If it fails, result files and the report need to be recreated by
 running `stitch_site()` again.
 
-3.`report_site()` reads the `core` file produced by `stitch_site()` and produces the daily statistics 
+3. `report_site()` reads the `core` file produced by `stitch_site()` and produces the daily statistics 
 file, e.g., `combined\daily_stats_AB2_2024.csv` and the site report, `combined\site_report_AB2_2024.pdf`.
 **Note: the site report is not yet implemented**. `report_site()` normally runs `check_site()` before
 producing the report and throws an error if the check fails; you can override this with `check = FALSE`.
-
