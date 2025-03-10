@@ -23,6 +23,8 @@ test_that('report is correct', {
    f <- file.path(site_dir, 'combined', 'daily_stats_AB2_2024.csv')                             # check stats
    expect_snapshot(read.csv(f))
 
+   writeLines('abcdef', file.path(site_dir, 'combined/report_hash.txt'))                        # trash the report hash
+   expect_no_error(quiet(check_site(site_dir)))                                                 # this shouldn't matter
 
 
 

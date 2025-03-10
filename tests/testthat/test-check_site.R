@@ -21,4 +21,10 @@ test_that('check_site gives proper messages', {
    file.remove(hf)
    expect_snapshot(check_site(site_dir))                                                     # snapshot of missing hash file
 
+
+   quiet(stitch_site(site_dir))                                                              # start over to make sure we're good on report hash
+   quiet(report_site(site_dir))
+   expect_snapshot(check_site(site_dir))                                                     # snapshot when report hash is good
+   writeLines('abcdef', file.path(site_dir, 'combined/report_hash.txt'))                     # trash the report hash
+   expect_snapshot(check_site(site_dir))                                                     # and when it's bad
 })

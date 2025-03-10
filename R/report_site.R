@@ -19,14 +19,14 @@ report_site <- function(site_dir, check = TRUE) {
 
 
   if(check) {
-    if(!check_site(site_dir))
+    if(!check_site(site_dir, check_report = FALSE))
       stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
     else
       msg('')
   }
 
 
-  site <- basename(site_dir)
+  site <- toupper(basename(site_dir))
   year <- basename(dirname(site_dir))
 
   core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
@@ -47,5 +47,10 @@ report_site <- function(site_dir, check = TRUE) {
 
   # ***** write PDF
 
- #### msg('Seasonal report written to ', f)
+  #### msg('Seasonal report written to ', f)
+
+
+
+  x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))
+  writeLines(x, file.path(site_dir, 'combined/report_hash.txt'))                        # write report hash, used to see if reports are up to date in check_site
 }
