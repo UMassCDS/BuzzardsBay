@@ -31,13 +31,13 @@ report_site <- function(site_dir, check = TRUE) {
 
   core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
-  daily <- daily_stats(site, year, core)                                                  # calculate daily stats
+  daily <- daily_stats(core)                                                            # calculate daily stats
   f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
   write.csv(daily, file = f, row.names = FALSE, quote = FALSE, na = '')
   msg('Daily stats written to ', f)
 
 
-  # seasonal <- seasonal_stats(...)                                              *****    # calculate seasonal stats
+  seasonal <- seasonal_stats(core)                                                      # calculate seasonal stats
 
   # *** now do plots............
 
