@@ -25,6 +25,11 @@ longest_duration <- function(x) {
 
    x$Date_Time <- as.POSIXct(x$Date_Time)                                                    # convert time from text to time object
 
+
+   m <- x$Date_Time == as.POSIXct(x$Date)                                                    # well, this is annoying: runs that end at midnight are too short, because midnight is tomorrow
+   x$Date[m] <- as.character(lubridate::date(x$Date_Time[m] - 1))                            # subtract 1 second to treat midnight as today 🙄
+
+
    days <- unique(x$Date)                                                                    # we'll loop through days
    z <- rep(NA, length(days))                                                                # result is a vector with a value for each day
    for(i in 1:length(days)) {                                                                # for each day,
@@ -42,7 +47,7 @@ longest_duration <- function(x) {
          d <- d[d$start.Group.1 != 0,]                                                       #    drop group 0
          d <- d[d$start.Group.1 %in% y$g[y$today], ]                                         #    and drop groups that didn't occur today
          if(dim(d)[1] > 0) {                                                                 #    if any runs,
-            z[i] <- max(as.numeric((lubridate::as.duration(d$end.x - d$start.x))) / 60 ^ 2)  #       max duration below threshold in fractional hours
+            z[i] <- max((lubridate::as.duration(d$end.x - d$start.x)) / dhours(1))           #       max duration below threshold in fractional hours
          }
          if(is.na(z[i]))                                                                     #    if no low-DO events, return 0
             z[i] <- 0

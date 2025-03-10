@@ -1,19 +1,21 @@
-  #' Check to be sure that result files from `stitch_site` are up to date
-  #'
-  #' Check that source files for a site and year haven't changed since `stitch_site` was used
-  #' to create result files. Uses `hash.txt`, created by `check_site`. Separately reports on
-  #' missing hash file, missing source or result files, and changed source or result files.
-  #'
-  #' Note that check_site does not throw errors--it simply tells you what's wrong. A calling
-  #' function (currently, just report_site) can use the silent return value to throw appropriate errors.
-  #'
-  #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include
-  #' QCed results and result files from `stitch_site`.
-  #' @return Silently returns TRUE if validation was successful.
-  #' @export
+#' Check to be sure that result files from `stitch_site` are up to date
+#'
+#' Check that source files for a site and year haven't changed since `stitch_site` was used
+#' to create result files. Uses `hash.txt`, created by `check_site`. Separately reports on
+#' missing hash file, missing source or result files, and changed source or result files.
+#'
+#' Note that check_site does not throw errors--it simply tells you what's wrong. A calling
+#' function (currently, just report_site) can use the silent return value to throw appropriate errors.
+#'
+#' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include
+#' QCed results and result files from `stitch_site`.
+#' @param check_report If TRUE, check to see if the report is up to date. Don't check when calling from
+#' report_site, of course.
+#' @return Silently returns TRUE if validation was successful.
+#' @export
 
 
-check_site <- function(site_dir) {
+check_site <- function(site_dir, check_report = TRUE) {
 
 
   if(!file.exists(f <- file.path(site_dir, 'combined/hash.txt'))) {
@@ -21,13 +23,13 @@ check_site <- function(site_dir) {
     ok <- FALSE
   }
   else {
-    hash <- read.table(f, sep = '\t', header = TRUE)                        # read hash table from previous run
-    newhash <- get_file_hashes(file.path(site_dir, hash$file))              # and rehash these files
+    hash <- read.table(f, sep = '\t', header = TRUE)                          # read hash table from previous run
+    newhash <- get_file_hashes(file.path(site_dir, hash$file))                # and rehash these files
 
-    missing <- is.na(newhash)                                               # missing files
-    changed <- (hash$hash != newhash) & !missing                            # changed files
+    missing <- is.na(newhash)                                                 # missing files
+    changed <- (hash$hash != newhash) & !missing                              # changed files
 
-    ok <- !any(changed | missing)                                           # are we good?
+    ok <- !any(changed | missing)                                             # are we good?
 
     if(!ok)
       msg('*** Errors validating site ', site_dir)
@@ -52,6 +54,15 @@ check_site <- function(site_dir) {
       print(data.frame(file = hash$file, status = ifelse(missing, 'missing', ifelse(changed, 'changed', 'ok'))))
     }
   }
+
+  if(ok & check_report)                                                       # if result files are good and we're checking the report,
+    if(file.exists(f <- file.path(site_dir, 'combined/report_hash.txt'))) {   #    if report_hash exists,
+      x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))
+      if(x == readLines(f))                                                   #       check to see if it's outdated (but don't throw ok = FALSE if it isn't)
+        msg('Report for ', site_dir, ' is up to date.')
+      else
+        msg('*** Report for ', site_dir, ' is outdated. Run report_site again to create a fresh report and daily stats.')
+    }
 
   invisible(ok)
 }

@@ -50,7 +50,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
       qc[[i]]$Date <- substring(qc[[i]]$Date_Time, regexpr('\\d{4}-\\d{2}-\\d{2}', qc[[i]]$Date_Time), 10)
    }
 
-   site <- qc[[1]]$Site[1]
+   site <- toupper(qc[[1]]$Site[1])
    z <- qc[[1]]
 
    if(length(qc) > 1)                                                                  # if we have more than one deployment in season,
