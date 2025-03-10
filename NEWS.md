@@ -1,3 +1,11 @@
+# BuzzardsBay 0.1.0.9021
+
+Minor bug fixes
+
+- Always use uppercase for site abbreviations.
+- Check_site now checks for outdated reports and alerts about them. Previously, it was possible to run stitch_site and report_site, then edit deployment data and rerun stitch_site without report_site, and end up with outdated reports and no way to know that they were.
+- Fixed a bug in Duration_Under_6 (and 3) in daily stats: runs to or past midnight would report 10 minutes too few on the day they started, as midnight is treated as tomorrow, so the last sample wasn't counted.
+
 # BuzzardsBay 0.1.0.9020
 
 This update introduces the **Analysis Module**. This extension stitches deployments
