@@ -26,7 +26,7 @@ lookup_site_paths <- function(site_dir, warn = FALSE) {
    site <- toupper(basename(site_dir))                                     # pull 3 letter site code out of path
 
    deploy <- list.files(site_dir)                                          # deployment folders
-   deploy <- deploy[grep('\\d{4}-\\d{2}-\\d{2}', deploy)]                  # make sure we don't pick up anything but yyyy-mm-dd
+   deploy <- deploy[grep('^\\d{4}-\\d{2}-\\d{2}$', deploy)]                # make sure we don't pick up anything but yyyy-mm-dd
 
    qc <- sort(file.path(site_dir, deploy, paste0('QC_', site, '_', deploy, '.csv')))
    md <- sort(file.path(site_dir, deploy, paste0('Metadata_', site, '_', deploy, '.yml')))
