@@ -21,7 +21,7 @@ longest_duration <- function(x) {
 
 
    names(x)[3] <- 'source_trigger'                                                           # the trigger column doesn't have a consistent name, so give it one
-   x$trigger <- replace_na_runs(x$source_trigger, 6, boundary = FALSE)                       # runs of <= 6 NA surrounded by TRUE become TRUE; others FALSE. Don't assume TRUE beyond data.
+   x$trigger <- replace_na_runs(x$source_trigger, max_run = 6, boundary = FALSE)             # runs of <= 6 NA surrounded by TRUE become TRUE; others FALSE. Don't assume TRUE beyond data.
 
    x$Date_Time <- as.POSIXct(x$Date_Time)                                                    # convert time from text to time object
 

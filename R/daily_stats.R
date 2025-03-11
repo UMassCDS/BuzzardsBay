@@ -2,14 +2,12 @@
   #'
   #' Produces a data frame of daily stats.
   #'
-  #' @param site Three-letter site abbreviation
-  #' @param year Year of deployment
   #' @param core Core data frame, produced by `stitch_site`
   #' @return Data frame with one row for each day of depolyment, and columns with a number of statistics
   #' @keywords internal
 
 
-daily_stats <- function(site, year, core) {
+daily_stats <- function(core) {
 
 
   cols <- c('Date', 'Min_DO', 'Min_DO_Time', 'Prop_Under_6', 'Duration_Under_6',

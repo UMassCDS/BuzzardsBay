@@ -77,7 +77,11 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
       }
 
 
-   #Add additional columns and put everything in the right order
+   # Now have entire dataset
+   z[z == ''] <- NA_character_                                                         # empty character strings should be NA
+
+
+   # Add additional columns and put everything in the right order
    f <- paths$sites
 
    if(!file.exists(f))
@@ -127,10 +131,17 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
 
 
    # now replace rejected values
-   r <- qc_codes$Rejection[match(z$Gen_QC, qc_codes$QC_Code)]                          # Gen_QC has rejection code for entire row
-   z[as.logical(r), sensor_cols] <- 'DR'
-
    failure <- FALSE
+
+   r <- qc_codes$Rejection[match(z$Gen_QC, qc_codes$QC_Code)]                          # Gen_QC has rejection code for entire row
+   if(any(is.na(r))) {
+      msg('*** Invalid QC code in GEN_QC on ', paste0(z$Date[is.na(r)], collapse = ', '))
+      failure <- TRUE
+   }
+   else
+      z[as.logical(r), sensor_cols] <- 'DR'
+
+
    for(sensor in sensor_cols) {                                                        # For each sensor column,
       r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns
       if(any(is.na(r))) {

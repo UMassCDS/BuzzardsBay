@@ -1,3 +1,12 @@
+# BuzzardsBay 0.1.0.9022
+
+More bug fixes
+
+- Certain missing deployments (those with a date folder that contained a metadata file but no QC file) caused a crash instead of being politely noted.
+- Text fields such as QA_Comment were inconsistently reported as #N/A for archive and WPP result files.
+- Bad QC codes for Gen_QC weren't caught, though other bad QC codes were.
+- Test more carefully for errors in test suite.
+
 # BuzzardsBay 0.1.0.9021
 
 Minor bug fixes
