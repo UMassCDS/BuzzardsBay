@@ -40,7 +40,7 @@ seasonal_stats <- function(core) {
    z['n_do', 'Value'] <- sum(!is.na(core$DO))
    z['n_temp', 'Value'] <- sum(!is.na(core$Temp_CondLog))
 
-   z['pct_na', 'Value'] <- NA                                                    # *** I don't understand this one
+   z['pct_na', 'Value'] <- sum(apply(is.na(core[, c('Temp_CondLog', 'DO', 'Salinity')]), 1, FUN = any)) / dim(core)[1] * 100   # *** provisionally, % of rows with any missing in temp, DO, or salinity
 
    s <- summary(core$DO)
    z['min_do', 'Value'] <- s[1]
@@ -69,9 +69,13 @@ seasonal_stats <- function(core) {
    z['p_do_6', 'Value'] <- sum(core$DO < 6, na.rm = TRUE) / sum(!is.na(core$DO))
    z['p_do_3', 'Value'] <- sum(core$DO < 3, na.rm = TRUE) / sum(!is.na(core$DO))
 
+   z['mean_do_6', 'Value'] <- mean_daily_durations(core, 6)                # *** provisionally, mean duration <6 mg/L; noon-noon days entirely above threshold omitted
+   z['mean_do_3', 'Value'] <- mean_daily_durations(core, 3)
 
+   z['first_warm', 'Value'] <- (w <- core$Date[core$Temp_CondLog > 20 & !is.na(core$Temp_CondLog)])[1]
+   z['last_warm', 'Value'] <- w[length(w)]
 
-
+   z
    # going to have to make Value a string column so I can do rounding. Gonna be annoying. Will have to right justify. Maybe insert units there instead of in Statistic.
    # hmm. and date forces is to string, so we'll have to do rounding as we go or in a batch before adding any dates.
 }

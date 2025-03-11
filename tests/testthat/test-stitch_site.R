@@ -44,11 +44,15 @@ test_that('stitching works', {
    x <- read.csv(f)
    x$Gen_QC[17] <- 9999
    write.csv(x, f)
-   expect_error(quiet(stitch_site(site_dir)))
+   expect_error(quiet(stitch_site(site_dir)), 'QC code 9999 found in')
 
 
-   x$Gen_QC[17] <- 137                                                                          # add a code that's not in the table
+   x$Gen_QC[17] <- 137                                                                          # add a QC code for Gen_QC that's not in the table
    write.csv(x, f)
-   expect_error(quiet(stitch_site(site_dir)))
+   expect_error(quiet(stitch_site(site_dir)), 'Invalid QC codes')
+
+   x$Gen_QC[17] <- 0                                                                            # replace this and add bad QC codes for DO_QC
+   x$DO_QC[c(18, 317)] <- 987
+   expect_error(quiet(stitch_site(site_dir)), 'Invalid QC codes')
 
 })

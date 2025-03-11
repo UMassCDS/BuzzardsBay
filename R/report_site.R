@@ -37,7 +37,7 @@ report_site <- function(site_dir, check = TRUE) {
   msg('Daily stats written to ', f)
 
 
-  seasonal <- seasonal_stats(core)                                                      # calculate seasonal stats
+#  seasonal <- seasonal_stats(core)                                                      # calculate seasonal stats
 
   # *** now do plots............
 

@@ -19,6 +19,9 @@ x <- lookup_site_paths('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/ab2')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
 stitch_site('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/rb1')
+stitch_site('C:/Work/etc/COMBB_analysis/data/BB_Data/2024/OB1')
+stitch_site('C:/Work/etc/COMBB_analysis/data/BB_Data/2024/OB2')
+stitch_site('C:/Work/etc/COMBB_analysis/data/BB_Data/2024/OB3')
 
 
 # check sites

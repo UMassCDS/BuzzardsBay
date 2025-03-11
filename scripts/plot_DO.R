@@ -16,4 +16,4 @@ graph <- dygraph(plot.data, ylab = 'mg/L') |>
    dyLimit(6, color = 'green')
 
 graph
-s
+
