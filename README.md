@@ -20,11 +20,17 @@ You can install or update **BuzzardsBay** from
 devtools::install_github("UMassCDS/BuzzardsBay")
 ```
 
-## Usage
+## QC Module
 
-The primary function is `qc_deployment()` it reads in calibrated data
-for a deployment and generates files containing merged and flagged
-copies of the data, and an html report with plots of the data.
+The primary function in the QC module is `qc_deployment()` it reads in
+calibrated data for a deployment and generates files containing merged
+and flagged copies of the data, and an html report with plots of the
+data.  
+A second function `make_deployment_report()` is typically called by
+`qc_deployment()` but can also be called independently to recreate the
+report from `CSV` files created by `qc_deployment()`.
+
+### File structure
 
 `qc_deployment()` and the **BuzzardsBay** package in general assume [a
 specific file structure and naming
@@ -39,13 +45,21 @@ In particular:
 - The path to base directory and it’s name (`"BB_Data"` in example) can
   be any valid path.
 - Within the deployment directory there should be a “Calibrated/”
-  sub-directory with the calibrated HOBOware output (ending in `.csv`
-  and `Details.txt`) for both dissolved oxygen and
-  conductivity/salinity. The dissolved oxygen files should have `DO_` in
-  their name and the salinity files should have `Cond_`, `Con_` or
-  `Sal_` in their name.
+  sub-directory with the calibrated files in one of the three supported
+  formats:
+  - Simple import based on a CSV and a YAML file.
+  - HOBOware output with a `.csv` and `details.txt` file for both the
+    conductivity and DO logger.  
+    Likely from `U24` and `U26` loggers.
 
-Once that’s in place we can process the calibrated data in the
+  3.  A single `.xlsx` file as generate with the `MX801` logger.
+
+See help for `import_calibrated_data()` for a detailed description of
+these files.
+
+### Usage
+
+Once files are in place we can process the calibrated data in the
 deployment and generate the html report with the code below.
 
 ``` r
@@ -54,7 +68,7 @@ deployment_dir <- ""  # Provide full path here. Don't include `Calibration/`
 qc_deployment(deployment_dir)
 ```
 
-## Running on example data
+### Running on example data
 
 Create an example data folder structure and deployment with
 `setup_example_dir()`. If you specify a path with the `parent_dir`
@@ -79,7 +93,7 @@ The code above will only work once as `qc_deployment()` will throw an
 error if the output already exists. To run again create a fresh example
 directory with: `setup_example_dir(delete_old = TRUE)`
 
-### Output
+#### Output
 
 `qc_deployment()` writes two identical CSV files, a metadata file, and
 an HTML report to the deployment directory.
@@ -97,75 +111,52 @@ an HTML report to the deployment directory.
   `make_deployment_report(deployment_dir)` as long as the Auto QC and
   metadata files are present.
 
-#### Tabular data
+## Analysis Module
 
-Here are a few lines of the data written to the two CSV files when using
-`setup_example_dir()`.
+The Analysis Module consists of three primary functions:
+`stitch_site()`, `check_site()`, and `report_site()`. Each takes the
+site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
+`"~/BB_Data/2022/AB2"`.
 
-| Site | Date | Date_Time | Gen_QC | Flags | Time | Time_QC | Temp_DOLog | Temp_DOLog_QC | Temp_CondLog | Temp_CondLog_QC | Raw_DO | Raw_DO_QC | DO | DO_QC | DO_Calibration_QC | DO_Pct_Sat | DO_Pct_Sat_QC | Salinity | Salinity_QC | Sal_Calibration_QC | High_Range | High_Range_QC | Spec_Cond | Spec_Cond_QC | Cal | QA_Comment | Field_Comment |
-|:---|:---|:---|---:|:---|:---|:---|---:|:---|---:|:---|---:|:---|---:|:---|:---|---:|:---|---:|:---|:---|---:|:---|---:|:---|---:|:---|:---|
-| RB1 | 2023-06-02 | 2023-06-02 17:50:00 |  |  | 17:50:00 |  | 21.32 |  | 22.29 |  | 7.33 |  | 6.33 |  |  | 84.8 |  | 29.2351 |  |  | 30864.7 |  | 45190.4 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:00:00 |  |  | 18:00:00 |  | 21.30 |  | 22.32 |  | 7.53 |  | 6.51 |  |  | 87.1 |  | 29.1925 |  |  | 30844.4 |  | 45131.4 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:10:00 |  |  | 18:10:00 |  | 21.36 |  | 22.38 |  | 7.66 |  | 6.62 |  |  | 88.7 |  | 29.1753 |  |  | 30867.3 |  | 45107.6 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:20:00 |  |  | 18:20:00 |  | 21.32 |  | 22.29 |  | 7.75 |  | 6.70 |  |  | 89.7 |  | 29.2189 |  |  | 30852.0 |  | 45168.0 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:30:00 |  |  | 18:30:00 |  | 21.32 |  | 22.32 |  | 7.70 |  | 6.65 |  |  | 89.1 |  | 29.2059 |  |  | 30859.7 |  | 45149.9 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:40:00 |  |  | 18:40:00 |  | 21.38 |  | 22.39 |  | 7.75 |  | 6.70 |  |  | 89.8 |  | 29.1873 |  |  | 30887.7 |  | 45124.3 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 18:50:00 |  |  | 18:50:00 |  | 21.42 |  | 22.46 |  | 7.82 |  | 6.76 |  |  | 90.6 |  | 29.1716 |  |  | 30918.3 |  | 45102.4 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 19:00:00 |  |  | 19:00:00 |  | 21.44 |  | 22.46 |  | 7.82 |  | 6.76 |  |  | 90.7 |  | 29.1868 |  |  | 30933.6 |  | 45123.5 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 19:10:00 |  |  | 19:10:00 |  | 21.40 |  | 22.42 |  | 7.71 |  | 6.66 |  |  | 89.3 |  | 29.1832 |  |  | 30905.5 |  | 45118.5 |  |  |  |  |
-| RB1 | 2023-06-02 | 2023-06-02 19:20:00 |  |  | 19:20:00 |  | 21.48 |  | 22.55 |  | 7.98 |  | 6.90 |  |  | 92.6 |  | 29.1648 |  |  | 30971.9 |  | 45093.0 |  |  |  |  |
+1.  `stitch_site()` reads the deployment files for the specified site
+    and year and merges them into a single file. Gaps between
+    deployments are filled with missing values (a warning is displayed
+    if the gap is greater than 1 hour; this may be changed with the
+    `max_gap` option, setting the maximum gap (in hours) to accept
+    silently. Three result files are written to
+    `/BB_Data/<year>/<site>/<combined>/`:
 
-#### Metadata
+    1.  The **archive** file, e.g., `archive_AB2_2024.csv`, with all
+        columns and values, including rejected data. Missing data are
+        represented by `#N/A`. This file is intended to be for long-term
+        storage of the complete set of QCed data.
 
-This is the metadata derived from the example.
+    2.  The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns.
+        Rejected values are replaced with `DR` (for “data rejected”).
+        Missing data are represented by `#N/A`. This file is in the
+        format that MassDEP wants.
 
-- site: RB1
-- deployment: RB1_2023-06-09
-- deployment_date: 2023-06-09
-- calibration_start: 2023-06-02 11:10:00
-- calibration_end: 2023-06-09 12:40:00
-- pct_calibrated: 99.3171
-- n_records: 1018
-- pct_immediate_rejection: 0
-- pct_flagged_for_review: 3.54
-- logging_interval_min: 10
-- timezone: GMT-04:00
-- auto_qc_date: 2025-03-12
-- do_calibration:
-  - start_do_conc: 7.37
-  - start_temperature_c: 22
-  - start_salinity_ppt: 28.47
-  - start_meter_titration_value_mg_l: 6.41
-  - start_salinity_correction: 0.8475
-  - end_do_conc: 9.12
-  - end_temperature_c: 18.1
-  - end_meter_titration_value_mg_l: 7.62
-  - start_ratio: 0.869742198100407
-  - end_ratio: 0.835526315789474
-- do_deployment:
-  - full_series_name: DO Adj Conc , mg/L
-  - launch_name: BBC3_RB1_20659182
-  - launch_time: 2023-06-01 14:16:43
-  - calibration_date: 2023-05-16 17:04:40
-  - calibration_gain: 1.07718
-  - calibration_offset: -0.02045
-- do_device:
-  - product: HOBO U26-001 Dissolved Oxygen
-  - serial_number: 20659182
-  - version_number: 1.08
-  - header_created: 2012-03-02 14:19:05
-- cond_calibration:
-  - calibration_points: Start point and End point
-  - start_cal_cond: 40768
-  - start_cal_temp: 21.1
-  - end_cal_cond: 39200
-  - end_cal_temp: 17.8
-- cond_deployment:
-  - full_series_name: Salinity, ppt
-  - launch_name: BBC3_RB1_20636185
-  - launch_time: 2023-06-01 14:41:47
-- cond_device:
-  - product: HOBO U24-002 Conductivity
-  - serial_number: 20636185
-  - version_number: 1.52
-  - header_created: 2019-06-10 08:05:37
+    3.  The **core** file, e.g., `core_AB2_2024.csv`, with selected
+        columns. Rejected values and missing values are represented by
+        blanks. This is the file used for statistics and graphs in the
+        report, and is also intended for sharing with collaboraters.
+
+    `stitch_site()` can optionally run `report_site()` (use
+    `report = TRUE`) to stitch and produce a report for the site in one
+    call.
+
+2.  `check_site()`, intended to be run after some time has elapsed since
+    running `stitch_site()`, checks to see if any of the deployment
+    files have been updated or if any of the result data files have
+    changed (likely through inadvertant editing). It also checks for
+    missing files. If a site passes `check_site()`, the result data
+    files are up to date. If it fails, result files and the report need
+    to be recreated by running `stitch_site()` again.
+
+3.  `report_site()` reads the `core` file produced by `stitch_site()`
+    and produces the daily statistics file, e.g.,
+    `combined\daily_stats_AB2_2024.csv` and the site report,
+    `combined\site_report_AB2_2024.pdf`. **Note: the site report is not
+    yet implemented**. `report_site()` normally runs `check_site()`
+    before producing the report and throws an error if the check fails;
+    you can override this with `check = FALSE`.
