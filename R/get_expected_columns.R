@@ -44,7 +44,6 @@ get_expected_columns <- function(type, existing = character(0)) {
   for(col in c("Depth", "Latitude", "Longitude")) {
     if(col %in% existing)
       existing <- unique(c(existing, paste0(col, c("_Flag", "_QC"))))
-    cat("Adding", col, "\n")
   }
 
   # Expected cols includes a few that are optional
