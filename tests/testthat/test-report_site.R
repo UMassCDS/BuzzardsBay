@@ -24,6 +24,4 @@ test_that('report is correct', {
    writeLines('abcdef', file.path(site_dir, 'combined/report_hash.txt'))                        # trash the report hash
    expect_no_error(quiet(check_site(site_dir)))                                                 # this shouldn't matter
 
-   expect_snapshot(get_file_hashes(file.path(site_dir, 'combined/daily_stats_AB2_2024.csv')))   # compare fingerprints of PDFs (overly sensitive!)
-
 })

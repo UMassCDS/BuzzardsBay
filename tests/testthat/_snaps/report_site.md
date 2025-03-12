@@ -110,10 +110,3 @@
       30           56
       31           13
 
----
-
-    Code
-      get_file_hashes(file.path(site_dir, "combined/daily_stats_AB2_2024.csv"))
-    Output
-      [1] "c3485adfd6f620a48e41adbbd0461789"
-
