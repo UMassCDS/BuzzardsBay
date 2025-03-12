@@ -1,3 +1,4 @@
+# BuzzardsBay 0.1.0.9023
 
 ## Add checks to `qc_deployment()` for Depth column.
   *  If Depth is less than `min_depth` (defaults to 0) write 7 to `Depth_QC`,
@@ -21,8 +22,61 @@ min_depth: 0
 max_depth: 9
 ```
 
+# BuzzardsBay 0.1.0.9022
+
+More bug fixes
+
+- Certain missing deployments (those with a date folder that contained a metadata file but no QC file) caused a crash instead of being politely noted.
+- Text fields such as QA_Comment were inconsistently reported as #N/A for archive and WPP result files.
+- Bad QC codes for Gen_QC weren't caught, though other bad QC codes were.
+- Test more carefully for errors in test suite.
+
+# BuzzardsBay 0.1.0.9021
+
+Minor bug fixes
+
+- Always use uppercase for site abbreviations.
+- Check_site now checks for outdated reports and alerts about them. Previously, it was possible to run stitch_site and report_site, then edit deployment data and rerun stitch_site without report_site, and end up with outdated reports and no way to know that they were.
+- Fixed a bug in Duration_Under_6 (and 3) in daily stats: runs to or past midnight would report 10 minutes too few on the day they started, as midnight is treated as tomorrow, so the last sample wasn't counted.
+
+# BuzzardsBay 0.1.0.9020
+
+This update introduces the **Analysis Module**. This extension stitches deployments
+for a site and year, producing three result data files (archive, WPP, and core). 
+It has a facility to check that result files are up to date. And it produces
+a daily statistics file and a report with seasonal stats and a series of 
+graphs.
+
+Included:
+
+- `stitch_site()`. Stitches deployments and creates result data files.
+
+- `check_site()`. Checks to see if deployment data have changed since 
+`stitch_site()` was run.
+
+- `report_site()`. Produces a CSV of daily stats and PDF report with
+seasonal stats and graphs. **This function is only partially implemented**
+at this point: it only produces the daily stats file.
+
+For more details, see `README`.
+
+**Note**: you'll need to update sites.csv in your `<year>\Metadata\` folders
+to include WaterBody. If WaterBody, Latitude, or Longitude are missing, 
+stitch_site will still run, but will report them as missing.
+
+# BuzzardsBay 0.1.0.9019
+
+This update and the bug this fixes have no impact on users.
+
+* Fixed bug [#11](https://github.com/UMassCDS/BuzzardsBay/issues/11) in 
+  `lookup_paths()` that caused it to fail when using arguments other than
+  `deployment_dir`.  Also now it requires either `deployment_dir` or
+  `base_dir` arguments - but not necessarily `year`, `site`, or 
+  `deployment_date` and it will return the paths to all items that it 
+  is able to resolve.  
   
-  
+* Added unit test for `lookup_paths()`.
+
 # BuzzardsBay 0.1.0.9018
 
 * Fixed bug in Salinity check that could cause 
@@ -121,13 +175,13 @@ In the YAML file the following items are required:
   software. 
   The output from HOBOware uses a GMT offset like “GMT-04:00”,
   which is not a broadly supported timezone but is accepted here.
-  The MX801 uses a timezone code “EST” which is also accepted here.
+  The MX801 uses a timezone code "EST" which is also accepted here.
 * **do_device:** Information on the DO sensor or logger with items:
-  * **product:** The dissolved oxygen sensor e.g. “HOBO U26-001 Dissolved Oxygen”,
-    "U26-01", or “MX801”.
+  * **product:** The dissolved oxygen sensor e.g. 
+  "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
   * **serial_number:** The device serial number.
 * **cond_device:** List with information on the conductivity sensor with items:
-  * **product:** The conductivity sensor e.g. “HOBO U24-002 Conductivity” or 
+  * **product:** The conductivity sensor e.g. "HOBO U24-002 Conductivity" or 
   "U24-002"
   * **serial_number:** Conductivity sensor serial number.
   

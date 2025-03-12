@@ -1,0 +1,12 @@
+column,basis,digits
+Min_DO,DO,1
+Mean_DO,DO,1
+SD_DO,DO,1
+Range_DO,DO,1
+Range_DO_Sat,DO_Pct_Sat,0
+Mean_Salinity,Salinity,1
+SD_Salinity,Salinity,1
+Prop_Under_6,Proportion,2
+Prop_Under_3,Proportion,2
+Duration_Under_6,Duration,1
+Duration_Under_3,Duration,1
