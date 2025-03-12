@@ -1,12 +1,40 @@
-column,basis,digits
-Min_DO,DO,1
-Mean_DO,DO,1
-SD_DO,DO,1
-Range_DO,DO,1
-Range_DO_Sat,DO_Pct_Sat,0
-Mean_Salinity,Salinity,1
-SD_Salinity,Salinity,1
-Prop_Under_6,Proportion,2
-Prop_Under_3,Proportion,2
-Duration_Under_6,Duration,1
-Duration_Under_3,Duration,1
+column,basis,digits,table,full description
+Min_DO,DO,1,daily,Minimum DO
+Mean_DO,DO,1,daily,Mean DO
+SD_DO,DO,1,daily,Standard deviation of DO
+Range_DO,DO,1,daily,Range of DO
+Range_DO_Sat,DO_Pct_Sat,0,daily,Range of DO percent saturation
+Mean_Salinity,Salinity,1,daily,Mean salinity
+SD_Salinity,Salinity,1,daily,Standared deviation of salinity
+Prop_Under_6,Proportion,2,daily,Proportion of DO under 6 mg/L
+Prop_Under_3,Proportion,2,daily,Proportion of DO under 3 mg/L
+Duration_Under_6,Duration,1,daily,Longest daily duration of DO under 6 mg/L (hours)
+Duration_Under_3,Duration,1,daily,Longest daily duration of DO under 3 mg/L (hours)
+days,Count,0,seasonal,Days
+n_sal,Count,0,seasonal,n(Salinity)
+n_do,Count,0,seasonal,n(DO)
+n_temp,Count,0,seasonal,n(Temperature)
+pct_na,Percent,percent,seasonal,Percent of data missing
+min_do,DO,1,seasonal,Min DO (mg/L)
+q1_do,DO,1,seasonal,Q1 DO (mg/L)
+median_do,DO,1,seasonal,Median DO (mg/L)
+mean_do,DO,1,seasonal,Mean DO (mg/L)
+q3_do,DO,1,seasonal,Q3 DO (mg/L)
+max_do,DO,1,seasonal,Max DO (mg/L)
+min_temp,Temperature,1,seasonal,Min Temp (C)
+q1_temp,Temperature,1,seasonal,Q1 Temp (C)
+median_temp,Temperature,1,seasonal,Median Temp (C)
+mean_temp,Temperature,1,seasonal,Mean Temp (C)
+q3_temp,Temperature,1,seasonal,Q3 Temp (C)
+max_temp,Temperature,1,seasonal,Max Temp (C)
+std_temp,Temperature,1,seasonal,Standard deviation of temperature (C)
+first_do_6,Date,date,seasonal,First date with DO < 6 mg/L
+first_do_3,Date,date,seasonal,First date with DO < 3 mg/L
+days_do_6,Count,0,seasonal,Days with DO < 6 mg/L
+days_do_3,Count,0,seasonal,Days with DO < 3 mg/L
+p_do_6,Proportion,2,seasonal,P(DO < 6 mg/L)
+p_do_3,Proportion,2,seasonal,P(DO < 3 mg/L)
+mean_do_6,Count,0,seasonal,Mean duration of DO < 6 mg/L (hours)
+mean_do_3,Count,0,seasonal,Mean duration of DO < 3 mg/L (hours)
+first_warm,Date,date,seasonal,First day warmer than 20 C
+last_warm,Date,date,seasonal,Last day warmer than 20 C
