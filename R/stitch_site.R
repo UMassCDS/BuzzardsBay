@@ -34,7 +34,8 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
    wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
    core_cols <- get_expected_columns('final_core')
    sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
-   qc_codes <- read.csv(system.file('extdata/QC_codes.csv', package = 'BuzzardsBay'))  # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+   qc_codes <- read.csv(system.file('extdata/QC_codes.csv', package = 'BuzzardsBay',
+                                    mustWork = TRUE))                                  # read QC rejection codes (see inst/extdata/README_QC_codes.md)
    if(!all(c('QC_Code', 'Rejection') %in% names(qc_codes)))
       stop('Something is wrong with qc_codes.csv')
 

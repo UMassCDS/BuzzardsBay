@@ -1,0 +1,67 @@
+---
+header-includes:
+   - \usepackage[default]{sourcesanspro}
+   - \usepackage[T1]{fontenc}
+   - \usepackage[margins=raggedright]{floatrow} 
+
+output: 
+   pdf_document
+documentclass: report
+pagestyle: empty
+geometry: 
+- margin=1in
+- top=0.75in
+- bottom=0.5in
+fontsize: 12pt 
+urlcolor: blue
+params:
+  title: ''
+  date: ''
+  stat: ''
+  value: ''
+---
+```{r include = FALSE}
+knitr::opts_chunk$set(dev="cairo_pdf")
+```
+
+## `r params$title`
+Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
+
+Seasonal report, `r params$date`
+
+### Seasonal statistics
+
+**Statistic** | **Value** |
+---|---:
+`r params$stat[1]` | `r params$value[1]`
+`r params$stat[2]` | `r params$value[2]`
+`r params$stat[3]` | `r params$value[3]`
+`r params$stat[4]` | `r params$value[4]`
+`r params$stat[5]` | `r params$value[5]`
+`r params$stat[6]` | `r params$value[6]`
+`r params$stat[7]` | `r params$value[7]`
+`r params$stat[8]` | `r params$value[8]`
+`r params$stat[9]` | `r params$value[9]`
+`r params$stat[10]` | `r params$value[10]`
+`r params$stat[11]` | `r params$value[11]`
+`r params$stat[12]` | `r params$value[12]`
+`r params$stat[13]` | `r params$value[13]`
+`r params$stat[14]` | `r params$value[14]`
+`r params$stat[15]` | `r params$value[15]`
+`r params$stat[16]` | `r params$value[16]`
+`r params$stat[17]` | `r params$value[17]`
+`r params$stat[18]` | `r params$value[18]`
+`r params$stat[19]` | `r params$value[19]`
+`r params$stat[20]` | `r params$value[20]`
+`r params$stat[21]` | `r params$value[21]`
+`r params$stat[22]` | `r params$value[22]`
+`r params$stat[23]` | `r params$value[23]`
+`r params$stat[24]` | `r params$value[24]`
+`r params$stat[25]` | `r params$value[25]`
+`r params$stat[26]` | `r params$value[26]`
+`r params$stat[27]` | `r params$value[27]`
+`r params$stat[28]` | `r params$value[28]`
+
+*Only days that fall below the threshold are counted in mean durations.
+
+

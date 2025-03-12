@@ -62,7 +62,8 @@ daily_stats <- function(core) {
   z <- z[, cols]                                                                # Just return the good stuff, in canonical order
 
 
-  r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay'))   # Now do rounding - read rounding file
+  r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay',
+                            mustWork = TRUE))                                   # Now do rounding - read rounding file
   r <- r[r$table == 'daily', ]                                                  # just for daily stats
   r$digits <- as.numeric(r$digits)
   for(i in 1:dim(r)[1])                                                         # for each row in rounding file,

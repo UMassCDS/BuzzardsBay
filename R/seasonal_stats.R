@@ -27,7 +27,7 @@ seasonal_stats <- function(core) {
                     'mean_do_6', 'mean_do_3',
                     'first_warm', 'last_warm')
 
-   z <- data.frame(stat = stats, x = NA)                                            # result data frame
+   z <- data.frame(stat = stats, value = NA)                                        # result data frame
    row.names(z) <- stat_abbrev
    y <- list()                                                                      # intermediate result list (as we have mixed types in result)
 
@@ -75,15 +75,16 @@ seasonal_stats <- function(core) {
    y[['last_warm']] <- w[length(w)]
 
 
-   r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay'))      # Now do rounding - read rounding file
+   r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay',
+                             mustWork = TRUE))                                      # Now do rounding - read rounding file
    r <- r[r$table == 'seasonal', ]                                                  # just for seasonal stats
    for(i in 1:length(y)) {                                                          # for each statistic,
       f <- r$digits[r$column == names(y[i])]                                        #    format date, percent, or digits
-      z[names(y[i]), 'x'] <- switch(f,
-                                    'date' = y[[i]],
-                                    'percent' = paste0(round(y[[i]], 0), '%'),
-                                    format(round(y[[i]], as.numeric(f)),
-                                           nsmall = as.numeric(f), big.mark = ',')
+      z[names(y[i]), 'value'] <- switch(f,
+                                        'date' = y[[i]],
+                                        'percent' = paste0(round(y[[i]], 0), '%'),
+                                        format(round(y[[i]], as.numeric(f)),
+                                               nsmall = as.numeric(f), big.mark = ',')
       )
    }
 
