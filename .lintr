@@ -1,10 +1,22 @@
-# hands off Brad's code!
-
 exclusions: list(
    'R/stitch_site.R',
    'R/check_site.R',
    'R/report_site.R',
    'R/report_site.R',
    'R/daily_stats.R',
-   'R/seasonal_stats.R'
+   'R/seasonal_stats.R',
+   'R/get_file_hashes.R',
+   'R/helpers.R',
+   'R/longest_duration.R',
+   'R/lookup_site_paths.R',
+   'R/mean_daily_durations.R',
+   'R/replace_na_runs.R',
+   'R/rle2.R',
+   'tests/testthat/run_analysis_module_tests.R',
+   'tests/testthat/test-check_site.R',
+   'tests/testthat/test-get_file_hashes.R',
+   'tests/testthat/test-lookup_site_paths.R',
+   'tests/testthat/test-replace_na_runs.R',
+   'tests/testthat/test-report_site.R',
+   'tests/testthat/test-stitch_site.R'
   )

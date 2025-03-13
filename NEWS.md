@@ -60,9 +60,9 @@ at this point: it only produces the daily stats file.
 
 For more details, see `README`.
 
-**Note**: you'll need to update sites.csv in your `<year>\Metadata\` folders
-to include WaterBody. If WaterBody, Latitude, or Longitude are missing, 
-stitch_site will still run, but will report them as missing.
+**Note**: you'll need to update `sites.csv` in your `<year>\Metadata\` folders
+to include `WaterBody`. If `WaterBody`, `Latitude`, or `Longitude` are missing, 
+`stitch_site()` will still run, but will report them as missing.
 
 # BuzzardsBay 0.1.0.9019
 

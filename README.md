@@ -129,7 +129,7 @@ site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
     1.  The **archive** file, e.g., `archive_AB2_2024.csv`, with all
         columns and values, including rejected data. Missing data are
         represented by `#N/A`. This file is intended to be for long-term
-        storage of the complete set of QCed data.
+        storage of the complete set of QC'd data.
 
     2.  The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns.
         Rejected values are replaced with `DR` (for “data rejected”).
@@ -139,7 +139,7 @@ site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
     3.  The **core** file, e.g., `core_AB2_2024.csv`, with selected
         columns. Rejected values and missing values are represented by
         blanks. This is the file used for statistics and graphs in the
-        report, and is also intended for sharing with collaboraters.
+        report, and is also intended for sharing with collaborators.
 
     `stitch_site()` can optionally run `report_site()` (use
     `report = TRUE`) to stitch and produce a report for the site in one
@@ -148,7 +148,7 @@ site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
 2.  `check_site()`, intended to be run after some time has elapsed since
     running `stitch_site()`, checks to see if any of the deployment
     files have been updated or if any of the result data files have
-    changed (likely through inadvertant editing). It also checks for
+    changed (likely through inadvertent editing). It also checks for
     missing files. If a site passes `check_site()`, the result data
     files are up to date. If it fails, result files and the report need
     to be recreated by running `stitch_site()` again.

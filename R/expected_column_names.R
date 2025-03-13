@@ -154,12 +154,12 @@ expected_column_names$qc_final <-
 # Set optional column names
 # (calibrated, intermediate, and qc_final)
 
-optional_base<- c("Latitude",
-                  "Longitude",
-                  "Depth")
+optional_base <- c("Latitude",
+                   "Longitude",
+                   "Depth")
 optional_cols <- c(optional_base,
-                    paste0(optional_base, "_QC"),
-                    paste0(optional_base, "_Flag"))
+                   paste0(optional_base, "_QC"),
+                   paste0(optional_base, "_Flag"))
 
 expected_column_names$optional_calibrated <- optional_cols
 expected_column_names$optional_qc_intermediate <- optional_cols

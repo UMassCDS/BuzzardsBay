@@ -10,7 +10,7 @@ combine_flags(d)
 \arguments{
 \item{d}{A data frame.  Columns with "flag" in the name (ignoring case)
 with the exception of a column called "Flags" (case specific) will
-be concatinated into a return vector.}
+be concatenated into a return vector.}
 }
 \value{
 a vector of the combined flags

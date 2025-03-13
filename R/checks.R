@@ -176,10 +176,6 @@ has_low_variation <- function(x, max_range = 0.01, n = 5) {
   return(low_var)
 }
 
-
-# depth <- c(seq(-0.1, 1, by = .1), seq(2, 10, by = 2))
-
-
 # Check Depth
 #  * If Depth is less than `min_depth` (defaults to 0) write 7 to `Depth_QC`,
 #    add `Wl` flag, and write `91` in `GEN_QC`.

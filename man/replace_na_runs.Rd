@@ -21,7 +21,8 @@ Any runs of NA not longer than \code{max_run} that are surrounded by TRUE are
 replaced with TRUE. All other NAs are replaced with FALSE.
 }
 \details{
-Use \code{boundary} to specify behavior at data boundaries. For instance, if bounadary = TRUE,
+Use \code{boundary} to specify behavior at data boundaries. For instance,
+if boundary = TRUE,
 then c(NA, TRUE) would result in c(TRUE, TRUE); otherwise the result would be c(FALSE, TRUE).
 }
 \keyword{internal}

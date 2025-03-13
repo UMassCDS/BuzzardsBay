@@ -132,10 +132,10 @@ test_that("qc_deployment() works with fixed salinity calibration", {
 
 test_that("man/qc_deployment() works with MX801 data", {
 
-#   * 2025-01-04 (2, 2) - two point calibration for both DO and Cond. calibration.
-#   I think this is the most common type.
-#   * 2025-01-06 (2, 3)- two points for DO and three points for Cond. calibration.
-#   * 2025-01-27 (2, 1) - one point for DO and two points for Cond. calibration.
+  #   * 2025-01-04 (2, 2) - two point calibration for both DO and Cond.
+  #    calibration. I think this is the most common type.
+  #   * 2025-01-06 (2, 3)- two points for DO and three points for Cond. cal.
+  #   * 2025-01-27 (2, 1) - one point for DO and two points for Cond. cal.
 
 
   example_paths <- local_example_dir(site_filter = "BBC",
@@ -246,7 +246,7 @@ test_that("man/qc_deployment() checks depth range", {
   too_deep  <- rep(FALSE, nrow(d))
   too_deep[21:24] <- TRUE
   d[too_deep, depth_col] <- max_depth + 1
-  d[[depth_col]][!too_deep & d[[depth_col]] > max_depth ] <-
+  d[[depth_col]][!too_deep & d[[depth_col]] > max_depth] <-
     max_depth - 1  # not too deep elsewhere
 
   # Add fake not wet (AKA out of water)
@@ -254,7 +254,7 @@ test_that("man/qc_deployment() checks depth range", {
   not_wet  <- rep(FALSE, nrow(d))
   not_wet[31:34] <- TRUE
   d[not_wet, depth_col] <- min_depth - 1 # fake not wet
-  d[[depth_col]][!not_wet & d[[depth_col]] < min_depth ] <-
+  d[[depth_col]][!not_wet & d[[depth_col]] < min_depth] <-
     min_depth  + 1  # wet everywhere else
 
   # hack temperature so it doesn't throw flags
@@ -262,7 +262,7 @@ test_that("man/qc_deployment() checks depth range", {
   temp_do_col <- grep("Temperature.*DO", names(d), value = TRUE)
   temp_cond_col <- grep("Temperature.*CTD", names(d), value = TRUE)
 
-   d[[temp_cond_col]]<- 20
+  d[[temp_cond_col]] <- 20
   d[[temp_do_col]] <- 20
 
   # Trigger immediate rejection flags
@@ -321,7 +321,7 @@ test_that("man/qc_deployment() checks depth range", {
   expect_true(all(d$Gen_QC[review & !immediate_rejection & !not_wet] %in% 9999))
 
   sel_cols <- c("Gen_QC", "Flags", "Depth", "Depth_QC")
-  sel_rows <- too_deep | not_wet |immediate_rejection | review
+  sel_rows <- too_deep | not_wet | immediate_rejection | review
 
   expect_snapshot(d[sel_rows, sel_cols])
 

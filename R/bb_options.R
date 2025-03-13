@@ -48,7 +48,7 @@
 #'   \item{`min_depth`, `max_depth`}{ The minimum and maximum water depth. If
 #'   the `Depth` column is present and falls outside of this range either the
 #'   `Wl` (water depth low) or `Wh` (water depth high) flags will be thrown.
-#'   Additionaly `7` will be written to `Depth_QC` and either `9999`  or
+#'   Additionally `7` will be written to `Depth_QC` and either `9999`  or
 #'   `7` will be written to `Gen_QC` depending on if it's high or low
 #'   respectively}
 #'

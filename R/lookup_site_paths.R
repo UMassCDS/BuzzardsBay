@@ -1,14 +1,14 @@
 #' Look up paths for a specified site
 #'
-#' Find and return paths to all depolyment directories, metadata files, and final QC files for selected year and site.
+#' Find and return paths to all deployment directories, metadata files, and final QC files for selected year and site.
 #'
-#' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`); this path must include QCed results
+#' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`); this path must include QC'd results
 #' @param warn If TRUE, chatter on missing files and just drop them; otherwise throw an error
 #' @return A named list consisting of:
 #' \item{sites}{The full path to the site info table}
 #' \item{deployments}{A data frame with a row for each deployment, and columns `date`, `QCpath`, `md_path`, and `hash`,
-#' containing the date for each deployment, the full path to the final QCed data, the full path to the deployment metadata
-#' file, and the md5 hash of the QCed data file.}
+#' containing the date for each deployment, the full path to the final QC'd data, the full path to the deployment metadata
+#' file, and the md5 hash of the QC'd data file.}
 #' @keywords internal
 
 

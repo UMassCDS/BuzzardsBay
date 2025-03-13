@@ -17,12 +17,16 @@ YAML
 conc
 cond
 datums
+durations
 ggplot
 gid
 gplot
 https
 kludgy
+MassDEP
 MX
+md
+md5
 noaa
 plotly
 ppt
@@ -39,5 +43,6 @@ QC'd
 microsiemens
 timezone
 timezones
+TRUEs
 uncalibrated
 WPP
