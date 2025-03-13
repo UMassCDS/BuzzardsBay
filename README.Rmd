@@ -35,7 +35,17 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of **BuzzardsBay** (R package) is to process and analyze data for the [Continuous Oxygen Monitoring in Buzzards Bay (COMBB) project](https://www.woodwellclimate.org/project/combb/). 
+The goal of **BuzzardsBay** (R package) is to process and analyze data for the 
+[Continuous Oxygen Monitoring in Buzzards Bay (COMBB) project](https://www.woodwellclimate.org/project/combb/). 
+
+This package is split into two modules,
+the **QC Module**,
+which prepares calibrated data and produces a report in preparation
+for a quality control editing of deployment files,
+and the **Analysis Module**,
+which stitches deployment files for a site and year into a set of result files,
+produces a daily statistical summary file,
+and a report with seasonal statistics and a set of graphs.
 
 ## Installation
 
@@ -53,7 +63,7 @@ and generates files containing merged and flagged copies
 of the data, and an html report with plots of the data.  
 A second function `make_deployment_report()` is typically called by 
 `qc_deployment()`  but can also be called independently to recreate the 
-report from `CSV` files created by `qc_deployment()`.
+report from CSV files created by `qc_deployment()`.
 
 ### File structure
 
