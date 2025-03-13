@@ -3,7 +3,7 @@
     Code
       seasonal_stats(x)
     Output
-                                                   stat          x
+                                                   stat      value
       days                                         Days         29
       n_sal                                 n(Salinity)      2,015
       n_do                                        n(DO)      4,018

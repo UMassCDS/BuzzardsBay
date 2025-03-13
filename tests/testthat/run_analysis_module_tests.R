@@ -15,5 +15,6 @@ test('stitch_site')
 test('check_site')
 test('daily_stats')
 test('seasonal_stats')
+test('get_site_name')
 test('report_site')
 

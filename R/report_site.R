@@ -47,7 +47,7 @@ report_site <- function(site_dir, check = TRUE) {
 
 
   # --- Plots
-  plots <- seasonal_plots(core)                                                         # get plots
+ ## plots <- seasonal_plots(core)                                                         # get plots
 
 
 

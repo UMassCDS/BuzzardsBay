@@ -23,7 +23,8 @@ Imports:
     suncalc,
     yaml,
     digest, 
-    utils
+    utils,
+    stats
 Encoding: UTF-8
 Language: en-US
 LazyData: true

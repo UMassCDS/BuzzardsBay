@@ -4,6 +4,7 @@
 #'
 #' @param core Core data frame, produced by `stitch_site`
 #' @return Data frame with a column of the statistic name and a column with the statistic
+#' @import stats
 #' @keywords internal
 
 
