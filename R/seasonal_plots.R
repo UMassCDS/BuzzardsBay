@@ -5,6 +5,7 @@
 #' @param core Core data frame, produced by `stitch_site`
 #' @return List of ggplot2 objects
 #' @import ggplot2
+#' @importFrom rlang .data
 #' @keywords internal
 
 
@@ -12,7 +13,7 @@ seasonal_plots <- function(core) {
 
    core$Date_Time <- as.POSIXct(core$Date_Time)
 
-ggplot(core, aes(x = Date_Time, y = DO)) +
+ggplot(core, aes(x = .data$Date_Time, y = .data$DO)) +
    geom_line()
 
 
