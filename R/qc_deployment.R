@@ -223,6 +223,7 @@ qc_deployment <- function(dir, report = TRUE) {
   # R = Raw DO,
   # D = DO,
   # S = Salinity
+  # W = Water depth
 
   # Error codes
   # e = logger error (immediate rejection)
@@ -241,7 +242,7 @@ qc_deployment <- function(dir, report = TRUE) {
   for(col in flag_cols)
     d[[col]] <- ""
 
-  # Check for Temperature Im,ediate Rejection (ir) flags
+  # Check for Temperature Immediate Rejection (ir) flags
   d$Temp_DOLog_Flag <- ir_check_temperature(d$Temp_DOLog, "D")
   d$Temp_CondLog_Flag<- ir_check_temperature(d$Temp_CondLog, "C")
 
@@ -256,7 +257,7 @@ qc_deployment <- function(dir, report = TRUE) {
   d$Salinity_Flag <- ir_check_sensor_error(d$Salinity, "S")
 
   # Update general flag to indicate immediate rejection
-  all_flags <- apply(d[ , flag_cols], 1,  function(x) paste(x, collapse = ""))
+  all_flags <- combine_flags(d)
   d$Gen_QC[all_flags != ""]  <- 9
   rm(all_flags)
 
@@ -305,26 +306,17 @@ qc_deployment <- function(dir, report = TRUE) {
                                                 sites = sites))
 
 
+
+
   #----------------------------------------------------------------------------#
-  # Finalize flags
+  # Calculate flags
   #    combine the data column specific flags into one "Flags" column
   #----------------------------------------------------------------------------#
 
-  flag_cols <- grep("flag", names(d), ignore.case = TRUE, value = TRUE)
-  other_flag_cols <- setdiff(flag_cols, "Flags")
-
-  # Concatenate all the flags into d$Flags
-  d$Flags <- apply(
-    d[, other_flag_cols], MARGIN = 1,
-    FUN = function(x) paste(x[!is.na(x)], collapse = "", sep = ""))
-
-  # Drop trailing ":" from flag columns
-  for(col in flag_cols)
-    d[[col]] <- gsub(":$", "", d[[col]])
+  d$Flags <- combine_flags(d)
 
   #----------------------------------------------------------------------------#
   # Update QC Code
-  #    and record percent rejected and pct flagged in metadata
   #----------------------------------------------------------------------------#
 
   # Set 9999 for rows that don't already have a 9 indicating immediate rejection
@@ -332,11 +324,43 @@ qc_deployment <- function(dir, report = TRUE) {
   #    put some other value there.
   d$Gen_QC[is.na(d$Gen_QC) & d$Flags != ""] <- 9999
 
-  md$pct_immediate_rejection <- (sum(d$Gen_QC %in% 9) / nrow(d) * 100) |>
+
+  #----------------------------------------------------------------------------#
+  # Special Case - DEPTH
+  #    Has weird interactions with other flags
+  #----------------------------------------------------------------------------#
+  # Check Depth if present
+  #   This affects three columns (GEN_QC, Flags, Depth_QC)
+  #  and can possible add a 91 or 9999 to Gen_QC which  will be empty, 9, or 9999
+  # When adding to Gen_QC precedence is as follows:
+  # A 91 from depth overwrites a 9 from other flags
+  # A 91 from depth does not overwrite a 9999 from other flags
+  # A 9999 from depth does not overwrite a 9 from other flags.
+  # A 91 or 9999 from depth overwrites NA from other flags.
+
+  if ("Depth" %in% names(d)) {
+    dc <- check_depth(d$Depth)
+    d$Depth_QC <- dc$Depth_QC
+    d$Depth_Flag <- dc$Depth_Flag
+
+    use_depth_for_gen_qc <- !is.na(dc$Gen_QC) &
+      (is.na(d$Gen_QC) | (d$Gen_QC == 9 &  dc$Gen_QC == 91 ))
+
+    d$Gen_QC[use_depth_for_gen_qc] <- dc$Gen_QC[use_depth_for_gen_qc]
+
+    # Recalculate flags (to incorporate flags from Depth)
+    d$Flags <- combine_flags(d)
+
+  }
+
+  #   Record percent rejected and pct flagged in metadata
+  md$pct_immediate_rejection <-
+    (sum(d$Gen_QC %in% c(9, 91)) / nrow(d) * 100) |>
     round(digits = 2)
   md$pct_flagged_for_review <-  (sum(d$Gen_QC %in% 9999) / nrow(d) * 100) |>
     round(2)
   md$n_records <- nrow(d)
+
 
   #----------------------------------------------------------------------------#
   #  Special case, if all Salinity related data is NA (fixed value calibration)

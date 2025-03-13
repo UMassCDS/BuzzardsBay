@@ -7,20 +7,20 @@
 stitch_site(site_dir, max_gap = 1, report = FALSE)
 }
 \arguments{
-\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QCed results}
+\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include QC'd results}
 
-\item{max_gap}{Maximum gap to quietly accept between deployments (hours); a msg will be printed if this gap is exceeded}
+\item{max_gap}{Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded}
 
 \item{report}{Run \code{report_site} if TRUE}
 }
 \description{
-Merges all QCed deployments for the specified site and year and writes result files. Missing
+Merges all QC'd deployments for the specified site and year and writes result files. Missing
 dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
 that are out range for their sensor are flagged. Writes three versions of the data file for the
 complete season, and hash files for use by \code{check_site}.
 }
 \details{
-Three versions of the data file are written to <site_dir>/combined/:
+Three versions of the data file are written to \verb{<site_dir>/combined/}:
 \enumerate{
 \item \verb{archive_<site>_<year>.csv} - contains all columns, for complete archival.
 \item \verb{WPP_<site>_<year>.csv} - contains only columns required by MassDEP (a.k.a. the "WPP" file).

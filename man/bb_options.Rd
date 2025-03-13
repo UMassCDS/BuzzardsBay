@@ -71,6 +71,12 @@ is set.}
 \item{\code{sal_max_jump}}{The maximum difference between successive salinity
 records before the salinity jump (\code{Sj}) flag is set for both involved
 records.}
+\item{\code{min_depth}, \code{max_depth}}{ The minimum and maximum water depth. If
+the \code{Depth} column is present and falls outside of this range either the
+\code{Wl} (water depth low) or \code{Wh} (water depth high) flags will be thrown.
+Additionally \code{7} will be written to \code{Depth_QC} and either \code{9999}  or
+\code{7} will be written to \code{Gen_QC} depending on if it's high or low
+respectively}
 
 }
 }

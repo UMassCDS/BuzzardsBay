@@ -63,6 +63,10 @@ bbp$sal_max_jump <- 0.75
 bbp$sal_lv_range <- default_lv_range
 bbp$sal_lv_duration <- default_lv_duration
 
+# Water depth range
+bbp$min_depth <- 0
+bbp$max_depth <- 9
+
 
 ## Range limits used to constrain plot Y axis
 bbp$plot_min_do <- -0.5
@@ -71,6 +75,7 @@ bbp$plot_min_sal <- 0
 bbp$plot_max_sal <- 36
 bbp$plot_min_temp <- 0
 bbp$plot_max_temp <- 31
+
 
 
 # The values here are defaults - save a copy to reset defaults later

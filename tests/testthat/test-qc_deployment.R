@@ -132,6 +132,12 @@ test_that("qc_deployment() works with fixed salinity calibration", {
 
 test_that("man/qc_deployment() works with MX801 data", {
 
+  #   * 2025-01-04 (2, 2) - two point calibration for both DO and Cond.
+  #    calibration. I think this is the most common type.
+  #   * 2025-01-06 (2, 3)- two points for DO and three points for Cond. cal.
+  #   * 2025-01-27 (2, 1) - one point for DO and two points for Cond. cal.
+
+
   example_paths <- local_example_dir(site_filter = "BBC",
                                      year_filter = 2025, subdir = "mx801")
   deployment_dirs <- example_paths$deployments
@@ -141,7 +147,8 @@ test_that("man/qc_deployment() works with MX801 data", {
   #----------------------------------------------------------------------------#
   n_do  <- 2
   n_cond <- 2
-  paths1 <- lookup_paths(deployment_dir = deployment_dirs[1])
+  ddir1 <- grep("2025-01-04", deployment_dirs, value = TRUE)
+  paths1 <- lookup_paths(deployment_dir = ddir1)
   expect_no_error(res1 <- qc_deployment(paths1$deployment_dir))
   expect_true("Depth" %in% names(res1$d))
 
@@ -204,6 +211,125 @@ test_that("man/qc_deployment() works with MX801 data", {
 
 
 })
+
+
+test_that("man/qc_deployment() checks depth range", {
+
+  # There's a lot of overhead here to make a test file
+  # I'm setting up to use the simple csv import on  the example data
+  # from an MX801 logger.
+  # Editing the data to make specific combinations of too deep and out of water
+  # against other immediate rejection and review flags and then
+  # writing as a CSV before processing with the simple import.
+
+
+  site <- "BBC"
+  example_paths <- local_example_dir(site_filter = site,
+                                     year_filter = 2025, subdir = "mx801")
+  deployment_dir <- example_paths$deployment
+
+  paths <- lookup_paths(deployment_dir = deployment_dir)
+
+  calibrated_file <- list.files(paths$deployment_cal_dir,
+                                pattern = "xlsx", full.names = TRUE)
+  expect_length(calibrated_file, 1)
+
+  d <- readxl::read_excel(calibrated_file, sheet = 1)
+  md <- parse_mx801_details(calibrated_file)
+  sites <- readr::read_csv(paths$sites, show_col_types = FALSE)
+
+  max_depth <- bb_options("max_depth")
+
+  depth_col <- grep("Water Level", names(d), value = TRUE)
+
+  # Add fake too deep
+  too_deep  <- rep(FALSE, nrow(d))
+  too_deep[21:24] <- TRUE
+  d[too_deep, depth_col] <- max_depth + 1
+  d[[depth_col]][!too_deep & d[[depth_col]] > max_depth] <-
+    max_depth - 1  # not too deep elsewhere
+
+  # Add fake not wet (AKA out of water)
+  min_depth <- bb_options("min_depth")
+  not_wet  <- rep(FALSE, nrow(d))
+  not_wet[31:34] <- TRUE
+  d[not_wet, depth_col] <- min_depth - 1 # fake not wet
+  d[[depth_col]][!not_wet & d[[depth_col]] < min_depth] <-
+    min_depth  + 1  # wet everywhere else
+
+  # hack temperature so it doesn't throw flags
+  # Note these column names are specific to this exact file
+  temp_do_col <- grep("Temperature.*DO", names(d), value = TRUE)
+  temp_cond_col <- grep("Temperature.*CTD", names(d), value = TRUE)
+
+  d[[temp_cond_col]] <- 20
+  d[[temp_do_col]] <- 20
+
+  # Trigger immediate rejection flags
+  immediate_rejection <- rep(FALSE, nrow(d))
+  immediate_rejection[c(23, 24, 33, 34)] <- TRUE
+  col <- grep("^Measured DO", names(d), value = TRUE)
+  d[immediate_rejection, col] <-
+    bb_options("logger_error_values")
+
+  # Trigger review flags
+  review <- rep(FALSE, nrow(d))
+  review[c(22, 23, 32, 33)] <- TRUE
+  d[[temp_cond_col]][review] <-
+    sites$Min_QC_Temp[sites$site == site] - 0.5 # Flag will be "TCsl"
+
+
+  csv <- file.path(paths$deployment_cal_dir, "MX801_calibrated.csv")
+  yaml <- file.path(paths$deployment_cal_dir, "MX801_metadata.yml")
+
+
+  # Write new example data in the CSV / YAML formats
+  readr::write_csv(d, csv)
+  yaml::write_yaml(md, yaml)
+
+  file.remove(calibrated_file) #  delete excel file
+
+  # Update placements so that it will be read as csv not xlsx
+  placements <- readr::read_csv(paths$placements, show_col_types = FALSE)
+  sv <- placements$site == paths$site &
+    placements$SN == md$do_device$serial_number
+  placements$model[sv] <- "MX801-CSV"
+  readr::write_csv(placements, paths$placements)
+
+  # DONE SETUP
+
+
+  # TEST
+  res <- qc_deployment(deployment_dir)
+  d <- res$d
+  md <- res$md
+
+  expect_true(all(d$Depth_QC[too_deep] == 7))
+  expect_true(all(grepl("Wh", d$Flags[too_deep])))
+
+  expect_true(all(d$Depth_QC[not_wet] == 7))
+  expect_true(all(grepl("Wl", d$Flags[not_wet])))
+
+  # Flag interactions in Gen_Qc
+  # A 91 from depth overwrites a 9 from other flags
+  # A 91 from depth does not overwrite a 9999 from other flags
+  # A 9999 from depth does not overwrite a 9 from other flags.
+  # A 91 or 9999 from depth overwrites NA from other flags.
+  expect_true(all(d$Gen_QC[not_wet & immediate_rejection] %in% 91))
+  expect_true(all(d$Gen_QC[not_wet & !immediate_rejection & review] %in% 9999))
+  expect_true(all(d$Gen_QC[too_deep & !immediate_rejection] %in% 9999))
+  expect_true(all(d$Gen_QC[review & !immediate_rejection & !not_wet] %in% 9999))
+
+  sel_cols <- c("Gen_QC", "Flags", "Depth", "Depth_QC")
+  sel_rows <- too_deep | not_wet | immediate_rejection | review
+
+  expect_snapshot(d[sel_rows, sel_cols])
+
+
+})
+
+
+
 
 test_that("qc_deployment() works with import type 0 (CSV)", {
   example_paths <- local_example_dir(site_filter = "SIM",
