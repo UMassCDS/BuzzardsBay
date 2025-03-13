@@ -132,6 +132,12 @@ test_that("qc_deployment() works with fixed salinity calibration", {
 
 test_that("man/qc_deployment() works with MX801 data", {
 
+#   * 2025-01-04 (2, 2) - two point calibration for both DO and Cond. calibration.
+#   I think this is the most common type.
+#   * 2025-01-06 (2, 3)- two points for DO and three points for Cond. calibration.
+#   * 2025-01-27 (2, 1) - one point for DO and two points for Cond. calibration.
+
+
   example_paths <- local_example_dir(site_filter = "BBC",
                                      year_filter = 2025, subdir = "mx801")
   deployment_dirs <- example_paths$deployments
@@ -141,7 +147,8 @@ test_that("man/qc_deployment() works with MX801 data", {
   #----------------------------------------------------------------------------#
   n_do  <- 2
   n_cond <- 2
-  paths1 <- lookup_paths(deployment_dir = deployment_dirs[1])
+  ddir1 <- grep("2025-01-04", deployment_dirs, value = TRUE)
+  paths1 <- lookup_paths(deployment_dir = ddir1)
   expect_no_error(res1 <- qc_deployment(paths1$deployment_dir))
   expect_true("Depth" %in% names(res1$d))
 
@@ -217,7 +224,6 @@ test_that("man/qc_deployment() checks depth range", {
 
 
   site <- "BBC"
-
   example_paths <- local_example_dir(site_filter = site,
                                      year_filter = 2025, subdir = "mx801")
   deployment_dir <- example_paths$deployment
@@ -234,36 +240,42 @@ test_that("man/qc_deployment() checks depth range", {
 
   max_depth <- bb_options("max_depth")
 
+  depth_col <- grep("Water Level", names(d), value = TRUE)
+
   # Add fake too deep
   too_deep  <- rep(FALSE, nrow(d))
   too_deep[21:24] <- TRUE
-  d$`Water Level (m)`[too_deep] <- max_depth + 1
-  d$`Water Level (m)`[!too_deep & d$`Water Level (m)` > max_depth ] <-
+  d[too_deep, depth_col] <- max_depth + 1
+  d[[depth_col]][!too_deep & d[[depth_col]] > max_depth ] <-
     max_depth - 1  # not too deep elsewhere
 
   # Add fake not wet (AKA out of water)
   min_depth <- bb_options("min_depth")
   not_wet  <- rep(FALSE, nrow(d))
   not_wet[31:34] <- TRUE
-  d$`Water Level (m)`[not_wet] <- min_depth - 1 # fake not wet
-  d$`Water Level (m)`[!not_wet & d$`Water Level (m)` < min_depth ] <-
+  d[not_wet, depth_col] <- min_depth - 1 # fake not wet
+  d[[depth_col]][!not_wet & d[[depth_col]] < min_depth ] <-
     min_depth  + 1  # wet everywhere else
 
   # hack temperature so it doesn't throw flags
   # Note these column names are specific to this exact file
-  d$`Temperature (°C) (W-CTD-00 22118267)` <- 20
-  d$`Temperature (°C) (W-DO 22124011)` <- 20
+  temp_do_col <- grep("Temperature.*DO", names(d), value = TRUE)
+  temp_cond_col <- grep("Temperature.*CTD", names(d), value = TRUE)
+
+   d[[temp_cond_col]]<- 20
+  d[[temp_do_col]] <- 20
 
   # Trigger immediate rejection flags
   immediate_rejection <- rep(FALSE, nrow(d))
   immediate_rejection[c(23, 24, 33, 34)] <- TRUE
-  d$`Measured DO (mg/L) (W-DO 22124011)`[immediate_rejection] <-
+  col <- grep("^Measured DO", names(d), value = TRUE)
+  d[immediate_rejection, col] <-
     bb_options("logger_error_values")
 
   # Trigger review flags
   review <- rep(FALSE, nrow(d))
   review[c(22, 23, 32, 33)] <- TRUE
-  d$`Temperature (°C) (W-CTD-00 22118267)`[review] <-
+  d[[temp_cond_col]][review] <-
     sites$Min_QC_Temp[sites$site == site] - 0.5 # Flag will be "TCsl"
 
 

@@ -202,7 +202,7 @@ parse_mx801_details <- function(file) {
 
   extract_number <- function(x) {
     # Note extract_number() expects the number to be at the start of the string
-    gsub("^([-.[:digit:]]+)[^-.[:digit:]]*$", "\\1", x) |>
+    gsub("^([-.[:digit:]]+)[^-.[:digit:]]+.*$", "\\1", x) |>
       as.numeric()
   }
 
