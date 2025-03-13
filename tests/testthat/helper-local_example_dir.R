@@ -15,6 +15,6 @@ local_example_dir <- function(subdir = "bb_test", env = parent.frame(), ...) {
   dir.create(test_dir)
   paths <- setup_example_dir(test_dir, ...)
   withr::defer(unlink(test_dir, recursive = TRUE), envir = env)
-  paths <- lapply(paths, function(x) gsub('\\\\', '/', x))        # clean up separators to use all /
+  paths <- lapply(paths, function(x) gsub("\\\\", "/", x))  # clean up slashes
   return(paths)
 }

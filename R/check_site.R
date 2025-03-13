@@ -8,7 +8,7 @@
 #' function (currently, just report_site) can use the silent return value to throw appropriate errors.
 #'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include
-#' QCed results and result files from `stitch_site`.
+#' QC'd results and result files from `stitch_site`.
 #' @param check_report If TRUE, check to see if the report is up to date. Don't check when calling from
 #' report_site, of course.
 #' @return Silently returns TRUE if validation was successful.

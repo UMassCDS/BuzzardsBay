@@ -5,7 +5,8 @@
   #' @param core Core data frame, produced by `stitch_site`
   #' @return Data frame with one row for each day of depolyment, and columns with a number of statistics
   #' @import stats
-  #' @import stats
+  #' @return Data frame with one row for each day of deployment,
+  #' and columns with a number of statistics
   #' @keywords internal
 
 

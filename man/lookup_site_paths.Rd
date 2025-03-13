@@ -7,7 +7,7 @@
 lookup_site_paths(site_dir, warn = FALSE)
 }
 \arguments{
-\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}); this path must include QCed results}
+\item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}); this path must include QC'd results}
 
 \item{warn}{If TRUE, chatter on missing files and just drop them; otherwise throw an error}
 }
@@ -15,10 +15,10 @@ lookup_site_paths(site_dir, warn = FALSE)
 A named list consisting of:
 \item{sites}{The full path to the site info table}
 \item{deployments}{A data frame with a row for each deployment, and columns \code{date}, \code{QCpath}, \code{md_path}, and \code{hash},
-containing the date for each deployment, the full path to the final QCed data, the full path to the deployment metadata
-file, and the md5 hash of the QCed data file.}
+containing the date for each deployment, the full path to the final QC'd data, the full path to the deployment metadata
+file, and the md5 hash of the QC'd data file.}
 }
 \description{
-Find and return paths to all depolyment directories, metadata files, and final QC files for selected year and site.
+Find and return paths to all deployment directories, metadata files, and final QC files for selected year and site.
 }
 \keyword{internal}

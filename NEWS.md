@@ -1,3 +1,27 @@
+# BuzzardsBay 0.1.0.9023
+
+## Add checks to `qc_deployment()` for Depth column.
+  *  If Depth is less than `min_depth` (defaults to 0) write 7 to `Depth_QC`,
+  add `Wl` flag, and write `91` in `GEN_QC`. 
+  * If Depth is greater than `max_depth` (defaults to 9) write 7 to
+  `Depth_QC`, add `Wh` to flags, and write `9999` to `GEN_QC` 
+  * As depth can produce either a `9999` or `91` in `GEN_QC` precedence with
+  other `GEN_QC` values as follows.  
+    * If `GEN_QC` is empty write the new values.
+    * If `GEN_QC` is `9999`  and depth results in `91`  the result is `9999` 
+    This ensures that a reviewer responds to all raised flags.
+    * If `GEN_QC` is `9` and depth produces `91` the `91` takes precedence, 
+    because it's more informative
+    * If `GEN_QC` is `9` and depth produces `9999` the `9` takes precedence.
+  
+## Required file changes
+Add the following to `/bb_parameters.yml` when updating to this version.
+
+```
+min_depth: 0
+max_depth: 9
+```
+
 # BuzzardsBay 0.1.0.9022
 
 More bug fixes
@@ -36,9 +60,9 @@ at this point: it only produces the daily stats file.
 
 For more details, see `README`.
 
-**Note**: you'll need to update sites.csv in your `<year>\Metadata\` folders
-to include WaterBody. If WaterBody, Latitude, or Longitude are missing, 
-stitch_site will still run, but will report them as missing.
+**Note**: you'll need to update `sites.csv` in your `<year>\Metadata\` folders
+to include `WaterBody`. If `WaterBody`, `Latitude`, or `Longitude` are missing, 
+`stitch_site()` will still run, but will report them as missing.
 
 # BuzzardsBay 0.1.0.9019
 
