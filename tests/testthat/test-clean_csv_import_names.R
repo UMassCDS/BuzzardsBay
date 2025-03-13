@@ -3,7 +3,7 @@ test_that("clean_csv_import_names() works with MX801 column names", {
 
   # nolint start: indentation_linter
   mx801_example_file <-  system.file(
-    "extdata/2025/BBC/2025-01-04/Calibrated/BBC_MX2_22145899_2025-01-COND.xlsx",
+     "extdata/2025/BBC/2025-01-04/Calibrated/BBC_MX2_22145899_2025-01-04.xlsx",
     package = "BuzzardsBay")
   # nolint end
   d <- readxl::read_excel(mx801_example_file, 1)

@@ -3,7 +3,8 @@
    #' Any runs of NA not longer than `max_run` that are surrounded by TRUE are
    #' replaced with TRUE. All other NAs are replaced with FALSE.
    #'
-   #' Use `boundary` to specify behavior at data boundaries. For instance, if bounadary = TRUE,
+   #' Use `boundary` to specify behavior at data boundaries. For instance,
+   #' if boundary = TRUE,
    #' then c(NA, TRUE) would result in c(TRUE, TRUE); otherwise the result would be c(FALSE, TRUE).
    #'
    #' @param x A logical vector that may have NAs

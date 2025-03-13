@@ -56,3 +56,18 @@
       3         NA            NA
       4         NA            NA
 
+# man/qc_deployment() checks depth range
+
+    Code
+      d[sel_rows, sel_cols]
+    Output
+         Gen_QC          Flags Depth Depth_QC
+      21   9999             Wh    10        7
+      22   9999        TCsl:Wh    10        7
+      23      9 TCsl:Re:Rsl:Wh    10        7
+      24      9      Re:Rsl:Wh    10        7
+      31     91             Wl    -1        7
+      32   9999        TCsl:Wl    -1        7
+      33     91 TCsl:Re:Rsl:Wl    -1        7
+      34     91      Re:Rsl:Wl    -1        7
+

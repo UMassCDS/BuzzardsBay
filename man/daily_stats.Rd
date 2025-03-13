@@ -4,17 +4,14 @@
 \alias{daily_stats}
 \title{Produce daily stats for a site}
 \usage{
-daily_stats(site, year, core)
+daily_stats(core)
 }
 \arguments{
-\item{site}{Three-letter site abbreviation}
-
-\item{year}{Year of deployment}
-
 \item{core}{Core data frame, produced by \code{stitch_site}}
 }
 \value{
-Data frame with one row for each day of depolyment, and columns with a number of statistics
+Data frame with one row for each day of deployment,
+and columns with a number of statistics
 }
 \description{
 Produces a data frame of daily stats.

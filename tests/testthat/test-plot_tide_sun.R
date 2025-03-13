@@ -1,5 +1,5 @@
 test_that("plot_tide_sun() works", {
-  site <- "W12A"
+  site <- "W12_W12A"
 
   d <- system.file("extdata/qc_example.csv", package = "BuzzardsBay") |>
     readr::read_csv(show_col_types = FALSE)
