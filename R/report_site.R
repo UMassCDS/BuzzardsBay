@@ -31,6 +31,10 @@ report_site <- function(site_dir, check = TRUE) {
 
   core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
+  core <<- core  # ********** for dev
+
+
+
   # --- Daily stats
   daily <- daily_stats(core)                                                            # calculate daily stats
   f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
@@ -42,29 +46,20 @@ report_site <- function(site_dir, check = TRUE) {
   seasonal <- seasonal_stats(core)                                                      # calculate seasonal stats
 
 
-
-  # *** now do plots............
+  # --- Plots
+  plots <- seasonal_plots(core)                                                         # get plots
 
 
 
   # --- Put together PDF report
-
-
- ## core <<-core  # for dev
-
   template <- system.file('rmd/seasonal_report.rmd', package = 'BuzzardsBay', mustWork = TRUE)
   report_file <- file.path(site_dir, 'combined', paste0('report_', site, '_', year, '.pdf'))
   abs_report_file <- file.path(normalizePath(file.path(site_dir, 'combined')), paste0('report_', site, '_', year, '.pdf'))
 
-  paths <- lookup_site_paths(site_dir, warn = TRUE)
-  f <- paths$sites
-    if(!file.exists(f))
-    stop('sites.csv is missing')
-  x <- read.csv(f)
-  long_site <- x$description[x$site == site]
-
+  long_site <- get_site_name(site_dir)
   title <- paste0(long_site, ' (', site, ') in ', year)
   date <- sub(' 0', ' ', format(Sys.Date(), '%B %d, %Y'))
+
   pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
 
