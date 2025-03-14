@@ -36,19 +36,24 @@ report_site <- function(site_dir, check = TRUE) {
 
 
    # --- Daily stats
-   daily <- daily_stats(core)                                                            # calculate daily stats
+   daily <- daily_stats(core)                                                             # calculate daily stats
    f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
    write.csv(daily, file = f, row.names = FALSE, quote = FALSE, na = '')
    msg('Daily stats written to ', f)
 
 
    # --- Seasonal stats
-   seasonal <- seasonal_stats(core)                                                      # calculate seasonal stats
+   seasonal <- seasonal_stats(core)                                                       # calculate seasonal stats
 
 
-   # --- Plots
-   ## plots <- seasonal_plots(core)                                                         # get plots
+   # --- Pre-calculate variables for plots
+   core$Date <- as.POSIXct(core$Date)                                                     # we'll need date date/time as time objects
+   core$Date_Time <- as.POSIXct(core$Date_Time)
 
+   x <- cbind(min = suppressWarnings(aggregate(core$DO, by = list(core$Date), FUN = min, na.rm = TRUE)),
+                      max = suppressWarnings(aggregate(core$DO, by = list(core$Date), FUN = max, na.rm = TRUE)))
+   daily <- data.frame(Date = x$min.Group.1, DO_range = x$max.x - x$min.x)
+   daily$DO_range[!is.finite(daily$DO_range)] <- NA                                       # daily range of DO
 
 
    # --- Put together PDF report
@@ -60,10 +65,20 @@ report_site <- function(site_dir, check = TRUE) {
    title <- paste0(long_site, ' (', site, ') in ', year)
    date <- sub(' 0', ' ', format(Sys.Date(), '%B %d, %Y'))
 
+
+   plot_info <- read.table(system.file('extdata/plot_info.txt', package = 'BuzzardsBay',  # read plot info table
+                                       mustWork = TRUE), sep = '\t', header = TRUE)
+   rownames(plot_info) <- plot_info$name
+
+
+
+
+
+
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
 
-   rmarkdown::render(input = template, output_file = abs_report_file,                    # write PDF (have to use absolute path here 😡)
+   rmarkdown::render(input = template, output_file = abs_report_file,                     # write PDF (have to use absolute path here 😡)
                      params = pars, quiet = TRUE)
 
    msg('Seasonal report written to ', report_file)
@@ -71,5 +86,5 @@ report_site <- function(site_dir, check = TRUE) {
 
 
    x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))
-   writeLines(x, file.path(site_dir, 'combined/report_hash.txt'))                        # write report hash, used to see if reports are up to date in check_site
+   writeLines(x, file.path(site_dir, 'combined/report_hash.txt'))                         # write report hash, used to see if reports are up to date in check_site
 }

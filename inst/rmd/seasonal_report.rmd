@@ -19,16 +19,21 @@ params:
   date: ''
   stat: ''
   value: ''
+  plots: ''
 ---
+
 ```{r include = FALSE}
 knitr::opts_chunk$set(dev="cairo_pdf")
 ```
 
 ## `r params$title`
+
 Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
 
 Seasonal report, `r params$date`
 
+```{=html}
+<!--
 ### Seasonal statistics
 
 **Statistic** | **Value** |
@@ -63,5 +68,20 @@ Seasonal report, `r params$date`
 `r params$stat[28]` | `r params$value[28]`
 
 *Only days that fall below the threshold are counted in mean durations.
+-->
+```
 
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_pct_sat', 'caption']}
+plot <- plot_info['do_pct_sat', ]
+plot_ts(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
+```
 
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do', 'caption']}
+plot <- plot_info['do', ]
+plot_ts(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6)
+```
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_range', 'caption']}
+plot <- plot_info['do_daily_range', ]
+plot_ts(daily, x = daily$Date, y = daily$DO_range, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```

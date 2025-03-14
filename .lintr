@@ -3,6 +3,7 @@ exclusions: list(
    'R/check_site.R',
    'R/report_site.R',
    'R/report_site.R',
+   'R/plot_ts.R',
    'R/daily_stats.R',
    'R/seasonal_stats.R',
    'R/get_file_hashes.R',
