@@ -2,7 +2,6 @@ exclusions: list(
    'R/stitch_site.R',
    'R/check_site.R',
    'R/report_site.R',
-   'R/report_site.R',
    'R/plot_ts.R',
    'R/daily_stats.R',
    'R/seasonal_stats.R',
@@ -12,6 +11,7 @@ exclusions: list(
    'R/lookup_site_paths.R',
    'R/mean_daily_durations.R',
    'R/replace_na_runs.R',
+   'R/aggreg.R',
    'R/rle2.R',
    'tests/testthat/run_analysis_module_tests.R',
    'tests/testthat/test-check_site.R',
@@ -19,5 +19,6 @@ exclusions: list(
    'tests/testthat/test-lookup_site_paths.R',
    'tests/testthat/test-replace_na_runs.R',
    'tests/testthat/test-report_site.R',
-   'tests/testthat/test-stitch_site.R'
+   'tests/testthat/test-stitch_site.R',
+   'tests/testthat/test-aggreg.R'
   )

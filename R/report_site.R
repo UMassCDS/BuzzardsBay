@@ -50,10 +50,19 @@ report_site <- function(site_dir, check = TRUE) {
    core$Date <- as.POSIXct(core$Date)                                                     # we'll need date date/time as time objects
    core$Date_Time <- as.POSIXct(core$Date_Time)
 
-   x <- cbind(min = suppressWarnings(aggregate(core$DO, by = list(core$Date), FUN = min, na.rm = TRUE)),
-                      max = suppressWarnings(aggregate(core$DO, by = list(core$Date), FUN = max, na.rm = TRUE)))
-   daily <- data.frame(Date = x$min.Group.1, DO_range = x$max.x - x$min.x)
+   # For daily stats, we're dropping days with <22/24 hours of data, as well as first and last days
+   x <- cbind(min = aggreg(core$DO, by = core$Date, FUN = min, nomiss = 22 / 24, drop_by = FALSE),
+                      max = aggreg(core$DO, by = core$Date, FUN = max, nomiss = 22 / 24))
+   daily <- data.frame(Date = x$min.Group.1, DO_range = x$max - x$min.x, DO_min = x$min.x)
    daily$DO_range[!is.finite(daily$DO_range)] <- NA                                       # daily range of DO
+
+   daily$DO_count <- aggreg(!is.na(core$DO), by = core$Date, FUN = sum, nomiss = 22 / 24)
+   daily$DO_6 <- aggreg(core$DO < 6, by = core$Date, FUN = sum, nomiss = 22 / 24)
+   daily$DO_6_pct <- daily$DO_6 / daily$DO_count * 100
+
+   daily$salinity <- aggreg(core$Salinity, by = core$Date, FUN = mean, nomiss = 22 / 24)
+
+   daily <- daily[c(-1, -dim(daily[1])), ]                                                # drop partial 1st and last day of season
 
 
    # --- Put together PDF report
@@ -69,10 +78,6 @@ report_site <- function(site_dir, check = TRUE) {
    plot_info <- read.table(system.file('extdata/plot_info.txt', package = 'BuzzardsBay',  # read plot info table
                                        mustWork = TRUE), sep = '\t', header = TRUE)
    rownames(plot_info) <- plot_info$name
-
-
-
-
 
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)

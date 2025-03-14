@@ -11,9 +11,6 @@ daily_stats(core)
 }
 \value{
 Data frame with one row for each day of depolyment, and columns with a number of statistics
-
-Data frame with one row for each day of deployment,
-and columns with a number of statistics
 }
 \description{
 Produces a data frame of daily stats.

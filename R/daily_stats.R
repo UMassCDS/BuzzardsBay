@@ -4,8 +4,6 @@
 #'
 #' @param core Core data frame, produced by `stitch_site`
 #' @return Data frame with one row for each day of depolyment, and columns with a number of statistics
-#' @return Data frame with one row for each day of deployment,
-#' and columns with a number of statistics
 #' @import stats
 #' @keywords internal
 
@@ -16,17 +14,6 @@ daily_stats <- function(core) {
    cols <- c('Date', 'Min_DO', 'Min_DO_Time', 'Prop_Under_6', 'Duration_Under_6',
              'Prop_Under_3', 'Duration_Under_3', 'Mean_DO', 'SD_DO',
              'Mean_Salinity', 'SD_Salinity', 'Range_DO', 'Range_DO_Sat')
-
-
-   # aggregate helper: ignore NAs; return NA if all in group are Inf or NaN; no warnings; sort and return only result column
-   'aggreg' <- function(x, by, FUN, drop_by = TRUE) {
-      z <- suppressWarnings(aggregate(x, list(by), FUN, na.rm = TRUE))            # no whining on min or max on all NAs
-      z$x[is.infinite(z$x) | is.nan(z$x)] <- NA                                   # replace crap with NA
-      if(drop_by)
-         z$x[order(z$Group.1)]                                                     # sort because I don't trust this thing
-      else
-         z[order(z$Group.1), ]
-   }
 
 
    z <- aggreg(core$DO, core$Date, min, drop_by = FALSE)

@@ -32,8 +32,7 @@ Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
 
 Seasonal report, `r params$date`
 
-```{=html}
-<!--
+
 ### Seasonal statistics
 
 **Statistic** | **Value** |
@@ -68,8 +67,7 @@ Seasonal report, `r params$date`
 `r params$stat[28]` | `r params$value[28]`
 
 *Only days that fall below the threshold are counted in mean durations.
--->
-```
+
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_pct_sat', 'caption']}
 plot <- plot_info['do_pct_sat', ]
@@ -85,3 +83,24 @@ plot_ts(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6
 plot <- plot_info['do_daily_range', ]
 plot_ts(daily, x = daily$Date, y = daily$DO_range, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_min', 'caption']}
+plot <- plot_info['do_daily_min', ]
+plot_ts(daily, x = daily$Date, y = daily$DO_min, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+<!-- pair_mean_do_temp - I'm leaving this for later -->
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_pct_under_6', 'caption']}
+plot <- plot_info['daily_pct_under_6', ]
+plot_ts(daily, x = daily$Date, y = daily$DO_6_pct, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+<!-- a few more skipped -->
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_salinity', 'caption']}
+plot <- plot_info['daily_salinity', ]
+plot_ts(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+
