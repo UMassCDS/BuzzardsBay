@@ -16,7 +16,7 @@
 #' @keywords internal
 
 
-plot_ts <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 0, point_size = 0.25) {
+make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 0, point_size = 0.25) {
 
 
    ggplot(core, aes(x = x, y = y)) +
