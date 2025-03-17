@@ -23,8 +23,11 @@ Imports:
     suncalc,
     yaml,
     digest, 
+    slider,
     utils,
-    stats
+    stats, 
+    tidyr,
+    readxl
 Encoding: UTF-8
 Language: en-US
 LazyData: true

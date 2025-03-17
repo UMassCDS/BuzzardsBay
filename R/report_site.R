@@ -10,12 +10,23 @@
 #' some point in the past, it is highly advisable to run `check_site` to make sure deployment
 #' files haven't changed since the last `stitch_site` run.
 #'
+#' Including plots based on Baywatchers data requires a file within the site `baywatchers/<site>.csv`. This file must
+#' include the date and time (a column that includes `Date_Time` in the name) and dissolved oxygen in mg/L (DO in the
+#' name, but not percent, pct, or %). Column names are case-insensitive. If this file is missing or the necessary
+#' columns are not present, an error will be reported. You can use baywatchers = FALSE for datasets that don't have
+#' Baywatchers data to exclude these plots.
+#'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
 #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
+#' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data
+#' @importFrom lubridate as.period as.duration days
+#' @importFrom slider slide_index_mean
+#' @importFrom readxl read_excel
+#' @importFrom hms as_hms
 #' @export
 
 
-report_site <- function(site_dir, check = TRUE) {
+report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
 
    if(check) {
@@ -34,6 +45,24 @@ report_site <- function(site_dir, check = TRUE) {
    core <<- core  # ********** for dev
 
 
+   # --- Get Baywatchers data now before we've written any results
+   if(baywatchers) {                                                                      # if they want these plots,
+      f <- file.path(dirname(dirname(site_dir)), 'bbcdataCURRENT.xlsx')
+      if(!file.exists(f))x
+      stop(paste0('Baywatchers file ', f, ' doesn\'t exist\n   You can exclude Baywatchers data with baywatchers = FALSE'))
+      x <- suppressWarnings(read_excel(f, sheet = 'all', skip = 2, .name_repair = 'minimal'))
+      x <- x[, c('STN_ID', 'SAMP_DATE', 'TIME', 'DO_MGL')]
+      x$date_time <- as.POSIXct(paste(ymd(x$SAMP_DATE), as.character(hms::as_hms(x$TIME))))
+      bay <- x[x$STN_ID == site, ]
+
+
+
+
+
+   }
+
+
+
 
    # --- Daily stats
    daily <- daily_stats(core)                                                             # calculate daily stats
@@ -50,9 +79,10 @@ report_site <- function(site_dir, check = TRUE) {
    core$Date <- as.POSIXct(core$Date)                                                     # we'll need date date/time as time objects
    core$Date_Time <- as.POSIXct(core$Date_Time)
 
+
    # For daily stats, we're dropping days with <22/24 hours of data, as well as first and last days
    x <- cbind(min = aggreg(core$DO, by = core$Date, FUN = min, nomiss = 22 / 24, drop_by = FALSE),
-                      max = aggreg(core$DO, by = core$Date, FUN = max, nomiss = 22 / 24))
+              max = aggreg(core$DO, by = core$Date, FUN = max, nomiss = 22 / 24))
    daily <- data.frame(Date = x$min.Group.1, DO_range = x$max - x$min.x, DO_min = x$min.x)
    daily$DO_range[!is.finite(daily$DO_range)] <- NA                                       # daily range of DO
 
@@ -62,7 +92,17 @@ report_site <- function(site_dir, check = TRUE) {
 
    daily$salinity <- aggreg(core$Salinity, by = core$Date, FUN = mean, nomiss = 22 / 24)
 
+   daily$DO_mean <- aggreg(core$DO, by = core$Date, FUN = mean, nomiss = 22 / 24)
+   daily$Temp <- aggreg(core$Temp_CondLog, by = core$Date, FUN = mean, nomiss = 22 / 24)
+
    daily <- daily[c(-1, -dim(daily[1])), ]                                                # drop partial 1st and last day of season
+
+
+   # Moving window plot
+   halfwin <- as.period(as.duration(days(7)) / 2)
+   core$rolling_do <- unlist(slide_index_mean(core$DO, core$Date_Time, na_rm = TRUE, before = halfwin, after = halfwin))
+   core$rolling_do[is.na(core$DO)] <- NA                                                  # *** if DO is missing, set rolling DO to missing too
+
 
 
    # --- Put together PDF report

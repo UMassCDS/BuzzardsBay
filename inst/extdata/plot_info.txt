@@ -1,11 +1,11 @@
 name	row	descrip	x_label	y_label	caption
 do_pct_sat	1	Time series of DO_Pct_Sat	Date	DO (% Saturation)	Dissolved oxygen (% saturation) by date.
-do	2	Time series of DO, hline at 6	Date	DO (mg/L)	Dissolved oxygen (mg/L) by date.
+do	2	Time series of DO, hline at 6	Date	DO (mg/L)	Dissolved oxygen (mg/L) by date. Horizontal line is at 6 mg/L.
 do_daily_range	3	Daily range of DO	Date	DO range (mg/L)	Daily range of dissolved oxygen (mg/L).
 do_daily_min	4	Daily minimum DO, hline at 6	Date	Minimum DO (mg/L)	Daily minimum dissolved oxygen (mg/L).
 pair_mean_do_temp	5	Pair of plots with mean daily DO and mean daily temperature	Date	DO (mg/L) | Temperature (C)	Mean daily dissolved oxygen (mg/L, top) and mean daily temperature (C, bottom). 
 daily_pct_under_6	6	Percent of time each day under 6 mg/L	Date	% of day	Percent of each day with dissolved oxygen less than 6 mg/L.
-rolling_7_day_do	7	Rolling 7 day mean of DO, hline at 6	Date	DO (mg/L)	Rolling seven day mean of dissolved oxygen (mg/L).
+rolling_7_day_do	7	Rolling 7 day mean of DO, hline at 6	Date	DO (mg/L)	Rolling seven day mean of dissolved oxygen (mg/L). Horizontal line is at 6 mg/L.
 daily_temp	8	Daily temperature	Date	Temperature (C)	Mean daily temperature (C).
 daily_salinity	9	Daily salinity	Date	Salinity (ppt)	Mean daily salinity (ppt).
 daily_do_bw	10	Daily DO with Baywatchers points	Date	DO (mg/L)	Mean daily dissolved oxygen (mg/L) from continuous sensors and Baywatchers point samples.

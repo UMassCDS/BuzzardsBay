@@ -71,36 +71,54 @@ Seasonal report, `r params$date`
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_pct_sat', 'caption']}
 plot <- plot_info['do_pct_sat', ]
-plot_ts(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
+make_plot(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
 ```
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do', 'caption']}
 plot <- plot_info['do', ]
-plot_ts(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6)
+make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6)
 ```
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_range', 'caption']}
 plot <- plot_info['do_daily_range', ]
-plot_ts(daily, x = daily$Date, y = daily$DO_range, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+make_plot(daily, x = daily$Date, y = daily$DO_range, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_min', 'caption']}
 plot <- plot_info['do_daily_min', ]
-plot_ts(daily, x = daily$Date, y = daily$DO_min, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+make_plot(daily, x = daily$Date, y = daily$DO_min, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
 
-<!-- pair_mean_do_temp - I'm leaving this for later -->
+
+<!-- pair_mean_do_temp -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['pair_mean_do_temp', 'caption']}
+plot <- plot_info['pair_mean_do_temp', ]
+make_facet_plot(daily)
+```
+
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_pct_under_6', 'caption']}
 plot <- plot_info['daily_pct_under_6', ]
-plot_ts(daily, x = daily$Date, y = daily$DO_6_pct, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+make_plot(daily, x = daily$Date, y = daily$DO_6_pct, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['rolling_7_day_do', 'caption']}
+plot <- plot_info['rolling_7_day_do', ]
+make_plot(core, x = core$Date_Time, y = core$rolling_do, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 0, linetype = 1, hline = 6)
+```
+
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_temp', 'caption']}
+plot <- plot_info['daily_temp', ]
+make_plot(core, y = core$Temp_CondLog, x_lab = plot$x_label, y_lab = plot$y_label)
+```
+
+
 
 <!-- a few more skipped -->
 
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_salinity', 'caption']}
 plot <- plot_info['daily_salinity', ]
-plot_ts(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+make_plot(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
 
 

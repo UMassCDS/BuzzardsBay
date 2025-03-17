@@ -4,12 +4,14 @@
 \alias{report_site}
 \title{Produce stats and a report for a site and year}
 \usage{
-report_site(site_dir, check = TRUE)
+report_site(site_dir, check = TRUE, baywatchers = TRUE)
 }
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>})}
 
 \item{check}{If TRUE, runs \code{check_site} to make sure source files haven't been changed}
+
+\item{baywatchers}{If TRUE, do 2 additional comparison plots with Baywatchers data}
 }
 \description{
 Produces daily stats and a report with seasonal stats and a number of graphs for a specified site and year.
@@ -24,4 +26,10 @@ Two files are written:
 \code{stitch_site} must be run first to create the necessary data. If \code{stitch_site} was run at
 some point in the past, it is highly advisable to run \code{check_site} to make sure deployment
 files haven't changed since the last \code{stitch_site} run.
+
+Including plots based on Baywatchers data requires a file within the site \verb{baywatchers/<site>.csv}. This file must
+include the date and time (a column that includes \code{Date_Time} in the name) and dissolved oxygen in mg/L (DO in the
+name, but not percent, pct, or \%). Column names are case-insensitive. If this file is missing or the necessary
+columns are not present, an error will be reported. You can use baywatchers = FALSE for datasets that don't have
+Baywatchers data to exclude these plots.
 }
