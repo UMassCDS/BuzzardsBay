@@ -14,6 +14,10 @@ x <- lookup_site_paths('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/AB2')
 x <- lookup_site_paths('c:/Work/etc/COMBB_analysis/data/BB_Data/2024/e33')
 
 
+# extract Baywatchers data
+
+extract_baywatchers('c:/Work/etc/COMBB_analysis/data/BB_Data', year = 2023, )
+
 
 # stich sites
 

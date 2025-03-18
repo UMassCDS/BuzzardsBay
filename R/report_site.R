@@ -30,7 +30,7 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
 
    if(check) {
-      if(!check_site(site_dir, check_report = FALSE))
+      if(!check_site(site_dir, check_report = FALSE, check_baywatchers = baywatchers))
          stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
       else
          msg('')
@@ -46,20 +46,18 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
 
    # --- Get Baywatchers data now before we've written any results
-   if(baywatchers) {                                                                      # if they want these plots,
-      f <- file.path(dirname(dirname(site_dir)), 'bbcdataCURRENT.xlsx')
-      if(!file.exists(f))x
-      stop(paste0('Baywatchers file ', f, ' doesn\'t exist\n   You can exclude Baywatchers data with baywatchers = FALSE'))
-      x <- suppressWarnings(read_excel(f, sheet = 'all', skip = 2, .name_repair = 'minimal'))
-      x <- x[, c('STN_ID', 'SAMP_DATE', 'TIME', 'DO_MGL')]
-      x$date_time <- as.POSIXct(paste(ymd(x$SAMP_DATE), as.character(hms::as_hms(x$TIME))))
-      bay <- x[x$STN_ID == site, ]
-
-
-
-
-
-   }
+   # if(baywatchers) {                                                                      # if they want these plots,
+   #    f <- file.path(dirname(site_dir), 'baywatchers.csv')
+   #    if(!file.exists(f))
+   #    stop(paste0('Baywatchers file ', f, ' doesn\'t exist.\nYou can exclude Baywatchers data with baywatchers = FALSE or recreate it with extract_baywatchers.'))
+   #    # x <- suppressWarnings(read_csv(f)
+   #
+   #
+   #
+   #
+   #
+   #
+   # }
 
 
 

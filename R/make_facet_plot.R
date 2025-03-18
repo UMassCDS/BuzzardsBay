@@ -10,7 +10,7 @@
 #' @keywords internal
 
 
-make_facet_plot <- function(data = daily) {
+make_facet_plot <- function(daily) {
 
 
    daily_long <- daily[, c('Date', 'DO_mean', 'Temp')] |>
