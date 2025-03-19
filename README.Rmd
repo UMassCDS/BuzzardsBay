@@ -182,6 +182,6 @@ up to date with respect to the source Excel file.
 file, e.g., `combined\daily_stats_AB2_2024.csv` and the site report, `combined\site_report_AB2_2024.pdf`.
 `report_site()` normally runs `check_site()` before producing the report and throws an error if the 
 check fails; you can override this with `check = FALSE`. If you don't have Baywatchers data for this 
-site and year, use `baywatchers = FALSE`.
+site and year, use `baywatchers = FALSE`. The example data for `2023/WH1X` includes Baywatchers data.
 
 

@@ -175,4 +175,5 @@ site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
     `check_site()` before producing the report and throws an error if
     the check fails; you can override this with `check = FALSE`. If you
     don’t have Baywatchers data for this site and year, use
-    `baywatchers = FALSE`.
+    `baywatchers = FALSE`. The example data for `2023/WH1X` includes
+    Baywatchers data.
