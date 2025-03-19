@@ -8,9 +8,13 @@ test <- function(fn) {
 }
 
 
-test('stitch_site')
-test('check_site')
-test('report_site')
 test('replace_na_runs')
 test('lookup_site_paths')
 test('get_file_hashes')
+test('stitch_site')
+test('check_site')
+test('daily_stats')
+test('seasonal_stats')
+test('get_site_name')
+test('report_site')
+

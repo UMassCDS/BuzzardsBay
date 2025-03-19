@@ -10,8 +10,7 @@ daily_stats(core)
 \item{core}{Core data frame, produced by \code{stitch_site}}
 }
 \value{
-Data frame with one row for each day of deployment,
-and columns with a number of statistics
+Data frame with one row for each day of deployment, and columns with a number of statistics
 }
 \description{
 Produces a data frame of daily stats.

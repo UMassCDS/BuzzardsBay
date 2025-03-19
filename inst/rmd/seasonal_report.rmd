@@ -1,0 +1,145 @@
+---
+header-includes:
+   - \usepackage[default]{sourcesanspro}
+   - \usepackage[T1]{fontenc}
+   - \usepackage[margins=raggedright]{floatrow} 
+   - \usepackage{fancyhdr}
+   - \pagestyle{fancy}
+   - \fancyhf{}
+   - \renewcommand{\headrulewidth}{0pt}
+   - \fancyfoot[C]{\thepage}
+output: 
+   pdf_document
+documentclass: report
+pagestyle: empty
+geometry: 
+- margin=1in
+- top=0.5in
+- bottom=0.75in
+fontsize: 12pt 
+urlcolor: blue
+params:
+  title: ''
+  date: ''
+  stat: ''
+  value: ''
+  plots: ''
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(dev="cairo_pdf")
+```
+
+## `r params$title`
+
+Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
+
+Seasonal report, `r params$date`
+
+
+### Seasonal statistics
+
+**Statistic** | **Value** |
+---|---:
+`r params$stat[1]` | `r params$value[1]`
+`r params$stat[2]` | `r params$value[2]`
+`r params$stat[3]` | `r params$value[3]`
+`r params$stat[4]` | `r params$value[4]`
+`r params$stat[5]` | `r params$value[5]`
+`r params$stat[6]` | `r params$value[6]`
+`r params$stat[7]` | `r params$value[7]`
+`r params$stat[8]` | `r params$value[8]`
+`r params$stat[9]` | `r params$value[9]`
+`r params$stat[10]` | `r params$value[10]`
+`r params$stat[11]` | `r params$value[11]`
+`r params$stat[12]` | `r params$value[12]`
+`r params$stat[13]` | `r params$value[13]`
+`r params$stat[14]` | `r params$value[14]`
+`r params$stat[15]` | `r params$value[15]`
+`r params$stat[16]` | `r params$value[16]`
+`r params$stat[17]` | `r params$value[17]`
+`r params$stat[18]` | `r params$value[18]`
+`r params$stat[19]` | `r params$value[19]`
+`r params$stat[20]` | `r params$value[20]`
+`r params$stat[21]` | `r params$value[21]`
+`r params$stat[22]` | `r params$value[22]`
+`r params$stat[23]` | `r params$value[23]`
+`r params$stat[24]` | `r params$value[24]`
+`r params$stat[25]` | `r params$value[25]`
+`r params$stat[26]` | `r params$value[26]`
+`r params$stat[27]` | `r params$value[27]`
+`r params$stat[28]` | `r params$value[28]`
+
+*Only days that fall below the threshold are counted in mean durations.
+
+
+<!-- do_pct_sat -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_pct_sat', 'caption']}
+plot <- plot_info['do_pct_sat', ]
+make_plot(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
+```
+
+<!-- do -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do', 'caption']}
+plot <- plot_info['do', ]
+make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6)
+```
+
+<!-- do_daily_range -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_range', 'caption']}
+plot <- plot_info['do_daily_range', ]
+make_plot(daily, x = daily$Date, y = daily$DO_range, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+<!-- do_daily_min -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_daily_min', 'caption']}
+plot <- plot_info['do_daily_min', ]
+make_plot(daily, x = daily$Date, y = daily$DO_min, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+
+<!-- pair_mean_do_temp -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['pair_mean_do_temp', 'caption']}
+plot <- plot_info['pair_mean_do_temp', ]
+make_facet_plot(daily)
+```
+
+<!-- daily_pct_under_6 -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_pct_under_6', 'caption']}
+plot <- plot_info['daily_pct_under_6', ]
+make_plot(daily, x = daily$Date, y = daily$DO_6_pct, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+<!-- rolling_7_day_do -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['rolling_7_day_do', 'caption']}
+plot <- plot_info['rolling_7_day_do', ]
+make_plot(core, x = core$Date_Time, y = core$rolling_do, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 0, linetype = 1, hline = 6)
+```
+
+<!-- daily_temp -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_temp', 'caption']}
+plot <- plot_info['daily_temp', ]
+make_plot(core, y = core$Temp_CondLog, x_lab = plot$x_label, y_lab = plot$y_label)
+```
+
+<!-- daily_salinity -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['daily_salinity', 'caption']}
+plot <- plot_info['daily_salinity', ]
+make_plot(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
+```
+
+<!-- do_bw -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_bw', 'caption']}
+if(baywatchers) {
+   plot <- plot_info['do_bw', ]
+   make_plot_2var(core, bay, x1 = core$Date_Time, y1 = core$DO, x2 = bay$Date_Time, y2 = bay$DO, x_lab = plot$x_label, y_lab = plot$y_label)
+}
+```
+
+<!-- scat_bw_sensor -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['scat_bw_sensor', 'caption']}
+if(baywatchers) {
+   plot <- plot_info['scat_bw_sensor', ]
+   make_plot(bay, x = bay$DO, y = bay$Sensor_DO, x_lab = plot$x_label, y_lab = plot$y_label, diag = TRUE, point_size = 1)
+}
+```

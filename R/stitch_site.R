@@ -16,25 +16,32 @@
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include QC'd results
 #' @param max_gap Maximum gap to quietly accept between deployments (hours); a message will be printed if this gap is exceeded
 #' @param report Run `report_site` if TRUE
+#' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data (only if report = TRUE; see `report_site`)
+
 #' @importFrom lubridate interval dminutes date duration dhours year yday
 #' @import utils
 #' @export
 
 
-stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
+stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRUE) {
 
 
    paths <- lookup_site_paths(site_dir, warn = TRUE)
    if(dim(paths$deployments)[1] == 0)
       stop(paste0('There are no valid deployments (both QC and Metadata files) for ', site_dir))
 
-   qc <- lapply(paths$deployments$QCpath, FUN = 'read.csv')                            # Read QC file for each deployment
+
+   f <- paths$deployments$QCpath
+   f <- f[file.exists(f)]
+   qc <- lapply(f, FUN = 'read.csv')                                                   # Read QC file for each deployment (but only ones that exist!)
+
 
    all_cols <- get_expected_columns('final_all')                                       # get canonical columns in the right order
    wpp_cols <- get_expected_columns('final_WPP')                                       # can change cols for WPP if wanted; at the moment, it's all columns
    core_cols <- get_expected_columns('final_core')
    sensor_cols <- get_expected_columns('final_sensors')                                # these are the columns that'll get "DR" for rejected data in WPP result file
-   qc_codes <- read.csv(system.file('extdata/QC_codes.csv', package = 'BuzzardsBay'))  # read QC rejection codes (see inst/extdata/README_QC_codes.md)
+   qc_codes <- read.csv(system.file('extdata/QC_codes.csv', package = 'BuzzardsBay',
+                                    mustWork = TRUE))                                  # read QC rejection codes (see inst/extdata/README_QC_codes.md)
    if(!all(c('QC_Code', 'Rejection') %in% names(qc_codes)))
       stop('Something is wrong with qc_codes.csv')
 
@@ -176,6 +183,6 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE) {
 
    if(report) {
       msg('')
-      report_site(site_dir, check = FALSE)
+      report_site(site_dir, check = FALSE, baywatchers)
    }
 }

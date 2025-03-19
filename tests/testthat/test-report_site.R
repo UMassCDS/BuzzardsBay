@@ -6,7 +6,6 @@ test_that('report is correct', {
    withr::local_dir(dirname(example_paths$base))                                                # set working dir to temp dir
    site_dir <- dirname(sub(paste0(getwd(), '/*'), '', example_paths$deployment))                # site_dir is a relative path, so paths shown will match across runs
 
-
    f <- file.path(site_dir, '2024-08-16/QC_AB2_2024-08-16.csv')                                 # now add lots of QC codes to the first deployment
    x <- read.csv(f)
 
@@ -16,19 +15,13 @@ test_that('report is correct', {
 
 
    quiet(stitch_site(site_dir))                                                                 # stitch our modified data
-   expect_no_error(quiet(report_site(site_dir)))                                                # want to see no errors and correct messaging
-   expect_snapshot(report_site(site_dir))
+   expect_no_error(quiet(report_site(site_dir, baywatchers = FALSE)))                           # want to see no errors and correct messaging
+   expect_snapshot(report_site(site_dir, baywatchers = FALSE))
 
-
-   f <- file.path(site_dir, 'combined', 'daily_stats_AB2_2024.csv')                             # check stats
+   f <- file.path(site_dir, 'combined/daily_stats_AB2_2024.csv')                                # check stats
    expect_snapshot(read.csv(f))
 
    writeLines('abcdef', file.path(site_dir, 'combined/report_hash.txt'))                        # trash the report hash
    expect_no_error(quiet(check_site(site_dir)))                                                 # this shouldn't matter
-
-
-
-   # **** continue with report_site tests as I develop the function..................
-
 
 })

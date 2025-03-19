@@ -13,6 +13,7 @@
    #' 2. `Date_Time` The date and time, in format 2024-05-30 16:20:00
    #' 3. `trigger` TRUE when DO is below the selected threshold (the name of this column varies)
    #' @return Length of the longest run of TRUEs in fractional hours
+   #' @import stats
    #' @keywords internal
    # Source: sensemaking app, buzz.stats
 

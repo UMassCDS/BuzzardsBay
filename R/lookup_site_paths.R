@@ -15,6 +15,9 @@
 lookup_site_paths <- function(site_dir, warn = FALSE) {
 
 
+   if(!file.exists(site_dir))
+      stop('Path ', site_dir, ' does not exist')
+
    dir <- list.files(site_dir)                                             # top-level directory for site
 
    s <- lookup_paths(dirname(dirname(site_dir)),
