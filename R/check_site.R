@@ -25,13 +25,13 @@ check_site <- function(site_dir, check_report = TRUE, check_baywatchers = TRUE) 
       ok <- FALSE
    }
    else {
-      hash <- read.table(f, sep = '\t', header = TRUE)                          # read hash table from previous run
-      newhash <- get_file_hashes(file.path(site_dir, hash$file))                # and rehash these files
+      hash <- read.table(f, sep = '\t', header = TRUE)                           # read hash table from previous run
+      newhash <- get_file_hashes(file.path(site_dir, hash$file))                 # and rehash these files
 
-      missing <- is.na(newhash)                                                 # missing files
-      changed <- (hash$hash != newhash) & !missing                              # changed files
+      missing <- is.na(newhash)                                                  # missing files
+      changed <- (hash$hash != newhash) & !missing                               # changed files
 
-      ok <- !any(changed | missing)                                             # are we good?
+      ok <- !any(changed | missing)                                              # are we good?
 
       if(!ok)
          msg('*** Errors validating site ', site_dir)
@@ -57,31 +57,41 @@ check_site <- function(site_dir, check_report = TRUE, check_baywatchers = TRUE) 
       }
    }
 
-   if(ok & check_report)                                                       # if result files are good and we're checking the report,
-      if(file.exists(f <- file.path(site_dir, 'combined/report_hash.txt'))) {  #    if report_hash exists,
+   if(ok & check_report)                                                         # if result files are good and we're checking the report,
+      if(file.exists(f <- file.path(site_dir, 'combined/report_hash.txt'))) {    #    if report_hash exists,
          x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))
-         if(x == readLines(f))                                                 #       check to see if it's outdated (but don't throw ok = FALSE if it isn't)
+         if(x == readLines(f))                                                   #       check to see if it's outdated (but don't throw ok = FALSE if it isn't)
             msg('Report for ', site_dir, ' is up to date.')
          else
             msg('*** Report for ', site_dir, ' is outdated. Run report_site again to create a fresh report and daily stats.')
       }
 
-   if(ok & check_baywatchers)
-      if(!file.exists(f <- file.path(dirname(site_dir), 'bay_hash.txt'))) {   #    if bay_hash doesn't exist,
+   if(check_baywatchers) {
+      if(!file.exists(file.path(dirname(site_dir), 'baywatchers.csv'))) {        #    if baywatchers.csv doesn't exist,
          msg('*** Baywatchers data haven\'t been extracted yet. Run extract_baywatchers if you want reports')
          msg('    that include Baywatchers plots, or use report_site(..., baywatchers = FALSE) to skip them.')
          ok <- FALSE
       }
-   else {
-      x <- read.table(f, sep = '\t', header = TRUE)
-      g <- file.path(dirname(dirname(site_dir)), x$file)
-      y <- readBin(g, 'raw', 1e9)
-      if(x$hash == digest::digest(y))                                         #       check to see if it's outdated (but don't throw ok = FALSE if it isn't)
-         msg('Baywatchers file for ', basename(dirname(site_dir)), ' is up to date.')
       else {
-         msg('*** Baywatchers file for ', basename(dirname(site_dir)),' is outdated. Run extract_baywatchers again to get updated')
-         msg('    Baywatchers data, or use report_site(..., baywatchers = FALSE) to skip them.')
-         ok <- FALSE
+         if(!file.exists(f <- file.path(dirname(site_dir), 'bay_hash.txt')))        #    if bay_hash doesn't exist,
+            msg('*** Baywatchers data have been extracted, but the bay_hash.txt was deleted, so it\'s not
+              possible to check whether it\'s up to date. Proceed with caution.')
+         else {
+            x <- read.table(f, sep = '\t', header = TRUE)
+            g <- file.path(dirname(dirname(site_dir)), x$file)
+            if(!file.exists(g))
+               msg('*** Extracted Baywatchers data are present, but source Excel file is not. Proceed with caution.')
+            else {
+               y <- readBin(g, 'raw', 1e9)
+               if(x$hash == digest::digest(y))                                      #       check to see if it's outdated (but don't throw ok = FALSE if it isn't)
+                  msg('Baywatchers file for ', basename(dirname(site_dir)), ' is up to date.')
+               else {
+                  msg('*** Baywatchers file for ', basename(dirname(site_dir)),' is outdated. Run extract_baywatchers again to get updated')
+                  msg('    Baywatchers data, or use report_site(..., baywatchers = FALSE) to skip them.')
+                  ok <- FALSE
+               }
+            }
+         }
       }
    }
 

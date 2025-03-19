@@ -1,7 +1,7 @@
 # nolint start: cyclocomp_linter
-#' Setup an example directory
+#' Set up an example directory
 #'
-#' Setup an example directory for testing and demonstrating the **BuzzardsBay**
+#' Set up an example directory for testing and demonstrating the **BuzzardsBay**
 #' package functions. It will be created within `parent_dir` called `"BB_Data"`
 #' and will contain example calibrated data files for a single deployment as
 #' well as some of project level metadata.  The files are bundled with the
@@ -35,6 +35,11 @@
 #'
 #' * **RB1 2023-06-09** The original example data used to developing the
 #' package.
+#'
+#' * **WH1X 2023-06-09, 2023-06-16, 2023-06-23** This site includes QC'd
+#' files; it corresponds to the included 2023 Baywatchers data from
+#' `extract_baywatchers()`, which is required for two of the figures
+#' in the seasonal report.
 #'
 #' ## 2024
 #'
@@ -94,6 +99,8 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
   # Copy over deployment data from year folders
   for (year in years) {
     year_dir <- file.path(extdata, year)
+
+
     sites <- setdiff(list.dirs(year_dir, full.names = FALSE,
                                recursive = FALSE), "")
     for (site in sites){
@@ -132,6 +139,11 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
       deployment_dirs <- c(deployment_dirs,
                            file.path(dest_site_dir, deployments))
     }
+
+    if (file.exists(f <- file.path(year_dir, 'baywatchers.csv')))       # get Baywatchers data if it exists for this year
+      file.copy(f, file.path(example_base, year))
+    if (file.exists(f <- file.path(year_dir, 'bay_hash.txt')))
+      file.copy(f, file.path(example_base, year))
   }
 
   # Copy metadata files - sites.csv, placements.csv to metadata folders for

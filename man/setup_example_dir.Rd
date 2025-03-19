@@ -2,7 +2,7 @@
 % Please edit documentation in R/setup_example_dir.R
 \name{setup_example_dir}
 \alias{setup_example_dir}
-\title{Setup an example directory}
+\title{Set up an example directory}
 \usage{
 setup_example_dir(
   parent_dir = NULL,
@@ -40,7 +40,7 @@ base directory (\code{"BB_Data"}).}
 directories created }
 }
 \description{
-Setup an example directory for testing and demonstrating the \strong{BuzzardsBay}
+Set up an example directory for testing and demonstrating the \strong{BuzzardsBay}
 package functions. It will be created within \code{parent_dir} called \code{"BB_Data"}
 and will contain example calibrated data files for a single deployment as
 well as some of project level metadata.  The files are bundled with the
@@ -52,6 +52,10 @@ package and can be found in the source within \verb{inst/extdata/}.
 \itemize{
 \item \strong{RB1 2023-06-09} The original example data used to developing the
 package.
+\item \strong{WH1X 2023-06-09, 2023-06-16, 2023-06-23} This site includes QC'd
+files; it corresponds to the included 2023 Baywatchers data from
+\code{extract_baywatchers()}, which is required for two of the figures
+in the seasonal report.
 }
 }
 
