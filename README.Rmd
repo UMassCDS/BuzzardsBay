@@ -142,7 +142,7 @@ files are present.
 
 ## Analysis Module
 
-The Analysis Module consists of three primary functions: `stitch_site()`, `check_site()`, and 
+The Analysis Module consists of four primary functions: `stitch_site()`, `check_site()`, and 
 `report_site()`. Each takes the site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
 `"~/BB_Data/2022/AB2"`.
 
