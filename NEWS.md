@@ -1,3 +1,14 @@
+# BuzzardsBay 0.1.0.9024
+
+Includes the initial complete version of the **Analysis Module**. Additions include:
+
+- report_side now produces the seasonal report as a PDF with a table of seasonal statistics
+and a series of plots
+- extract_baywatchers processes Baywatchers data from the original Excel file for a given year
+- various bug fixes and improvements
+
+For more details, see `README`. 
+
 # BuzzardsBay 0.1.0.9023
 
 ## Add checks to `qc_deployment()` for Depth column.

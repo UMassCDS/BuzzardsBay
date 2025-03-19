@@ -4,10 +4,10 @@
 \alias{make_facet_plot}
 \title{Produce a paired time series plot of DO and Temperature for the final report}
 \usage{
-make_facet_plot(data = daily)
+make_facet_plot(daily)
 }
 \arguments{
-\item{Data}{daily data frame, from \code{report_site}}
+\item{daily}{daily data frame, from \code{report_site}}
 }
 \value{
 A ggplot2 object

@@ -22,8 +22,9 @@ extract_baywatchers(
 }
 \description{
 Pulls the relevant site, date, and DO values from the Baywatchers source file for a
-given year. Rows with \code{DO_QC = 9} will be dropped. The results will be written to
-\verb{<year>/baywatchers.csv}, along with a hash file, \code{bayhash.txt}.
+given year. Rows with \code{DO_QC = 9} will be dropped. Rows with missing times (column \code{TIME})
+will also be dropped. The results will be written to \verb{<year>/baywatchers.csv}, along with
+a hash file, \code{bay_hash.txt}.
 }
 \details{
 Run this before \code{report_site} if you want to include the two Baywatchers plots (run with

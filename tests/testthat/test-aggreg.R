@@ -7,7 +7,7 @@ test_that('aggreg works', {
 
    expect_snapshot(aggreg(x$x1, by = x$group, FUN = sum))
    expect_snapshot(aggreg(x$x1, by = x$group, FUN = sum, drop_by = FALSE))
-   expect_snapshot(aggreg(x$x2, by = x$group, FUN = sum, require_nonmissing = 0.5))
-   expect_snapshot(aggreg(x$x2, by = x$group, FUN = sum, require_nonmissing = 0.6))
+   expect_snapshot(aggreg(x$x2, by = x$group, FUN = sum, nomiss = 0.5))
+   expect_snapshot(aggreg(x$x2, by = x$group, FUN = sum, nomiss = 0.6))
 
 })

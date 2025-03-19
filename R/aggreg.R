@@ -8,12 +8,12 @@
 #' - optionally drop groups with too many NAs
 #'
 #' @param x Vector to aggregate
-#' @param Vector(s) to group by (if only 1 grouping variable, this doesn't have to be a list)
+#' @param by Vector(s) to group by (if only 1 grouping variable, this doesn't have to be a list)
 #' @param FUN Function to summarize with
 #' @param drop_by If TRUE, drop the grouping variable and just return a vector; otherwise,
 #' return a data frame
 #' @param nomiss If not NULL, this represents a proportion of the data that must
-#' be nonmissing; if this threshold isn't met, the daily value will be NA
+#' be non-missing; if this threshold isn't met, the daily value will be NA
 #' @return Vector of aggregated values (if drop_by = TRUE), or data frame of groups
 #' and aggregated values (if drop_by = FALSE)
 #' @import stats
@@ -27,7 +27,7 @@
       by <- list(by)
    z <- suppressWarnings(aggregate(x, by, FUN, na.rm = TRUE))                 # no whining on min or max on all NAs
 
-   if(!is.null(nomiss))                                                       # if we have a nonmissing threshold,
+   if(!is.null(nomiss))                                                       # if we have a non-missing threshold,
       z$x[aggreg(!is.na(x), by = by, FUN = mean) < nomiss] <- NA              #    change results in groups with too few missing values to NA
 
    z$x[is.infinite(z$x) | is.nan(z$x)] <- NA                                  # replace crap with NA

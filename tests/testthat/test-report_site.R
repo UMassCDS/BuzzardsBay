@@ -15,8 +15,8 @@ test_that('report is correct', {
 
 
    quiet(stitch_site(site_dir))                                                                 # stitch our modified data
-   expect_no_error(quiet(report_site(site_dir)))                                                # want to see no errors and correct messaging
-   expect_snapshot(report_site(site_dir))
+   expect_no_error(quiet(report_site(site_dir, baywatchers = FALSE)))                           # want to see no errors and correct messaging
+   expect_snapshot(report_site(site_dir, baywatchers = FALSE))
 
    f <- file.path(site_dir, 'combined/daily_stats_AB2_2024.csv')                                # check stats
    expect_snapshot(read.csv(f))

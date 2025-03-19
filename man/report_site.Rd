@@ -30,6 +30,6 @@ files haven't changed since the last \code{stitch_site} run.
 Including plots based on Baywatchers data requires a file within the site \verb{baywatchers/<site>.csv}. This file must
 include the date and time (a column that includes \code{Date_Time} in the name) and dissolved oxygen in mg/L (DO in the
 name, but not percent, pct, or \%). Column names are case-insensitive. If this file is missing or the necessary
-columns are not present, an error will be reported. You can use baywatchers = FALSE for datasets that don't have
+columns are not present, an error will be reported. You can use \code{baywatchers = FALSE} for datasets that don't have
 Baywatchers data to exclude these plots.
 }

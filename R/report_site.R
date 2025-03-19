@@ -13,7 +13,7 @@
 #' Including plots based on Baywatchers data requires a file within the site `baywatchers/<site>.csv`. This file must
 #' include the date and time (a column that includes `Date_Time` in the name) and dissolved oxygen in mg/L (DO in the
 #' name, but not percent, pct, or %). Column names are case-insensitive. If this file is missing or the necessary
-#' columns are not present, an error will be reported. You can use baywatchers = FALSE for datasets that don't have
+#' columns are not present, an error will be reported. You can use `baywatchers = FALSE` for datasets that don't have
 #' Baywatchers data to exclude these plots.
 #'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
@@ -42,41 +42,15 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
    core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
-   core <<- core  # ********** for dev
-
-
-   # --- Get Baywatchers data now before we've written any results
-   # if(baywatchers) {                                                                      # if they want these plots,
-   #    f <- file.path(dirname(site_dir), 'baywatchers.csv')
-   #    if(!file.exists(f))
-   #    stop(paste0('Baywatchers file ', f, ' doesn\'t exist.\nYou can exclude Baywatchers data with baywatchers = FALSE or recreate it with extract_baywatchers.'))
-   #    # x <- suppressWarnings(read_csv(f)
-   #
-   #
-   #
-   #
-   #
-   #
-   # }
-
-
-
 
    # --- Daily stats
-   daily <- daily_stats(core)                                                             # calculate daily stats
-   f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
-   write.csv(daily, file = f, row.names = FALSE, quote = FALSE, na = '')
-   msg('Daily stats written to ', f)
+   daily_stats <- daily_stats(core)                                                       # calculate daily stats
 
+   core$Date <- as.POSIXct(core$Date)                                                     # we'll need date and date/time as time objects
+   core$Date_Time <- as.POSIXct(core$Date_Time)
 
    # --- Seasonal stats
    seasonal <- seasonal_stats(core)                                                       # calculate seasonal stats
-
-
-   # --- Pre-calculate variables for plots
-   core$Date <- as.POSIXct(core$Date)                                                     # we'll need date date/time as time objects
-   core$Date_Time <- as.POSIXct(core$Date_Time)
-
 
    # For daily stats, we're dropping days with <22/24 hours of data, as well as first and last days
    x <- cbind(min = aggreg(core$DO, by = core$Date, FUN = min, nomiss = 22 / 24, drop_by = FALSE),
@@ -102,6 +76,23 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
    core$rolling_do[is.na(core$DO)] <- NA                                                  # *** if DO is missing, set rolling DO to missing too
 
 
+   # --- Get Baywatchers data now before we've written any results (in case of errors)
+   if(baywatchers) {                                                                      # if they want Baywatchers plots,
+      f <- file.path(dirname(site_dir), 'baywatchers.csv')                                #    read the data
+      if(!file.exists(f))
+         stop(paste0('Baywatchers file ', f, ' doesn\'t exist.\nYou can exclude Baywatchers data with baywatchers = FALSE or recreate it with extract_baywatchers.'))
+      x <- read.csv(f)
+      bay <- x[x$Site == site & !is.na(x$DO), ]
+      bay$Date_Time <- as.POSIXct(bay$Date_Time)
+      bay <- bay[bay$Date_Time >= core$Date_Time[1] &
+                    bay$Date_Time <= core$Date_Time[dim(core)[1]], ]                      # trim Baywatchers to date range of sensor data ***
+      bay$Sensor_DO <- approx(core$Date_Time, core$DO, bay$Date_Time)$y                   # interpolate sensor data for Fig. 11
+      if(dim(bay)[1] == 0) {
+         msg('There are no Baywatchers data for this site and year. Omitting Figs. 10 and 11')
+         baywatchers <- FALSE
+      }
+   }
+
 
    # --- Put together PDF report
    template <- system.file('rmd/seasonal_report.rmd', package = 'BuzzardsBay', mustWork = TRUE)
@@ -126,6 +117,11 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
    msg('Seasonal report written to ', report_file)
 
+
+   # --- Write daily stats
+   f <- file.path(site_dir, paste0('combined/daily_stats_', site, '_', year, '.csv'))
+   write.csv(daily_stats, file = f, row.names = FALSE, quote = FALSE, na = '')
+   msg('Daily stats written to ', f)
 
 
    x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))

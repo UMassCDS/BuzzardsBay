@@ -4,7 +4,7 @@
 \alias{check_site}
 \title{Check to be sure that result files from \code{stitch_site} are up to date}
 \usage{
-check_site(site_dir, check_report = TRUE)
+check_site(site_dir, check_report = TRUE, check_baywatchers = TRUE)
 }
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include
@@ -12,6 +12,9 @@ QC'd results and result files from \code{stitch_site}.}
 
 \item{check_report}{If TRUE, check to see if the report is up to date. Don't check when calling from
 report_site, of course.}
+
+\item{check_baywatchers}{IF TRUE, check to see if the extracted Baywatchers data are up to date with
+respect to the source Baywatchers Excel file in the base data directory.}
 }
 \value{
 Silently returns TRUE if validation was successful.

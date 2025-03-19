@@ -10,15 +10,19 @@
 #' @param x_lab Label for x-axis
 #' @param y_lab Label for y-axis
 #' @param hline Optional horizontal line at specified value on the y-axis
+#' @param diag If TRUE, set x and y axes to the same range and draw a diagonal
+#' with a slope of 1
 #' @param point_size Optional size of points in plot
-#' @param line_type Optional line type (default 0, is no line)
+#' @param linetype Optional line type (default 0, is no line)
 #' @return A ggplot2 object
 #' @import ggplot2
 #' @keywords internal
 
 
-make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 0, point_size = 0.25, linetype = 0) {
+make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 0, diag = FALSE,
+                      point_size = 0.25, linetype = 0) {
 
+   range <- range(c(x, y))
 
    ggplot(core, aes(x = x, y = y)) +
       geom_point(size = point_size) +
@@ -27,8 +31,18 @@ make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 
       theme_minimal() +
       theme(axis.line.x = element_line(linewidth = 0.3),
             axis.line.y = element_line(linewidth = 0.3)) +
-      {
-         if(hline != 0)
+      list(
+         if(hline != 0) {
             geom_hline(yintercept = hline, color = 'red', linetype = 2)
-      }
+         },
+         if(diag) {
+            list(
+               coord_fixed(ratio = 1),
+               xlim(range),
+               ylim(range),
+               geom_abline(slope = 1, intercept = 0,
+                           linetype = 'dashed')
+            )
+         }
+      )
 }

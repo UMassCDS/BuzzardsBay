@@ -8,5 +8,5 @@ daily_pct_under_6	6	Percent of time each day under 6 mg/L	Date	% of day	Percent 
 rolling_7_day_do	7	Rolling 7 day mean of DO, hline at 6	Date	DO (mg/L)	Rolling seven day mean of dissolved oxygen (mg/L). Horizontal line is at 6 mg/L.
 daily_temp	8	Daily temperature	Date	Temperature (C)	Mean daily temperature (C).
 daily_salinity	9	Daily salinity	Date	Salinity (ppt)	Mean daily salinity (ppt).
-daily_do_bw	10	Daily DO with Baywatchers points	Date	DO (mg/L)	Mean daily dissolved oxygen (mg/L) from continuous sensors and Baywatchers point samples.
+do_bw	10	DO with Baywatchers points	Date	DO (mg/L)	Dissolved oxygen (mg/L) from continuous sensors (black) and Baywatchers point samples (red).
 scat_bw_sensor	11	Scatterplot of Baywatchers points vs. sensor DO	Baywatchers DO (mg/L)	Sensor DO (mg/L)	Baywatchers sampled DO (mg/L) versus sensor DO (mg/L). Sensor values are interpolated for each Baywatchers sample.

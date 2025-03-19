@@ -9,15 +9,15 @@ aggreg(x, by, FUN, drop_by = TRUE, nomiss = NULL)
 \arguments{
 \item{x}{Vector to aggregate}
 
+\item{by}{Vector(s) to group by (if only 1 grouping variable, this doesn't have to be a list)}
+
 \item{FUN}{Function to summarize with}
 
 \item{drop_by}{If TRUE, drop the grouping variable and just return a vector; otherwise,
 return a data frame}
 
 \item{nomiss}{If not NULL, this represents a proportion of the data that must
-be nonmissing; if this threshold isn't met, the daily value will be NA}
-
-\item{Vector(s)}{to group by (if only 1 grouping variable, this doesn't have to be a list)}
+be non-missing; if this threshold isn't met, the daily value will be NA}
 }
 \value{
 Vector of aggregated values (if drop_by = TRUE), or data frame of groups

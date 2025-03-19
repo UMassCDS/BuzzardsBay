@@ -1,14 +1,14 @@
 # check_site gives proper messages
 
     Code
-      check_site(site_dir)
+      check_site(site_dir, check_baywatchers = FALSE)
     Output
       Site BB_Data/2024/AB2 validated. Result files are up to date.
 
 ---
 
     Code
-      check_site(site_dir)
+      check_site(site_dir, check_baywatchers = FALSE)
     Output
       *** Errors validating site BB_Data/2024/AB2
       Source files used in the previous run have apparently been deleted. If this was intentional, rerun stitch_site.
@@ -27,7 +27,7 @@
 ---
 
     Code
-      check_site(site_dir)
+      check_site(site_dir, check_baywatchers = FALSE)
     Output
       *** Hash file BB_Data/2024/AB2/combined/hash.txt is missing.
       Most likely either your path is wrong or stitch_site hasn't been run for this deployment.
@@ -35,7 +35,7 @@
 ---
 
     Code
-      check_site(site_dir)
+      check_site(site_dir, check_baywatchers = FALSE)
     Output
       Site BB_Data/2024/AB2 validated. Result files are up to date.
       Report for BB_Data/2024/AB2 is up to date.
@@ -43,7 +43,7 @@
 ---
 
     Code
-      check_site(site_dir)
+      check_site(site_dir, check_baywatchers = FALSE)
     Output
       Site BB_Data/2024/AB2 validated. Result files are up to date.
       *** Report for BB_Data/2024/AB2 is outdated. Run report_site again to create a fresh report and daily stats.

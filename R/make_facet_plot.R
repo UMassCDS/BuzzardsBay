@@ -3,7 +3,7 @@
 #' Produce a paired time series plot of DO and Temperature for the final report.
 #' Unlike `make_plot`, this function is specific for a single plot.
 #'
-#' @param Data daily data frame, from `report_site`
+#' @param daily daily data frame, from `report_site`
 #' @return A ggplot2 object
 #' @import ggplot2
 #' @importFrom tidyr pivot_longer

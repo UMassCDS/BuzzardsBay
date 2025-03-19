@@ -20,14 +20,14 @@
 ---
 
     Code
-      aggreg(x$x2, by = x$group, FUN = sum, require_nonmissing = 0.5)
+      aggreg(x$x2, by = x$group, FUN = sum, nomiss = 0.5)
     Output
       [1] NA NA 55 15 34
 
 ---
 
     Code
-      aggreg(x$x2, by = x$group, FUN = sum, require_nonmissing = 0.6)
+      aggreg(x$x2, by = x$group, FUN = sum, nomiss = 0.6)
     Output
       [1] NA NA 55 NA 34
 

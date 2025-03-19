@@ -1,12 +1,12 @@
 # report is correct
 
     Code
-      report_site(site_dir)
+      report_site(site_dir, baywatchers = FALSE)
     Output
       Site BB_Data/2024/AB2 validated. Result files are up to date.
       
-      Daily stats written to BB_Data/2024/AB2/combined/daily_stats_AB2_2024.csv
       Seasonal report written to BB_Data/2024/AB2/combined/report_AB2_2024.pdf
+      Daily stats written to BB_Data/2024/AB2/combined/daily_stats_AB2_2024.csv
 
 ---
 

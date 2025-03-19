@@ -60,8 +60,8 @@ seasonal_stats <- function(core) {
 
    y[['std_temp']] <- sd(core$Temp_CondLog, na.rm = TRUE)
 
-   y[['first_do_6']] <- c(core$Date[core$DO < 6 & !is.na(core$DO)], 'None')[1]
-   y[['first_do_3']] <- c(core$Date[core$DO < 3 & !is.na(core$DO)], 'None')[1]
+   y[['first_do_6']] <- c(as.character(core$Date[core$DO < 6 & !is.na(core$DO)]), 'None')[1]
+   y[['first_do_3']] <- c(as.character(core$Date[core$DO < 3 & !is.na(core$DO)]), 'None')[1]
 
    y[['days_do_6']] <- length(unique(core$Date[core$DO < 6 & !is.na(core$DO)]))
    y[['days_do_3']] <- length(unique(core$Date[core$DO < 3 & !is.na(core$DO)]))

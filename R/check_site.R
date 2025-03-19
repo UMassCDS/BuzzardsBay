@@ -11,6 +11,8 @@
 #' QC'd results and result files from `stitch_site`.
 #' @param check_report If TRUE, check to see if the report is up to date. Don't check when calling from
 #' report_site, of course.
+#' @param check_baywatchers IF TRUE, check to see if the extracted Baywatchers data are up to date with
+#' respect to the source Baywatchers Excel file in the base data directory.
 #' @return Silently returns TRUE if validation was successful.
 #' @export
 

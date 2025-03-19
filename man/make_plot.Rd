@@ -11,6 +11,7 @@ make_plot(
   x_lab,
   y_lab,
   hline = 0,
+  diag = FALSE,
   point_size = 0.25,
   linetype = 0
 )
@@ -28,9 +29,12 @@ make_plot(
 
 \item{hline}{Optional horizontal line at specified value on the y-axis}
 
+\item{diag}{If TRUE, set x and y axes to the same range and draw a diagonal
+with a slope of 1}
+
 \item{point_size}{Optional size of points in plot}
 
-\item{line_type}{Optional line type (default 0, is no line)}
+\item{linetype}{Optional line type (default 0, is no line)}
 }
 \value{
 A ggplot2 object
