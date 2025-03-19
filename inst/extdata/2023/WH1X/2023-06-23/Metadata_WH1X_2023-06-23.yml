@@ -1,0 +1,50 @@
+site: WH1X
+deployment: WH1X_2023-06-23
+deployment_date: '2023-06-23'
+calibration_start: 2023-06-16 10:50:00
+calibration_end: 2023-06-23 12:20:00
+pct_calibrated: 99.8039
+n_records: 1018
+pct_immediate_rejection: 0.0
+pct_flagged_for_review: 1.18
+logging_interval_min: 10.0
+timezone: GMT-04:00
+auto_qc_date: '2024-10-07'
+do_calibration:
+  start_do_conc: 7.49
+  start_temperature_c: 21.62
+  start_salinity_ppt: 29.5
+  start_meter_titration_value_mg_l: 6.46
+  start_salinity_correction: 0.8421
+  end_do_conc: 6.8
+  end_temperature_c: 18.96
+  end_meter_titration_value_mg_l: 6.26
+  start_ratio: 0.8624833
+  end_ratio: 0.9205882
+do_deployment:
+  full_series_name: DO Adj Conc, mg/L
+  launch_name: BBC5_WH1X_21118667
+  launch_time: 2023-06-16 10:40:53
+  calibration_date: 2023-05-16 17:04:28
+  calibration_gain: 1.07606
+  calibration_offset: -0.0
+do_device:
+  product: HOBO U26-001 Dissolved Oxygen
+  serial_number: 21118667
+  version_number: 1.08
+  header_created: 2012-03-02 14:19:05
+cond_calibration:
+  calibration_points: Start point and End point
+  start_cal_cond: 42501.0
+  start_cal_temp: 21.57
+  end_cal_cond: 40546.0
+  end_cal_temp: 19.2
+cond_deployment:
+  full_series_name: Salinity, ppt
+  launch_name: BBC5_WH1X_21113538
+  launch_time: 2023-06-16 10:35:34
+cond_device:
+  product: HOBO U24-002 Conductivity
+  serial_number: 21113538
+  version_number: 1.52
+  header_created: 2021-06-02 09:20:35
