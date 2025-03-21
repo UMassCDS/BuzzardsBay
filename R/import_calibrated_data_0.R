@@ -122,7 +122,7 @@ import_calibrated_data_0 <- function(paths) {
 
   # Add in optional top level sublists as empty elements if missing
   optional_top_lists <- c("cond_deployment", "cond_calibration", "do_deployment",
-                          "do_calibrations")
+                          "do_calibration")
   missing_top_lists <- setdiff(optional_top_lists, names(md))
   if(length(missing_top_lists) > 0) {
     miss <- vector(mode = "list", length = length(missing_top_lists))
@@ -140,15 +140,16 @@ import_calibrated_data_0 <- function(paths) {
     md_item <- md[[n]]
     if(is.list(expected_item)) {
       if(!n %in% names(md)) {
-        stop("Expected top level sublist:", n,
-             "missing from YAML file:\n\t", input_paths$metadata, "")
+        stop("Expected top level item: \"", n,
+             "\" missing from YAML file:\n\t", input_paths$metadata, "",
+             sep = "")
 
       }
       for(j in seq_along(expected_item)) {
         inner_name <- names(expected_item)[j]
            if (expected_item[[j]] && !inner_name %in% names(md_item)) {
-             stop("Required sub-element ", inner_name, "missing from ", n,
-                  "in", input_paths$metadata)
+             stop("Required sub-element \"", inner_name, "\" missing from ", n,
+                  "in: ", input_paths$metadata)
            } # end if required inner item missing
       } # end loop through sub-list
 
@@ -174,11 +175,6 @@ import_calibrated_data_0 <- function(paths) {
   md$pct_immediate_rejection <- NA
   md$pct_flagged_for_review <- NA
   md$logging_interval_min <- NA
-
-
-
-
-
 
 
   # Read data from file
