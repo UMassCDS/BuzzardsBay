@@ -82,7 +82,7 @@ seasonal_stats <- function(core) {
    for(i in 1:length(y)) {                                                          # for each statistic,
       f <- r$digits[r$column == names(y[i])]                                        #    format date, percent, or digits
       z[names(y[i]), 'value'] <- switch(f,
-                                        'date' = y[[i]],
+                                        'date' = as.character(y[[i]]),
                                         'percent' = paste0(round(y[[i]], 0), '%'),
                                         format(round(y[[i]], as.numeric(f)),
                                                nsmall = as.numeric(f), big.mark = ',')

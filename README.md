@@ -27,6 +27,12 @@ You can install or update **BuzzardsBay** from
 devtools::install_github("UMassCDS/BuzzardsBay")
 ```
 
+To make seasonal reports, you’ll also need to install TinyTeX, which is
+required to create PDFs. Use:
+
+    install.packages('tinytex')
+    tinytex::install_tinytex()
+
 ## QC Module
 
 The primary function in the QC module is `qc_deployment()` it reads in
