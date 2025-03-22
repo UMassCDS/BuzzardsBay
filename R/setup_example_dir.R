@@ -140,10 +140,13 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
                            file.path(dest_site_dir, deployments))
     }
 
-    if (file.exists(f <- file.path(year_dir, 'baywatchers.csv')))       # get Baywatchers data if it exists for this year
-      file.copy(f, file.path(example_base, year))
-    if (file.exists(f <- file.path(year_dir, 'bay_hash.txt')))
-      file.copy(f, file.path(example_base, year))
+    dest_year_dir <- file.path(example_base, year)
+    if(file.exists(dest_year_dir)) {
+      if (file.exists(f <- file.path(year_dir, 'baywatchers.csv')))       # get Baywatchers data if it exists for this year
+        file.copy(f, dest_year_dir)
+      if (file.exists(f <- file.path(year_dir, 'bay_hash.txt')))
+        file.copy(f, dest_year_dir)
+    }
   }
 
   # Copy metadata files - sites.csv, placements.csv to metadata folders for

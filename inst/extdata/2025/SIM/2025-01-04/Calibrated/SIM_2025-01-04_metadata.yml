@@ -6,25 +6,5 @@ do_device:
 cond_device:
   product: MX801
   serial_number: 22145888
-do_calibration:
-  n_points: 2
-  pct_saturation:
-  - 100.0
-  - 0.0
-  measured_do:
-  - 8.95
-  - 0.05
-  temperature: 21.22
-  barometric_pressure: 102.08
 timezone: EST
-cond_calibration:
-  n_points: 2
-  spec_cond_25c:
-  - 1413.0
-  - 80000.0
-  measured_cond:
-  - 1401.43
-  - 82218.64
-  temperature:
-  - 19.7
-  - 20.13
+

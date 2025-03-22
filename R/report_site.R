@@ -127,3 +127,9 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
    x <- get_file_hashes(file.path(site_dir, 'combined/hash.txt'))
    writeLines(x, file.path(site_dir, 'combined/report_hash.txt'))                         # write report hash, used to see if reports are up to date in check_site
 }
+
+ignore_unused_imports <- function() {
+  # Supress message that tinytex is imported but not used
+  # https://r-pkgs.org/dependencies-in-practice.html#how-to-not-use-a-package-in-imports
+  tinytex::is_tinytex()
+}

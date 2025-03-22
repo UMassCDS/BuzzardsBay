@@ -1,3 +1,15 @@
+# BuzzardsBay 0.1.0.9025
+
+* Add `tinytex` to imports in DESCRIPTION to guarantee that `tinytex` is 
+ installed when **BuzzardsBay** is installed.
+
+* The simple CSV import used by `qc_deployment()`  no longer 
+requires a `cond_calibration` item in the YAML file, 
+which was not intended to be required and was ambiguously defined. 
+
+* Fixed minor bug in `setup_example_dir()` that had no impact on users 
+of the package but caused the function to fail with some inputs.
+
 # BuzzardsBay 0.1.0.9024
 
 Includes the initial complete version of the **Analysis Module**. Additions include:
@@ -49,6 +61,7 @@ Minor bug fixes
 - Always use uppercase for site abbreviations.
 - Check_site now checks for outdated reports and alerts about them. Previously, it was possible to run stitch_site and report_site, then edit deployment data and rerun stitch_site without report_site, and end up with outdated reports and no way to know that they were.
 - Fixed a bug in Duration_Under_6 (and 3) in daily stats: runs to or past midnight would report 10 minutes too few on the day they started, as midnight is treated as tomorrow, so the last sample wasn't counted.
+
 
 # BuzzardsBay 0.1.0.9020
 
