@@ -1,3 +1,13 @@
+# BuzzardsBay 0.1.0.9026
+
+- Fix formatting of First day warmer than/colder than
+
+- Change tinytex to suggests (as it's not needed for QC side) and check
+for installation in report_site, installing both it and separate TinyTeX
+software on machine. 
+
+- Add description of how to install TinyTeX in README.
+
 # BuzzardsBay 0.1.0.9025
 
 * Add `tinytex` to imports in DESCRIPTION to guarantee that `tinytex` is 
