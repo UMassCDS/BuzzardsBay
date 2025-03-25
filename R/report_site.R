@@ -36,6 +36,11 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
          msg('')
    }
 
+   if (!requireNamespace('tinytex', quietly = TRUE)) {
+      install.packages('tinytex')
+      tinytex::install_tinytex()
+   }
+
 
    site <- toupper(basename(site_dir))
    year <- basename(dirname(site_dir))
