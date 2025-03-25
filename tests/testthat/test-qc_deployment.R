@@ -325,15 +325,15 @@ test_that("man/qc_deployment() checks depth range", {
 
   expect_snapshot(d[sel_rows, sel_cols])
 
-
 })
 
 
 
 
-test_that("qc_deployment() works with import type 0 (CSV)", {
+test_that("qc_deployment() works with import type 0 (simple CSV)", {
   example_paths <- local_example_dir(site_filter = "SIM",
                                      year_filter = 2025)
   deployment_dir <- example_paths$deployment
-  qc_deployment(deployment_dir)
+  paths <- lookup_paths(deployment_dir = deployment_dir)
+  expect_no_error(qc_deployment(deployment_dir))
 })

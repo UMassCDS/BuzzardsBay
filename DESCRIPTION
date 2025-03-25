@@ -1,7 +1,7 @@
 Package: BuzzardsBay
 Type: Package
 Title: Process and analyze data for the COMBB project
-Version: 0.1.0.9024
+Version: 0.1.0.9025
 Authors@R: 
     c(person("Ethan", "Plunkett",  email = "plunkett@umass.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4405-2251")),
@@ -25,7 +25,8 @@ Imports:
     digest, 
     utils,
     stats, 
-    tidyr
+    tidyr,
+    tinytex
 Encoding: UTF-8
 Language: en-US
 LazyData: true
