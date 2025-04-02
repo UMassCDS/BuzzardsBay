@@ -67,20 +67,25 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
          gap <- interval(x[1], x[2]) / dminutes(1)                                     #       gap to fill, in minutes
          m <- yaml::read_yaml(paths$deployments$mdpath[i])$logging_interval_min        #       logging interval of first deployment in pair (min)
          need <- ceiling(gap / m) - 1                                                  #       how many dates do we need to interpolate?
-         fill <- x[1] + dminutes(1:need * m)                                           #       here are our interpolated times
-         fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                            #       formatted in the final form
+         if(need > 0) {                                                                #       If there's a gap,
+            fill <- x[1] + dminutes(1:need * m)                                        #          here are our interpolated times
+            fill <- format(fill, format = '%Y-%m-%d %H:%M:%S')                         #          formatted in the final form
 
-         y <- data.frame(matrix(NA, length(fill), length(all_cols)))                   #       create data frame to fill the gap, with Site, Date, and Date_Time, all others NA
-         names(y) <- all_cols
-         y$Site <- site
-         y$Date <- format(date(fill), format = '%Y-%m-%d')
-         y$Date_Time <- fill
-         y$Time <- sub('\\d{4}-\\d{2}-\\d{2} ', '', fill)
+            y <- data.frame(matrix(NA, length(fill), length(all_cols)))                #          create data frame to fill the gap, with Site, Date, and Date_Time, all others NA
+            names(y) <- all_cols
+            y$Site <- site
+            y$Date <- format(date(fill), format = '%Y-%m-%d')
+            y$Date_Time <- fill
+            y$Time <- sub('\\d{4}-\\d{2}-\\d{2} ', '', fill)
 
-         z <- rbind(z, y, qc[[i + 1]])                                                 #       build up result: what we've already got, gap fill, and second deployment of pair
+            z <- rbind(z, y, qc[[i + 1]])                                              #          build up result: what we've already got, gap fill, and second deployment of pair
 
-         if((d <- duration(gap, units = 'minute')) > dhours(max_gap))                  #       warn if there's a large gap between deployments
-            msg('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d))
+            if((d <- duration(gap, units = 'minute')) > dhours(max_gap))               #          warn if there's a large gap between deployments
+               msg('Note: gap between deployments ', deployments[i], ' and ', deployments[i + 1], ' is ', format(d))
+
+         }
+         else                                                                          #       else,
+            z <- rbind(z, qc[[i + 1]])                                                 #          build up result from two deployments, no gap
       }
 
 

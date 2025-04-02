@@ -1,3 +1,9 @@
+# BuzzardsBay 0.1.0.9027
+
+- Fix a bug that occurred when there wasn't a gap between deployments
+
+- Correct Fig. 8 caption
+
 # BuzzardsBay 0.1.0.9026
 
 - Fix formatting of First day warmer than/colder than
