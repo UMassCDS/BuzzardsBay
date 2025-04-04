@@ -1,3 +1,8 @@
+# BuzzardsBay 0.1.0.9028
+
+- Change default PDF engine in the hopes of making report_site work on Macs. This should
+have no effect on Windows machines.
+
 # BuzzardsBay 0.1.0.9027
 
 - Fix a bug that occurred when there wasn't a gap between deployments
