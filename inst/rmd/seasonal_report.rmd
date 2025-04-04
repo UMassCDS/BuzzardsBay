@@ -27,7 +27,7 @@ params:
 ---
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(dev="cairo_pdf")
+knitr::opts_chunk$set(dev="pdf")
 ```
 
 ## `r params$title`
