@@ -3,7 +3,9 @@
 #' Produces a data frame of seasonal stats.
 #'
 #' @param core Core data frame, produced by `stitch_site`
-#' @return Data frame with a column of the statistic name and a column with the statistic
+#' @return List of:
+#' \item{`table`}{Data frame with a column of the statistic name and a column with the numeric statistics}
+#' \item{`formatted`}{Data frame with a column of the statistic name and a column with the formatted statistics}
 #' @import stats
 #' @keywords internal
 
@@ -30,6 +32,8 @@ seasonal_stats <- function(core) {
 
    z <- data.frame(stat = stats, value = NA)                                        # result data frame
    row.names(z) <- stat_abbrev
+   z2 <- z
+
    y <- list()                                                                      # intermediate result list (as we have mixed types in result)
 
 
@@ -81,6 +85,13 @@ seasonal_stats <- function(core) {
    r <- r[r$table == 'seasonal', ]                                                  # just for seasonal stats
    for(i in 1:length(y)) {                                                          # for each statistic,
       f <- r$digits[r$column == names(y[i])]                                        #    format date, percent, or digits
+
+      z2[names(y[i]), 'value'] <- switch(f,
+                                         'date' = as.character(y[[i]]),
+                                         'percent' = round(y[[i]], 0),
+                                         round(y[[i]], as.numeric(f))
+      )
+
       z[names(y[i]), 'value'] <- switch(f,
                                         'date' = as.character(y[[i]]),
                                         'percent' = paste0(round(y[[i]], 0), '%'),
@@ -89,5 +100,7 @@ seasonal_stats <- function(core) {
       )
    }
 
-   z
+   z2$stat <- sub('*', '', z2$stat, fixed = TRUE)                                   # drop asterisks from .CSV version
+
+   list(table = z2, formatted = z)
 }

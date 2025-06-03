@@ -55,7 +55,11 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
    core$Date_Time <- as.POSIXct(core$Date_Time)
 
    # --- Seasonal stats
-   seasonal <- seasonal_stats(core)                                                       # calculate seasonal stats
+
+   x <- seasonal_stats(core)                                                              # calculate seasonal stats
+   seasonal_csv <- x$table
+   seasonal <- x$formatted
+
 
    # For daily stats, we're dropping days with <22/24 hours of data, as well as first and last days
    x <- cbind(min = aggreg(core$DO, by = core$Date, FUN = min, nomiss = 22 / 24, drop_by = FALSE),
@@ -121,6 +125,12 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
                      params = pars, quiet = TRUE)
 
    msg('Seasonal report written to ', report_file)
+
+
+   # --- Write seasonal stats .CSV
+   f <- file.path(site_dir, paste0('combined/seasonal_stats_', site, '_', year, '.csv'))
+   write.csv(seasonal_csv, file = f, row.names = FALSE, quote = FALSE, na = '')
+   msg('Seasonal stats written to ', f)
 
 
    # --- Write daily stats

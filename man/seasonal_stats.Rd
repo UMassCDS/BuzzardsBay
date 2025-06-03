@@ -10,7 +10,9 @@ seasonal_stats(core)
 \item{core}{Core data frame, produced by \code{stitch_site}}
 }
 \value{
-Data frame with a column of the statistic name and a column with the statistic
+List of:
+\item{\code{table}}{Data frame with a column of the statistic name and a column with the numeric statistics}
+\item{\code{formatted}}{Data frame with a column of the statistic name and a column with the formatted statistics}
 }
 \description{
 Produces a data frame of seasonal stats.
