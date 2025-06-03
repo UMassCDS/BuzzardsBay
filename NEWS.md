@@ -1,3 +1,9 @@
+# BuzzardsBay 0.1.0.9029
+
+- Quote strings when writing Archive and WPP files, as comments sometimes include
+commas, which are a no-no in CSVs.
+- 
+
 # BuzzardsBay 0.1.0.9028
 
 - Change default PDF engine in the hopes of making report_site work on Macs. This should

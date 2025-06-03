@@ -139,7 +139,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    res <- NULL
    res[1] <- file.path(rpath, paste0('archive_', site, '_', year, '.csv'))
    write.csv(z, file = file.path(site_dir, res[1]), row.names = FALSE,
-             quote = FALSE, na = '#N/A')                                               # "archive" result file, with all columns and all data, including rejected values
+             quote = TRUE, na = '#N/A')                                                # "archive" result file, with all columns and all data, including rejected values
 
 
    # now replace rejected values
@@ -169,7 +169,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
 
    res[2] <- file.path(rpath, paste0('WPP_', site, '_', year, '.csv'))
    write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
-             quote = FALSE, na = '#N/A')                                                # "WPP" result file, with all columns; rejected values replaced with "DR"
+             quote = TRUE, na = '#N/A')                                                # "WPP" result file, with all columns; rejected values replaced with "DR"
 
    z[z == 'DR'] <- NA
    res[3] <- file.path(rpath, paste0('core_', site, '_', year, '.csv'))
