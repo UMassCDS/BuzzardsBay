@@ -34,7 +34,7 @@ days_do_6,Count,0,seasonal,Days with DO < 6 mg/L
 days_do_3,Count,0,seasonal,Days with DO < 3 mg/L
 p_do_6,Proportion,2,seasonal,P(DO < 6 mg/L)
 p_do_3,Proportion,2,seasonal,P(DO < 3 mg/L)
-mean_do_6,Count,0,seasonal,Mean duration of DO < 6 mg/L (hours)
-mean_do_3,Count,0,seasonal,Mean duration of DO < 3 mg/L (hours)
+mean_do_6,Count,1,seasonal,Mean duration of DO < 6 mg/L (hours)
+mean_do_3,Count,1,seasonal,Mean duration of DO < 3 mg/L (hours)
 first_warm,Date,date,seasonal,First day warmer than 20 C
 last_warm,Date,date,seasonal,Last day warmer than 20 C
