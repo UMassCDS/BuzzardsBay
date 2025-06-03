@@ -7,6 +7,9 @@ commas, which are a no-no in CSVs
 - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12
 - Change Unique_ID to <Site>_<Date>_<Time> to make it easier to compare across sites
 
+Changes to `report_site`:
+- Move figure captions above figures (which looks odd!)
+- Add minimum and maximum temperature to daily stats CSV
 
 
 
