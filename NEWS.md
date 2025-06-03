@@ -1,11 +1,16 @@
 # BuzzardsBay 0.1.0.9029
 
+Implement changes to analysis module requested in April
+
 Changes to `stitch_site`:
 - Quote strings when writing Archive and WPP files, as comments sometimes include
 commas, which are a no-no in CSVs
 - Always use blank, not #N/A in CSVs
 - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12
 - Change Unique_ID to <Site>_<Date>_<Time> to make it easier to compare across sites
+
+Changes to extract_baywatchers:
+- Only include "deep" samples (those where S_D = 'D')
 
 Changes to daily stats CSV
 - Add minimum and maximum temperature
@@ -18,11 +23,6 @@ Seasonal stats
 
 Changes to report:
 - Move figure captions above figures (which looks odd!)
-
-
-
-
-
 
 # BuzzardsBay 0.1.0.9028
 

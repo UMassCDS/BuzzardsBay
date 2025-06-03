@@ -94,7 +94,7 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
       bay <- x[x$Site == site & !is.na(x$DO), ]
       bay$Date_Time <- as.POSIXct(bay$Date_Time)
       bay <- bay[bay$Date_Time >= core$Date_Time[1] &
-                    bay$Date_Time <= core$Date_Time[dim(core)[1]], ]                      # trim Baywatchers to date range of sensor data ***
+                    bay$Date_Time <= core$Date_Time[dim(core)[1]], ]                      # trim Baywatchers to date range of sensor data
       bay$Sensor_DO <- approx(core$Date_Time, core$DO, bay$Date_Time)$y                   # interpolate sensor data for Fig. 11
       if(dim(bay)[1] == 0) {
          msg('There are no Baywatchers data for this site and year. Omitting Figs. 10 and 11')
