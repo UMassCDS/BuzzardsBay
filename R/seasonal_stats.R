@@ -14,6 +14,7 @@ seasonal_stats <- function(core) {
 
    stats <- c('Days', 'n(Salinity)', 'n(DO)', 'n(Temperature)', 'Percent of rows with missing data', 'Min DO (mg/L)',
               'Q1 DO (mg/L)', 'Median DO (mg/L)', 'Mean DO (mg/L)', 'Q3 DO (mg/L)', 'Max DO (mg/L)',
+              'Standard deviation of DO (mg/L)',
               'Min Temp (C)', 'Q1 Temp (C)', 'Median Temp (C)', 'Mean Temp (C)', 'Q3 Temp (C)',
               'Max Temp (C)', 'Standard deviation of temperature (C)',
               'First date with DO < 6 mg/L', 'First date with DO < 3 mg/L',
@@ -23,6 +24,7 @@ seasonal_stats <- function(core) {
 
    stat_abbrev <- c('days', 'n_sal', 'n_do', 'n_temp', 'pct_na', 'min_do',
                     'q1_do', 'median_do', 'mean_do', 'q3_do', 'max_do',
+                    'std_do',
                     'min_temp', 'q1_temp', 'median_temp', 'mean_temp', 'q3_temp',
                     'max_temp', 'std_temp',
                     'first_do_6', 'first_do_3',
@@ -53,6 +55,7 @@ seasonal_stats <- function(core) {
    y[['mean_do']] <- s[4]
    y[['q3_do']] <- s[5]
    y[['max_do']] <- s[6]
+   y[['std_do']] <- sd(core$DO, na.rm = TRUE)
 
    s <- summary(core$Temp_CondLog)
    y[['min_temp']] <- s[1]
