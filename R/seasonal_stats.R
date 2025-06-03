@@ -12,7 +12,7 @@
 
 seasonal_stats <- function(core) {
 
-   stats <- c('Days', 'n(Salinity)', 'n(DO)', 'n(Temperature)', 'Percent of data missing', 'Min DO (mg/L)',
+   stats <- c('Days', 'n(Salinity)', 'n(DO)', 'n(Temperature)', 'Percent of rows with missing data', 'Min DO (mg/L)',
               'Q1 DO (mg/L)', 'Median DO (mg/L)', 'Mean DO (mg/L)', 'Q3 DO (mg/L)', 'Max DO (mg/L)',
               'Min Temp (C)', 'Q1 Temp (C)', 'Median Temp (C)', 'Mean Temp (C)', 'Q3 Temp (C)',
               'Max Temp (C)', 'Standard deviation of temperature (C)',
