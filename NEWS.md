@@ -10,11 +10,15 @@ commas, which are a no-no in CSVs
 Changes to daily stats CSV
 - Add minimum and maximum temperature
 
-Seasonal stats CSV
+Seasonal stats
 - report_site now writes a seasonal stats CSV as well as including table in report
+- round mean duration of DO to 0.1 hours
+- add standard deviation of DO
+- change text of % data missing to "percent of rows with missing data"
 
 Changes to report:
 - Move figure captions above figures (which looks odd!)
+
 
 
 
