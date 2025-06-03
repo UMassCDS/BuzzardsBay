@@ -4,6 +4,7 @@
 # BuzzardsBay
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of **BuzzardsBay** (R package) is to process and analyze data
@@ -126,9 +127,11 @@ an HTML report to the deployment directory.
 
 ## Analysis Module
 
-The Analysis Module consists of four primary functions: `stitch_site()`,
-`check_site()`, and `report_site()`. Each takes the site path as the
-primary argument, `/BB_Data/<year>/<site>` e.g. `"~/BB_Data/2022/AB2"`.
+The Analysis Module consists of three primary functions:
+`stitch_site()`, `check_site()`, and `report_site()`. Each takes the
+site path as the primary argument, `/BB_Data/<year>/<site>` e.g.
+`"~/BB_Data/2022/AB2"`. An additional function, `extract_baywatchers()`,
+applies to all sites for a given year.
 
 1.  `stitch_site()` reads the deployment files for the specified site
     and year and merges them into a single file. Gaps between
