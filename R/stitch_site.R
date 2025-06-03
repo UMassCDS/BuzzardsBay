@@ -111,7 +111,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    if(all(is.na(z$Longitude)) & !all(is.na(z$Longitude)))
       z$Longitude <- x$longitude[x$site == site]
 
-   z$Unique_ID <- 1:dim(z)[1]                                                          # unique ID is simply row number
+   z$Unique_ID <- paste(z$Site, z$Date, sep = '_', z$Time)                                                          # unique ID is simply row number
    z$Julian_Date <- yday(z$Date)                                                       #  Julian date, really day in year
 
 

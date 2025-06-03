@@ -2,9 +2,10 @@
 
 Changes to `stitch_site`:
 - Quote strings when writing Archive and WPP files, as comments sometimes include
-commas, which are a no-no in CSVs.
+commas, which are a no-no in CSVs
 - Always use blank, not #N/A in CSVs
 - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12
+- Change Unique_ID to <Site>_<Date>_<Time> to make it easier to compare across sites
 
 
 
