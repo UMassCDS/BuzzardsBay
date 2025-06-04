@@ -153,6 +153,8 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    else
       z[as.logical(r), sensor_cols] <- 'DR'
 
+   z$Deployment <- z$Gen_QC %in% 12                                                    # mark deployment times, as we need them for plots
+
 
    for(sensor in sensor_cols) {                                                        # For each sensor column,
       r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns

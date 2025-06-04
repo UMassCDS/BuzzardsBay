@@ -19,6 +19,7 @@
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
 #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
 #' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data
+#' @param salinity If TRUE, include an additional time series plot of salinity
 #' @importFrom lubridate as.period as.duration days
 #' @importFrom slider slide_index_mean
 #' @importFrom readxl read_excel
@@ -26,7 +27,7 @@
 #' @export
 
 
-report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
+report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = TRUE) {
 
 
    if(check) {
@@ -47,6 +48,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
    core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
+   if(is.null(core$Deployment))
+      stop('Deployment column is missing from core file. Run stitch_site to update it.')
 
    # --- Daily stats
    daily_stats <- daily_stats(core)                                                       # calculate daily stats

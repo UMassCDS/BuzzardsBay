@@ -23,6 +23,14 @@ Seasonal stats
 
 Changes to report:
 - Move figure captions above figures (which looks odd!)
+- Add vertical green lines marking starts of deployments to Fig. 2. ***Note***: this
+required adding a new column ("Deployment") to the core data file, as this file doesn't contain QC
+data (I added it to all three files for consistency). Deployment is TRUE when Gen_QC is 12. As a
+result of this change, all previously-stitched sites will have to be re-stitched. You'll get an
+error reminding you to do this for sites where it hasn't been done.
+- Add a time series of salinity by date, with deployment lines. This plot is optional: use 
+`salinity = FALSE` to disable it. I've added the plot after daily salinity, and before the two
+Baywatchers plots.
 
 # BuzzardsBay 0.1.0.9028
 

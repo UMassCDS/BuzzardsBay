@@ -84,7 +84,7 @@ make_plot(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
 <!-- do -->
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do', 'caption']}
 plot <- plot_info['do', ]
-make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6)
+make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6, vline = core$Date_Time[core$Deployment])
 ```
 
 <!-- do_daily_range -->
@@ -130,6 +130,14 @@ plot <- plot_info['daily_salinity', ]
 make_plot(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab = plot$y_label, point_size = 1)
 ```
 
+<!-- salinity_by_date -->
+```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['salinity_by_date', 'caption']}
+if(salinity) {
+   plot <- plot_info['salinity_by_date', ]
+   make_plot(core, y = core$Salinity, x_lab = plot$x_label, y_lab = plot$y_label, vline = core$Date_Time[core$Deployment])
+}
+```
+
 <!-- do_bw -->
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do_bw', 'caption']}
 if(baywatchers) {
@@ -145,3 +153,4 @@ if(baywatchers) {
    make_plot(bay, x = bay$DO, y = bay$Sensor_DO, x_lab = plot$x_label, y_lab = plot$y_label, diag = TRUE, point_size = 1)
 }
 ```
+

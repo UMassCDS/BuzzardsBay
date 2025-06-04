@@ -107,7 +107,8 @@ expected_column_names <- list(
                 "Cal",
                 "QA_Comment",
                 "Field_Comment",
-                "Exclude"),
+                "Exclude",
+                "Deployment"),
 
   final_WPP = NULL,                                     # WPP has the same columns as the archive result file, though this could change
 
@@ -122,7 +123,8 @@ expected_column_names <- list(
                  "DO",
                  "DO_Pct_Sat",
                  "Salinity",
-                 "High_Range"),
+                 "High_Range",
+                 "Deployment"),
 
   final_sensors = c("Depth",                            # Sensor metric columns that will be set to "DR" in WPP result file based on QC rejection flags
                     "Temp_DOLog",
