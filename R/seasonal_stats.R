@@ -3,6 +3,7 @@
 #' Produces a data frame of seasonal stats.
 #'
 #' @param core Core data frame, produced by `stitch_site`
+#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statastics
 #' @return List of:
 #' \item{`table`}{Data frame with a column of the statistic name and a column with the numeric statistics}
 #' \item{`formatted`}{Data frame with a column of the statistic name and a column with the formatted statistics}
@@ -10,7 +11,7 @@
 #' @keywords internal
 
 
-seasonal_stats <- function(core) {
+seasonal_stats <- function(core, clip) {
 
    stats <- c('Days', 'n(Salinity)', 'n(DO)', 'n(Temperature)', 'Percent of rows with missing data', 'Min DO (mg/L)',
               'Q1 DO (mg/L)', 'Median DO (mg/L)', 'Mean DO (mg/L)', 'Q3 DO (mg/L)', 'Max DO (mg/L)',
@@ -20,7 +21,7 @@ seasonal_stats <- function(core) {
               'First date with DO < 6 mg/L', 'First date with DO < 3 mg/L',
               'Days with DO < 6 mg/L', 'Days with DO < 3 mg/L', 'P(DO < 6 mg/L)', 'P(DO < 3 mg/L)',
               'Mean duration of DO < 6 mg/L (hours)*', 'Mean duration of DO < 3 mg/L (hours)*',
-              'First day warmer than 20 C', 'Last day warmer than 20 C')
+              'First day warmer than 20 C', 'Last day warmer than 20 C', 'Date range of data')
 
    stat_abbrev <- c('days', 'n_sal', 'n_do', 'n_temp', 'pct_na', 'min_do',
                     'q1_do', 'median_do', 'mean_do', 'q3_do', 'max_do',
@@ -30,7 +31,17 @@ seasonal_stats <- function(core) {
                     'first_do_6', 'first_do_3',
                     'days_do_6', 'days_do_3', 'p_do_6', 'p_do_3',
                     'mean_do_6', 'mean_do_3',
-                    'first_warm', 'last_warm')
+                    'first_warm', 'last_warm', 'date_range')
+
+
+   if(!is.null(clip)) {
+      suppressWarnings(cd <- ymd(clip))
+      if(any(is.na(cd) | length(cd) != 2))
+         stop('Date range to clip must be a pair of dates in yyyy-mm-dd format, e.g., clip = c("2024-08-10", "2024-08-25")')
+      core <-core[core$Date >= cd[1] & core$Date <= cd[2], ]
+      stats[stat_abbrev == 'date_range'] <- paste0(stats[stat_abbrev == 'date_range'], '**')
+   }
+
 
    z <- data.frame(stat = stats, value = NA)                                        # result data frame
    row.names(z) <- stat_abbrev
@@ -46,7 +57,7 @@ seasonal_stats <- function(core) {
    y[['n_temp']] <- sum(!is.na(core$Temp_CondLog))
 
    na_cols <- core[, c('Temp_CondLog', 'DO', 'Salinity')]
-   y[['pct_na']] <- sum(apply(is.na(na_cols), 1, FUN = any)) / dim(core)[1] * 100   # *** provisionally, % of rows with any missing in temp, DO, or salinity
+   y[['pct_na']] <- sum(apply(is.na(na_cols), 1, FUN = any)) / dim(core)[1] * 100   # % of rows with any missing in temp, DO, or salinity
 
    s <- summary(core$DO)
    y[['min_do']] <- s[1]
@@ -81,6 +92,7 @@ seasonal_stats <- function(core) {
 
    y[['first_warm']] <- (w <- core$Date[core$Temp_CondLog > 20 & !is.na(core$Temp_CondLog)])[1]
    y[['last_warm']] <- w[length(w)]
+   y[['date_range']] <- paste0(min(core$Date), ' to ', max(core$Date))
 
 
    r <- read.csv(system.file('extdata/rounding.csv', package = 'BuzzardsBay',
@@ -92,12 +104,14 @@ seasonal_stats <- function(core) {
       z2[names(y[i]), 'value'] <- switch(f,
                                          'date' = as.character(y[[i]]),
                                          'percent' = round(y[[i]], 0),
+                                         'text' = y[[i]],
                                          round(y[[i]], as.numeric(f))
       )
 
       z[names(y[i]), 'value'] <- switch(f,
                                         'date' = as.character(y[[i]]),
                                         'percent' = paste0(round(y[[i]], 0), '%'),
+                                        'text' = y[[i]],
                                         format(round(y[[i]], as.numeric(f)),
                                                nsmall = as.numeric(f), big.mark = ',')
       )

@@ -9,28 +9,30 @@ commas, which are a no-no in CSVs
 - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12
 - Change Unique_ID to <Site>_<Date>_<Time> to make it easier to compare across sites
 
-Changes to extract_baywatchers:
-- Only include "deep" samples (those where S_D = 'D')
-
 Changes to daily stats CSV
 - Add minimum and maximum temperature
 
 Seasonal stats
-- report_site now writes a seasonal stats CSV as well as including table in report
-- round mean duration of DO to 0.1 hours
-- add standard deviation of DO
-- change text of % data missing to "percent of rows with missing data"
+- Report_site now writes a seasonal stats CSV as well as including table in report
+- Round mean duration of DO to 0.1 hours
+- Add standard deviation of DO
+- Change text of % data missing to "percent of rows with missing data"
+- Add an option to report_site ('clip') to restrict dates in seasonal statistics. Plots
+are not clipped to these dates.
 
 Changes to report:
 - Move figure captions above figures (which looks odd!)
 - Add vertical green lines marking starts of deployments to Fig. 2. ***Note***: this
 required adding a new column ("Deployment") to the core data file, as this file doesn't contain QC
-data (I added it to all three files for consistency). Deployment is TRUE when Gen_QC is 12. As a
-result of this change, all previously-stitched sites will have to be re-stitched. You'll get an
+data (I added it to all three files for consistency). Deployment is 1 when Gen_QC is 12, and empty
+otherwise. As a result of this change, all previously-stitched sites will have to be re-stitched. You'll get an
 error reminding you to do this for sites where it hasn't been done.
 - Add a time series of salinity by date, with deployment lines. This plot is optional: use 
 `salinity = FALSE` to disable it. I've added the plot after daily salinity, and before the two
 Baywatchers plots.
+- Only "deep" Baywatchers samples are included (those where S_D = 'D')
+- Baywatchers points are now only interpolated to points within 10 minutes. If none are available, these
+points will be dropped.
 
 # BuzzardsBay 0.1.0.9028
 

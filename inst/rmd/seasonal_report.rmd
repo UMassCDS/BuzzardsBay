@@ -71,8 +71,11 @@ Seasonal report, `r params$date`
 `r params$stat[26]` | `r params$value[26]`
 `r params$stat[27]` | `r params$value[27]`
 `r params$stat[28]` | `r params$value[28]`
+`r params$stat[29]` | `r params$value[29]`
+`r params$stat[30]` | `r params$value[30]`
 
 *Only days that fall below the threshold are counted in mean durations.
+`r if(!is.null(clip)){'\n**Data have been clipped for seasonal statistics (but not plots).'}`
 
 
 <!-- do_pct_sat -->
@@ -84,7 +87,7 @@ make_plot(core, y = core$DO_Pct_Sat, x_lab = plot$x_label, y_lab = plot$y_label)
 <!-- do -->
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['do', 'caption']}
 plot <- plot_info['do', ]
-make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6, vline = core$Date_Time[core$Deployment])
+make_plot(core, y = core$DO, x_lab = plot$x_label, y_lab = plot$y_label, hline = 6, vline = core$Date_Time[core$Deployment %in% 1])
 ```
 
 <!-- do_daily_range -->
@@ -134,7 +137,7 @@ make_plot(daily, x = daily$Date, y = daily$salinity, x_lab = plot$x_label, y_lab
 ```{r echo = FALSE, warning = FALSE, fig.cap = plot_info['salinity_by_date', 'caption']}
 if(salinity) {
    plot <- plot_info['salinity_by_date', ]
-   make_plot(core, y = core$Salinity, x_lab = plot$x_label, y_lab = plot$y_label, vline = core$Date_Time[core$Deployment])
+   make_plot(core, y = core$Salinity, x_lab = plot$x_label, y_lab = plot$y_label, vline = core$Date_Time[core$Deployment %in% 1])
 }
 ```
 

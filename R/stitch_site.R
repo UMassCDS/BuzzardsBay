@@ -153,7 +153,8 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    else
       z[as.logical(r), sensor_cols] <- 'DR'
 
-   z$Deployment <- z$Gen_QC %in% 12                                                    # mark deployment times, as we need them for plots
+   z$Deployment <- as.numeric(z$Gen_QC %in% 12)                                        # mark deployment times, as we need them for plots
+   z$Deployment[z$Deployment == 0] <- NA
 
 
    for(sensor in sensor_cols) {                                                        # For each sensor column,
