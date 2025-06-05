@@ -23,7 +23,7 @@
 #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
 #' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data
 #' @param salinity If TRUE, include an additional time series plot of salinity
-#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statastics
+#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statistics
 #' @importFrom lubridate as.period as.duration days
 #' @importFrom slider slide_index_mean
 #' @importFrom readxl read_excel

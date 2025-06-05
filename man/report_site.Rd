@@ -21,7 +21,7 @@ report_site(
 
 \item{salinity}{If TRUE, include an additional time series plot of salinity}
 
-\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statastics}
+\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statistics}
 }
 \description{
 Produces daily stats and a report with seasonal stats and a number of graphs for a specified site and year.

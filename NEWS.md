@@ -3,6 +3,7 @@
 Implement changes to analysis module requested in April
 
 Changes to `stitch_site`:
+- Fail more politely when run on a site with no QC data.
 - Quote strings when writing Archive and WPP files, as comments sometimes include
 commas, which are a no-no in CSVs. Quoting makes these files robust. There's no need
 to quote strings in the core files, as they don't have comment fields.

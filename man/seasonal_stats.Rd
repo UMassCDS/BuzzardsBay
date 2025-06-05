@@ -9,7 +9,7 @@ seasonal_stats(core, clip = NULL)
 \arguments{
 \item{core}{Core data frame, produced by \code{stitch_site}}
 
-\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statastics}
+\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statistics}
 }
 \value{
 List of:

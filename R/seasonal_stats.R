@@ -3,7 +3,7 @@
 #' Produces a data frame of seasonal stats.
 #'
 #' @param core Core data frame, produced by `stitch_site`
-#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statastics
+#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statistics
 #' @return List of:
 #' \item{`table`}{Data frame with a column of the statistic name and a column with the numeric statistics}
 #' \item{`formatted`}{Data frame with a column of the statistic name and a column with the formatted statistics}
