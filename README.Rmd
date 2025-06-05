@@ -162,11 +162,11 @@ gap (in hours) to accept silently. Three result files are written to
 `/BB_Data/<year>/<site>/<combined>/`:
 
    a. The **archive** file, e.g., `archive_AB2_2024.csv`, with all columns and values, including rejected
-data. Missing data are represented by `#N/A`. This file is intended to be for long-term storage of 
+data. Missing data are represented by blanks. This file is intended to be for long-term storage of 
 the complete set of QC'd data.
 
    b. The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns. Rejected values are replaced with 
-`DR` (for "data rejected"). Missing data are represented by `#N/A`. This file is in the format
+`DR` (for "data rejected"). Missing data are represented by blanks. This file is in the format
 that MassDEP wants.
 
    c. The **core** file, e.g., `core_AB2_2024.csv`, with selected columns. Rejected values and missing
@@ -187,10 +187,12 @@ running `stitch_site()` again. `check_site` also checks to make sure data haven'
 most recent report has been produced, and it checks to be sure that extracted Baywatchers data are 
 up to date with respect to the source Excel file.
 
-4. `report_site()` reads the `core` file produced by `stitch_site()` and produces the daily statistics 
-file, e.g., `combined\daily_stats_AB2_2024.csv` and the site report, `combined\site_report_AB2_2024.pdf`.
-`report_site()` normally runs `check_site()` before producing the report and throws an error if the 
-check fails; you can override this with `check = FALSE`. If you don't have Baywatchers data for this 
-site and year, use `baywatchers = FALSE`. The example data for `2023/WH1X` includes Baywatchers data.
+4. `report_site()` reads the `core` file produced by `stitch_site()` and produces the daily
+statistics file, e.g., `combined\daily_stats_AB2_2024.csv`, the seasonally summary statistics file,
+e.g., `combined\seasonal_stats_AB2_2024.csv`, and the site report,
+`combined\site_report_AB2_2024.pdf`. `report_site()` normally runs `check_site()` before producing
+the report and throws an error if the check fails; you can override this with `check = FALSE`. If
+you don't have Baywatchers data for this site and year, use `baywatchers = FALSE`. The example data
+for `2023/WH1X` includes Baywatchers data.
 
 

@@ -4,10 +4,12 @@
 \alias{seasonal_stats}
 \title{Produce seasonal stats for a site}
 \usage{
-seasonal_stats(core)
+seasonal_stats(core, clip = NULL)
 }
 \arguments{
 \item{core}{Core data frame, produced by \code{stitch_site}}
+
+\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statastics}
 }
 \value{
 List of:

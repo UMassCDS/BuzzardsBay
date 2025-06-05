@@ -143,12 +143,12 @@ applies to all sites for a given year.
 
     1.  The **archive** file, e.g., `archive_AB2_2024.csv`, with all
         columns and values, including rejected data. Missing data are
-        represented by `#N/A`. This file is intended to be for long-term
+        represented by blanks. This file is intended to be for long-term
         storage of the complete set of QC’d data.
 
     2.  The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns.
         Rejected values are replaced with `DR` (for “data rejected”).
-        Missing data are represented by `#N/A`. This file is in the
+        Missing data are represented by blanks. This file is in the
         format that MassDEP wants.
 
     3.  The **core** file, e.g., `core_AB2_2024.csv`, with selected
@@ -178,10 +178,11 @@ applies to all sites for a given year.
 
 4.  `report_site()` reads the `core` file produced by `stitch_site()`
     and produces the daily statistics file, e.g.,
-    `combined\daily_stats_AB2_2024.csv` and the site report,
-    `combined\site_report_AB2_2024.pdf`. `report_site()` normally runs
-    `check_site()` before producing the report and throws an error if
-    the check fails; you can override this with `check = FALSE`. If you
-    don’t have Baywatchers data for this site and year, use
-    `baywatchers = FALSE`. The example data for `2023/WH1X` includes
-    Baywatchers data.
+    `combined\daily_stats_AB2_2024.csv`, the seasonally summary
+    statistics file, e.g., `combined\seasonal_stats_AB2_2024.csv`, and
+    the site report, `combined\site_report_AB2_2024.pdf`.
+    `report_site()` normally runs `check_site()` before producing the
+    report and throws an error if the check fails; you can override this
+    with `check = FALSE`. If you don’t have Baywatchers data for this
+    site and year, use `baywatchers = FALSE`. The example data for
+    `2023/WH1X` includes Baywatchers data.

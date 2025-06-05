@@ -11,7 +11,7 @@
 #' @keywords internal
 
 
-seasonal_stats <- function(core, clip) {
+seasonal_stats <- function(core, clip = NULL) {
 
    stats <- c('Days', 'n(Salinity)', 'n(DO)', 'n(Temperature)', 'Percent of rows with missing data', 'Min DO (mg/L)',
               'Q1 DO (mg/L)', 'Median DO (mg/L)', 'Mean DO (mg/L)', 'Q3 DO (mg/L)', 'Max DO (mg/L)',

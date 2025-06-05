@@ -4,7 +4,13 @@
 \alias{report_site}
 \title{Produce stats and a report for a site and year}
 \usage{
-report_site(site_dir, check = TRUE, baywatchers = TRUE)
+report_site(
+  site_dir,
+  check = TRUE,
+  baywatchers = TRUE,
+  salinity = TRUE,
+  clip = NULL
+)
 }
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>})}
@@ -12,6 +18,10 @@ report_site(site_dir, check = TRUE, baywatchers = TRUE)
 \item{check}{If TRUE, runs \code{check_site} to make sure source files haven't been changed}
 
 \item{baywatchers}{If TRUE, do 2 additional comparison plots with Baywatchers data}
+
+\item{salinity}{If TRUE, include an additional time series plot of salinity}
+
+\item{clip}{Optionally supply a pair of dates (in \code{yyyy-mm-dd} format) to clip seasonal statastics}
 }
 \description{
 Produces daily stats and a report with seasonal stats and a number of graphs for a specified site and year.
@@ -32,4 +42,7 @@ include the date and time (a column that includes \code{Date_Time} in the name) 
 name, but not percent, pct, or \%). Column names are case-insensitive. If this file is missing or the necessary
 columns are not present, an error will be reported. You can use \code{baywatchers = FALSE} for datasets that don't have
 Baywatchers data to exclude these plots.
+
+You may clip the seasonal statistics to a date range, for example, \code{clip = c("2024-08-10", "2024-08-25")}. This
+will affect the seasonal statistics table in the report and CSV file, but not graphs.
 }
