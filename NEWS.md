@@ -10,19 +10,19 @@ to quote strings in the core files, as they don't have comment fields.
 - Always use blank, not #N/A in CSVs.
 - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12.
 - Change Unique_ID to <Site>_<Date>_<Time> to make it easier to compare across sites.
-Instead of serial numbers, use the form "AB2_2024-08-06_14:40:00"
+Instead of serial numbers, use the form "AB2_2024-08-06_14:40:00".
 
-Changes to daily stats CSV
+Changes to daily stats
 - Add minimum and maximum temperature.
 
 Seasonal stats
-- Report_site now writes a seasonal stats CSV as well as including them as a table in report.
+- Report_site now writes a seasonal stats CSV in addition to including stats as a table in report.
 - Round mean duration of DO to 0.1 hours.
 - Add standard deviation of DO.
 - Change text of % data missing to "percent of rows with missing data".
 - Add an option to report_site ('clip') to restrict dates in seasonal statistics. Plots
 are not clipped to these dates.
-- now reports date range (whether or not clipped) in seasonal stats; if clipped, there's a
+- Now reports date range (whether or not clipped) in seasonal stats; if clipped, there's a
 footnote in the report.
 
 Changes to report:
