@@ -12,22 +12,23 @@ import_calibrated_data_2 <- function(paths) {
   l <- list.files(paths$deployment_cal_dir, full.names = TRUE)
   l <- gsub("[/\\\\]+", .Platform$file.sep, l)
 
-  input_path = grep("\\.xlsx$", l, value = TRUE, ignore.case = TRUE)
+  input_paths =
+    list(data = grep("\\.xlsx$", l, value = TRUE, ignore.case = TRUE),
+         metadata = grep("\\.yml$", l, value = TRUE, ignore.case = TRUE))
 
 
   # Check that we found 1 and only 1 of each type of file in the calibration dir
-  has_one <-length(input_path) == 1
-  if(!(has_one)){
-    stop("Expected one and only one .xlsx file in the calibration directory ",
-         "for an MX801 logger: ", paths$deployment_cal_dir,
-         " found ", length(input_path))
+  has_one <- sapply(input_paths, length) == 1
+  if(!all(has_one)){
+    stop("Couldn't find required files in calibration dir: ",
+         paste(names(input_paths)[!has_one], collapse = ", "))
   }
 
   # Print input paths:
 
   # Convert input files to relative paths (for printing)
   relative_paths <- gsub(paste0("^", paths$base_dir, "[/\\\\]*"), "",
-                         input_path, ignore.case = TRUE)
+                         unlist(input_paths), ignore.case = TRUE)
 
   cat("\nImporting calibrated data Type 2 - MX801 .xlsx file \n",
       "\twith import_calibrated_data_2()\n\n")
@@ -35,37 +36,33 @@ import_calibrated_data_2 <- function(paths) {
   cat("Buzzards Bay base directory:\n\t",
       paths$base_dir, "\n")
 
-
   cat("Using these input files (relative to base dir):\n\t",
-      paste( "Single .xlsx input file", " = ", relative_paths, collapse = "\n\t"),
+      paste(names(input_paths), " = ", relative_paths, collapse = "\n\t"),
       "\n", sep = "")
 
-  miss <- !sapply(input_path, file.exists)
+  miss <- !sapply(input_paths, file.exists)
   if(any(miss)){
     stop("Missing input files:\n",
-         paste(names(input_path[miss]), " = ", relative_paths[miss],
+         paste(names(input_paths[miss]), " = ", relative_paths[miss],
                collapse = "\n\t"), sep = "")
   }
 
-
-  #============================================================================#
-  # Process Metadata                                                        ####
-  #============================================================================#
-
-  # From HOBOware Details.txt files
-  md <- parse_mx801_details(input_path)
-
+  # Process metadata
+  md <- read_deployment_yaml(input_paths$metadata, mx801 = TRUE)
 
   # Read data from file
-  d <-  read_mx801_data(input_path)
+  d <-  read_mx801_data(input_paths$data)
+
 
   # Record logging interval in minutes
-  t <- d$Date_Time[1:6] |> lubridate::ymd_hms()
+  t <- d$Date_Time |> lubridate::ymd_hms()
   intervals <- (t[2:6]  - t[1:5]) |> as.numeric(units = "mins")
   if(!all(intervals == intervals[1])) {
     stop(input_path, " appears to have a varying interval")
   }
   md$logging_interval_min <- intervals[1]
+
+
 
 
   # Other information
@@ -74,17 +71,6 @@ import_calibrated_data_2 <- function(paths) {
   md$deployment_date <- as.character(paths$deployment_date)
   md$auto_qc_date <- lubridate::today() |> as.character()
 
-
-  # Check for consistancy in start and end times
-  if(md$calibration_start != d$Date_Time[1])
-    stop("Inconsistent start times.")
-
-  if(md$calibration_end != d$Date_Time[nrow(d)])
-    stop("Inconsistent end times.")
-
-
-  # Calculate the ratio between calibrartion value from YSI ("TRUTH") to
-  #  the uncalibrated logger value
 
   md_order <- c("site",
                 "deployment",
@@ -105,13 +91,6 @@ import_calibrated_data_2 <- function(paths) {
                "cond_deployment",
                 "cond_device")
 
-  # Create placeholder items which will be filled in later
-  md$pct_calibrated <- NA
-  md$pct_immediate_rejection <- NA
-  md$pct_flagged_for_review <- NA
-  md$n_records <- NA
-  md$do_deployment <- NA
-  md$cond_deployment <- NA
 
   miss <- setdiff(md_order, names(md))
   stopifnot(all(md_order %in% names(md)))
