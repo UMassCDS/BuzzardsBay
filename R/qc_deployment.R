@@ -2,9 +2,9 @@
 #' Run automatic quality control on a deployment
 #'
 #' `qc_deployment()` will:
-#' 1. Read the calibrated dissolved oxygen and conductivity files created by
+#' 1. Read the calibrated dissolved oxygen and conductivity output from
 #' HOBOware.
-#' 2. Read and parse the associated Details files into nested lists.
+#' 2. Read and parse the associated Details file.
 #' 3. Reformat and merge the data files.
 #' 4. Add automatic flags, and create columns for manual QC
 #' 5. Write the data and metadata.
@@ -13,6 +13,92 @@
 #'
 #' `qc_deployment()` assumes the files are arranged in a specific
 #' [file structure](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU/edit#heading=h.s6vs4d7vj0cn).
+#'
+#' @section Supported import types:
+#'
+#' There are currently 3 separate import functions to handle different formats
+#' of the data. They are:
+#'
+#' **0 - Basic CSV Import**
+#'
+#' This import requires a CSV file and a YAML (`.yml`) file. It is intended to
+#' be a fall back / future proof import with a supper simple format.
+#'
+#' It should work with input columns names as Hoboware creates when calibrating
+#' the MX801 logger or the U24 and U26 loggers; as well as with the canonical
+#' names:  "Date_Time", "Raw_DO", "Temp_DOLog", "DO", "DO_Pct_Sat",
+#' "High_Range", "Temp_CondLog", "Spec_Cond", "Salinity",
+#' "Depth", "Latitude", and "Longitude".  The last three columns (Depth,
+#' Latitude, and Longitude) are optional.
+#'
+#'  Note: when combining data from the U24 and U26 loggers into
+#'  a single sheet for use with this function the two temperature columns
+#'  will have to be manually renamed to "Temp_CondLog", and "Temp_DOLog".
+#'
+#'  The YAML file will should look something
+#'  like this:
+#'  ```
+#'  calibration_start: 2025-01-02 14:50:02
+#'  calibration_end: 2025-01-04 15:10:02
+#'  do_device:
+#'    product: MX801
+#'    serial_number: 22145888
+#'  cond_device:
+#'    product: MX801
+#'    serial_number: 22145888
+#'  timezone: EST
+#' ```
+#'  **1 - U24 and U26 loggers**
+#'
+#'  This is the first import that was supported by the **BuzzardsBay** package.
+#'  It is for when two loggers (U24 and U26) are used to record the salinity
+#'  and dissolved oxygen data.
+#'
+#'  It expects two CSV (ending in `.csv`) files along with
+#'  two details files (ending in `details.txt`).
+#'
+#'  One file of each type should contain `DO_` somewhere in the name indicating
+#'  that it is from a dissolved oxygen logger; and one file of each type should
+#'  contain either `SAL_` or `COND_` in the name indicating it is from a
+#'  salinity/conductivity logger.
+#'
+#'  The naming requirements are not case sensitive.
+#'
+#'  **2 - MX801**
+#'
+#'  This import works with an excel file created by HOBOware while calibrating
+#'  the MX801 combined DO and Salinity logger.
+#'
+#'  The excel file should be as created by HOBOware.
+#'
+#'   Run this:
+#'   ```
+#'   example_paths <- setup_example_dir(site_filter = "BBC",
+#'                                      year_filter = 2025)
+#'   deployment_dirs <- example_paths$deployments
+#'   print(deployment_dirs)
+#'
+#'   ```
+#'   To create example files that can be inspected and used to run this import
+#'   e.g. :
+#'   ```
+#'   qc_deployment(deployment_dirs[1])
+#'
+#'   ```
+#'
+#'   This import now requires a YAML file (`details.yml`) it should look something
+#'   like this:
+#'   ```
+#'   calibration_start: 2025-01-02 15:50:02
+#'   calibration_end: 2025-01-04 13:00:02
+#'   timezone: EST
+#'   serial_number: 22145899
+#'   ```
+#'   Note `calibration_start` and `calibration_end` define the start and end
+#'   of the deployment window. This is a legacy of the U24 and U26 loggers
+#'   where the calibrated window and the deployment window were the same.
+#'
+#'
 #'
 #' @note
 #' `qc_deployment()` calls [import_calibrated_data()] which currently supports

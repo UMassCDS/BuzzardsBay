@@ -73,15 +73,7 @@ import_calibrated_data_0 <- function(paths) {
 
 
 
-  # Check for consistancy in start and end times
-  if(md$calibration_start != as.character(d$Date_Time[1]))
-    stop("Inconsistent start times.")
-
-  if(md$calibration_end != as.character(d$Date_Time[nrow(d)]))
-    stop("Inconsistent end times.")
-
-
-  # Calculate the ratio between calibrartion value from YSI ("TRUTH") to
+  # Calculate the ratio between calibration value from YSI ("TRUTH") to
   #  the uncalibrated logger value
   # Create placeholder items which will be filled in later
   md$pct_calibrated <- NA
@@ -122,9 +114,6 @@ import_calibrated_data_0 <- function(paths) {
   }
 
   d <- d[, final_names]
-
-
-
 
   #----------------------------------------------------------------------------#
   # Read and Process Calibrated DO and Conductivity Tables                  ####

@@ -58,7 +58,7 @@ import_calibrated_data_2 <- function(paths) {
   t <- d$Date_Time |> lubridate::ymd_hms()
   intervals <- (t[2:6]  - t[1:5]) |> as.numeric(units = "mins")
   if(!all(intervals == intervals[1])) {
-    stop(input_path, " appears to have a varying interval")
+    stop(input_paths$data, " appears to have a varying interval")
   }
   md$logging_interval_min <- intervals[1]
 

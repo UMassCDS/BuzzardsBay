@@ -117,7 +117,7 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
     if(is.list(expected_item)) {
       if(!n %in% names(md)) {
         stop("Expected top level item: \"", n,
-             "\" missing from YAML file:\n\t", input_paths$metadata, "",
+             "\" missing from YAML file:\n\t", file, "",
              sep = "")
 
       }
@@ -125,7 +125,7 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
         inner_name <- names(expected_item)[j]
         if (expected_item[[j]] && !inner_name %in% names(md_item)) {
           stop("Required sub-element \"", inner_name, "\" missing from ", n,
-               "in: ", input_paths$metadata)
+               "in: ", file)
         } # end if required inner item missing
       } # end loop through sub-list
 
@@ -139,7 +139,7 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
       # Not a list, will be logical indicating if it's required
       if(expected_item && !n %in% names(md)) {
         stop("Expected top level item:", n,
-             "missing from YAML file:\n\t", input_paths$metadata, "")
+             "missing from YAML file:\n\t", file, "")
       } # end missing required top level item
     } # end else
 
