@@ -8,7 +8,7 @@ check_site(site_dir, check_report = TRUE, check_baywatchers = TRUE)
 }
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>}). The path must include
-QC'd results and result files from \code{stitch_site}.}
+QC'd results and result files from \link{stitch_site}.}
 
 \item{check_report}{If TRUE, check to see if the report is up to date. Don't check when calling from
 report_site, of course.}
@@ -20,7 +20,7 @@ respect to the source Baywatchers Excel file in the base data directory.}
 Silently returns TRUE if validation was successful.
 }
 \description{
-Check that source files for a site and year haven't changed since \code{stitch_site} was used
+Check that source files for a site and year haven't changed since \link{stitch_site} was used
 to create result files. Uses \code{hash.txt}, created by \code{check_site}. Separately reports on
 missing hash file, missing source or result files, and changed source or result files.
 }

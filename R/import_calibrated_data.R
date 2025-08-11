@@ -1,5 +1,5 @@
 # nolint start: line_length_linter
-#' Import Calibrated Data
+#' Import Calibrated Deployment Data
 #'
 #' This function imports calibrated data for a single deployment from its
 #'  `Calibrated` sub directory.

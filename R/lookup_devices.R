@@ -13,6 +13,7 @@
 #'  \item{do_model,do_sn}{ Dissolved oxygen sensor model and serial number}
 #'  \item{cond_model,cond_sn}{ Conductivity sensor model and serial number}
 #' @importFrom rlang .data
+#' @keywords internal
 lookup_devices <- function(site, deployment_date, placements) {
 
   deployment_date <- lubridate::as_date(deployment_date)

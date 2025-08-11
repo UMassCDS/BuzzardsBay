@@ -4,7 +4,7 @@
 #' @param x an atomic vector
 #'
 #' @return An object of class \code{rle}
-#'
+#' @keywords internal
 # From https://coolbutuseless.github.io/2020/08/26/run-length-encoding-and-the-problem-of-nas/
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 rle2 <- function (x)  {

@@ -19,3 +19,4 @@ Standardized metadata list
 This is used by import types 0 (CSV) and 2 (MX801 excel file) to
 read an accompanying yaml file and format into standard metadata list
 }
+\keyword{internal}
