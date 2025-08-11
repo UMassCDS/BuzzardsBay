@@ -13,7 +13,8 @@ daily_stats <- function(core) {
 
    cols <- c('Date', 'Min_DO', 'Min_DO_Time', 'Prop_Under_6', 'Duration_Under_6',
              'Prop_Under_3', 'Duration_Under_3', 'Mean_DO', 'SD_DO',
-             'Mean_Salinity', 'SD_Salinity', 'Range_DO', 'Range_DO_Sat')
+             'Mean_Salinity', 'SD_Salinity', 'Range_DO', 'Range_DO_Sat',
+             'Min_Temp', 'Max_Temp')
 
 
    z <- aggreg(core$DO, core$Date, min, drop_by = FALSE)
@@ -46,7 +47,9 @@ daily_stats <- function(core) {
    z$SD_Salinity <- aggreg(core$Salinity, core$Date, sd)                         # sd salinity
    z$Range_DO <- aggreg(core$DO, core$Date, max) - z$Min_DO                      # range of DO
    z$Range_DO_Sat <- aggreg(core$DO_Pct_Sat, core$Date, max) -
-      aggreg(core$DO_Pct_Sat, core$Date, min)                                     # range of DO % saturation
+      aggreg(core$DO_Pct_Sat, core$Date, min)                                    # range of DO % saturation
+   z$Min_Temp <- aggreg(core$Temp_CondLog, core$Date, min)                       # minimum temperature
+   z$Max_Temp <- aggreg(core$Temp_CondLog, core$Date, max)                       # maximum temperature
 
 
    z <- z[, cols]                                                                # Just return the good stuff, in canonical order

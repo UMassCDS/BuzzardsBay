@@ -20,7 +20,7 @@
 
 
 make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 0, diag = FALSE,
-                      point_size = 0.25, linetype = 0) {
+                      point_size = 0.25, linetype = 0, vline = NULL) {
 
    range <- range(c(x, y))
 
@@ -34,6 +34,9 @@ make_plot <- function(core = core, x = core$Date_Time, y, x_lab, y_lab, hline = 
       list(
          if(hline != 0) {
             geom_hline(yintercept = hline, color = 'red', linetype = 2)
+         },
+         if(!is.null(vline)) {
+            geom_vline(xintercept = vline, color = 'limegreen', linetype = 'solid', size = 0.5)
          },
          if(diag) {
             list(

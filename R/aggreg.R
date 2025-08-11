@@ -12,8 +12,8 @@
 #' @param FUN Function to summarize with
 #' @param drop_by If TRUE, drop the grouping variable and just return a vector; otherwise,
 #' return a data frame
-#' @param nomiss If not NULL, this represents a proportion of the data that must
-#' be non-missing; if this threshold isn't met, the daily value will be NA
+#' @param nomiss If not NULL, this represents a proportion of the data in a group that must
+#' be non-missing; if this threshold isn't met, the result for the group will be NA
 #' @return Vector of aggregated values (if drop_by = TRUE), or data frame of groups
 #' and aggregated values (if drop_by = FALSE)
 #' @import stats

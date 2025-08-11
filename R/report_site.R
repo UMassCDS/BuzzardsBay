@@ -16,9 +16,14 @@
 #' columns are not present, an error will be reported. You can use `baywatchers = FALSE` for datasets that don't have
 #' Baywatchers data to exclude these plots.
 #'
+#' You may clip the seasonal statistics to a date range, for example, `clip = c("2024-08-10", "2024-08-25")`. This
+#' will affect the seasonal statistics table in the report and CSV file, but not graphs.
+#'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
 #' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
 #' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data
+#' @param salinity If TRUE, include an additional time series plot of salinity
+#' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statistics
 #' @importFrom lubridate as.period as.duration days
 #' @importFrom slider slide_index_mean
 #' @importFrom readxl read_excel
@@ -26,8 +31,10 @@
 #' @export
 
 
-report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
+report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = TRUE, clip = NULL) {
 
+
+   max_interp <- 10                                                                       # max distance for Baywatchers interpolation (min)
 
    if(check) {
       if(!check_site(site_dir, check_report = FALSE, check_baywatchers = baywatchers))
@@ -47,6 +54,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
 
    core <- read.csv(file.path(site_dir, paste0('combined/core_', site, '_', year, '.csv')))
 
+   if(is.null(core$Deployment))
+      stop('Deployment column is missing from core file. Run stitch_site to update it.')
 
    # --- Daily stats
    daily_stats <- daily_stats(core)                                                       # calculate daily stats
@@ -55,7 +64,11 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
    core$Date_Time <- as.POSIXct(core$Date_Time)
 
    # --- Seasonal stats
-   seasonal <- seasonal_stats(core)                                                       # calculate seasonal stats
+
+   x <- seasonal_stats(core, clip)                                                        # calculate seasonal stats
+   seasonal_csv <- x$table
+   seasonal <- x$formatted
+
 
    # For daily stats, we're dropping days with <22/24 hours of data, as well as first and last days
    x <- cbind(min = aggreg(core$DO, by = core$Date, FUN = min, nomiss = 22 / 24, drop_by = FALSE),
@@ -90,11 +103,19 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
       bay <- x[x$Site == site & !is.na(x$DO), ]
       bay$Date_Time <- as.POSIXct(bay$Date_Time)
       bay <- bay[bay$Date_Time >= core$Date_Time[1] &
-                    bay$Date_Time <= core$Date_Time[dim(core)[1]], ]                      # trim Baywatchers to date range of sensor data ***
-      bay$Sensor_DO <- approx(core$Date_Time, core$DO, bay$Date_Time)$y                   # interpolate sensor data for Fig. 11
+                    bay$Date_Time <= core$Date_Time[dim(core)[1]], ]                      # trim Baywatchers to date range of sensor data
       if(dim(bay)[1] == 0) {
          msg('There are no Baywatchers data for this site and year. Omitting Figs. 10 and 11')
          baywatchers <- FALSE
+      }
+      else {                                                                              # interpolate Baywatchers DO for scatterplot
+         dt <- core$Date_Time
+         dt[is.na(core$DO)] <- NA
+         interp <- approx(dt, core$DO, bay$Date_Time)$y
+         near <- sapply(bay$Date_Time,
+                        function(x) min(abs(as.numeric(x - dt, units = 'mins')), na.rm = TRUE))
+         interp[near > max_interp] <- NA                                                  # only interpolate points within max_interp minutes
+         bay$Sensor_DO <- interp
       }
    }
 
@@ -121,6 +142,12 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE) {
                      params = pars, quiet = TRUE)
 
    msg('Seasonal report written to ', report_file)
+
+
+   # --- Write seasonal stats .CSV
+   f <- file.path(site_dir, paste0('combined/seasonal_stats_', site, '_', year, '.csv'))
+   write.csv(seasonal_csv, file = f, row.names = FALSE, quote = FALSE, na = '')
+   msg('Seasonal stats written to ', f)
 
 
    # --- Write daily stats

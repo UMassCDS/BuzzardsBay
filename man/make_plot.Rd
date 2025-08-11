@@ -13,7 +13,8 @@ make_plot(
   hline = 0,
   diag = FALSE,
   point_size = 0.25,
-  linetype = 0
+  linetype = 0,
+  vline = NULL
 )
 }
 \arguments{

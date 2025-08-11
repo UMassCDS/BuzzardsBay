@@ -34,10 +34,10 @@ lookup_site_paths <- function(site_dir, warn = FALSE) {
    qc <- sort(file.path(site_dir, deploy, paste0('QC_', site, '_', deploy, '.csv')))
    md <- sort(file.path(site_dir, deploy, paste0('Metadata_', site, '_', deploy, '.yml')))
    z$deployments <- data.frame(date = deploy, QCpath = qc, mdpath = md)
-   # z$deployments <- z$deployments[file.exists(z$deploymentsQCpath)]        # drop deployments with no QC file
 
    t <- !cbind(file.exists(z$deployments$QCpath),
-               file.exists(z$deployments$mdpath))                          # check for missing files
+               file.exists(z$deployments$mdpath))
+   # check for missing files
    if(any(t)) {
       m <- paste0('Missing deployment files: ', paste0(basename(c(z$deployments$QCpath[t[, 1]], z$deployments$mdpath[t[, 2]])), collapse = ', '))
       if(warn) {                                                           # if warn,
@@ -48,6 +48,7 @@ lookup_site_paths <- function(site_dir, warn = FALSE) {
          stop(m)
    }
 
-   z$deployments$hash <- get_file_hashes(z$deployments$QCpath)             # get hashes of QC files
+   if(length(z$deployments$QCpath) > 0)
+      z$deployments$hash <- get_file_hashes(z$deployments$QCpath)          # get hashes of QC files
    z
 }

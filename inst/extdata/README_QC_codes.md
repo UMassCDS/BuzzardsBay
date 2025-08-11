@@ -9,3 +9,5 @@ This file is used in stitch_site to reject data based on `Gen_QC` or `<metric>_Q
 - `1` - reject value: set to DR in WPP result file, and NA in core result file
 - `2` - fatal: stop processing with an informative error
 3. `Description` - text description of the `*_QC` value
+
+**Note**: metrics in a row are also rejected if Cal = 1 unless Gen_QC = 11 or 12

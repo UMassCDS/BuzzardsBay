@@ -38,6 +38,7 @@ extract_baywatchers <- function(base_dir, year, file = 'bbcdataCURRENT.xlsx', he
    if(dim(x)[1] == 0)
       stop('The requested year is not in the Baywatchers file')
 
+   x <- x[x$S_D == 'D',]                                                                                       # we only want the "deep" rows; throw away the shallow ones
    x <- x[is.na(x$DO_QC) | x$DO_QC != 9, ]                                                                     # drop rows with DO_QC = 9
    x <- x[, c('STN_ID', 'SAMP_DATE', 'TIME', 'DO_MGL')]                                                        # these are the columns we care about now
    x <- x[!is.na(x$TIME), ]                                                                                    # drop records with no TIME

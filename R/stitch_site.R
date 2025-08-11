@@ -111,7 +111,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    if(all(is.na(z$Longitude)) & !all(is.na(z$Longitude)))
       z$Longitude <- x$longitude[x$site == site]
 
-   z$Unique_ID <- 1:dim(z)[1]                                                          # unique ID is simply row number
+   z$Unique_ID <- paste(z$Site, z$Date, sep = '_', z$Time)                                                          # unique ID is simply row number
    z$Julian_Date <- yday(z$Date)                                                       #  Julian date, really day in year
 
 
@@ -139,7 +139,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    res <- NULL
    res[1] <- file.path(rpath, paste0('archive_', site, '_', year, '.csv'))
    write.csv(z, file = file.path(site_dir, res[1]), row.names = FALSE,
-             quote = FALSE, na = '#N/A')                                               # "archive" result file, with all columns and all data, including rejected values
+             quote = TRUE, na = '')                                                    # "archive" result file, with all columns and all data, including rejected values
 
 
    # now replace rejected values
@@ -153,14 +153,18 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    else
       z[as.logical(r), sensor_cols] <- 'DR'
 
+   z$Deployment <- as.numeric(z$Gen_QC %in% 12)                                        # mark deployment times, as we need them for plots
+   z$Deployment[z$Deployment == 0] <- NA
+
 
    for(sensor in sensor_cols) {                                                        # For each sensor column,
       r <- qc_codes$Rejection[match(z[, paste0(sensor, '_QC')], qc_codes$QC_Code)]     #    reject sensor metrics based on individual sensor QC columns
       if(any(is.na(r))) {
          msg('*** Invalid QC code for ', sensor, ' on ', paste0(z$Date[is.na(r)], collapse = ', '))
          failure <- TRUE
+         r[is.na(r)] <- 0
       }
-      r[is.na(r)] <- 0
+      r <- r | (z$Cal %in% 1 & !z$Gen_QC %in% c(11, 12))                               # also reject any rows where Cal = 1 unless Gen_QC is 11 or 12
       z[as.logical(r), sensor] <- 'DR'
    }
 
@@ -169,7 +173,7 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
 
    res[2] <- file.path(rpath, paste0('WPP_', site, '_', year, '.csv'))
    write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
-             quote = FALSE, na = '#N/A')                                                # "WPP" result file, with all columns; rejected values replaced with "DR"
+             quote = TRUE, na = '')                                                    # "WPP" result file, with all columns; rejected values replaced with "DR"
 
    z[z == 'DR'] <- NA
    res[3] <- file.path(rpath, paste0('core_', site, '_', year, '.csv'))
