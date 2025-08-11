@@ -42,7 +42,7 @@ complete season, and hash files for use by check_site."></head><body>
     <p>Merges all QC'd deployments for the specified site and year and writes result files. Missing
 dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
 that are out range for their sensor are flagged. Writes three versions of the data file for the
-complete season, and hash files for use by <code>check_site</code>.</p>
+complete season, and hash files for use by <a href="check_site.html">check_site</a>.</p>
     </div>
 
     <div class="section level2">
@@ -75,7 +75,7 @@ complete season, and hash files for use by <code>check_site</code>.</p>
     <p>Three versions of the data file are written to <code>&lt;site_dir&gt;/combined/</code>:</p><ol><li><p><code>archive_&lt;site&gt;_&lt;year&gt;.csv</code> - contains all columns, for complete archival.</p></li>
 <li><p><code>WPP_&lt;site&gt;_&lt;year&gt;.csv</code> - contains only columns required by MassDEP (a.k.a. the "WPP" file).</p></li>
 <li><p><code>core_&lt;site&gt;_&lt;year&gt;</code> - just the good stuff. This is the file used for producing summaries and reports.</p></li>
-</ol><p>An additional file is written for internal use by <code>check_site</code>:</p><ol><li><p><code>hash.txt</code> - a tab-delimited file lists paths to deployment files and md5 hashes.</p></li>
+</ol><p>An additional file is written for internal use by <a href="check_site.html">check_site</a>:</p><ol><li><p><code>hash.txt</code> - a tab-delimited file lists paths to deployment files and md5 hashes.</p></li>
 </ol></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

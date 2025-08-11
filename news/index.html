@@ -33,22 +33,26 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9030" id="buzzardsbay-0109030">BuzzardsBay 0.1.0.9030<a class="anchor" aria-label="anchor" href="#buzzardsbay-0109030"></a></h2>
-<ul><li>
-<p>Change to <strong>MX801</strong> import.<br>
-Switch to using a YAML file (<code>.yml</code>) when importing metadata from MX801, ignoring the details sheet in the excel file that was previously used.</p>
-<p>This change was made to:</p>
-<ol style="list-style-type: decimal"><li>allow users to specify the deployment window in the yaml file (use <code>calibration_start</code> and <code>calibration_end</code>); and</li>
-<li>make the import less susceptible to possible future changes in the HOBOware details sheet. This part of the import was complicated and likely to break with minor changes to the format.</li>
-</ol><p>The new <code>details.yml</code> file in the calibrated directory will have to be created by users and should have this format:</p>
+<div class="section level4">
+<h4 id="change-to-mx801-import-0-1-0-9030">Change to <strong>MX801</strong> import.<a class="anchor" aria-label="anchor" href="#change-to-mx801-import-0-1-0-9030"></a></h4>
+<p>Switch to using a YAML file (<code>.yml</code>) when importing metadata from MX801, ignoring the details sheet in the excel file that was previously used.</p>
+<p>This change was made to: (1) allow users to specify the deployment window in the yaml file (use <code>calibration_start</code> and <code>calibration_end</code>); and (2) make the import less susceptible to possible future changes in the HOBOware details sheet. This part of the import was complicated and likely to break with minor changes to the format.</p>
+<p>The new <code>details.yml</code> file in the calibrated directory will have to be created by users and should have this format:</p>
 <pre><code>calibration_start: 2025-01-02 15:50:02
 calibration_end: 2025-01-04 13:00:02
 timezone: EST
 serial_number: 22145899</code></pre>
 <p>The path to an example file can be retrieved with: <code>system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")</code></p>
-</li>
-<li><p>Change to <strong>CSV</strong> import. Previously the CSV export expected the <code>calibration_start</code> and <code>calibration_end</code> times in the YAML file to match the date and time of the first and last record in the file. Now, it does not need to match and any rows before <code>calibration_start</code> or after <code>calibation_end</code> <strong>will be dropped</strong>.</p></li>
-<li><p>Document the three import types and file formats in <code><a href="../reference/qc_deployment.html">qc_deployment()</a></code></p></li>
-</ul></div>
+</div>
+<div class="section level4">
+<h4 id="change-to-csv-import-0-1-0-9030">Change to <strong>CSV</strong> import.<a class="anchor" aria-label="anchor" href="#change-to-csv-import-0-1-0-9030"></a></h4>
+<p>Previously the CSV export expected the <code>calibration_start</code> and <code>calibration_end</code> times in the YAML file to match the date and time of the first and last record in the file. Now, it does not need to match and any rows before <code>calibration_start</code> or after <code>calibation_end</code> <strong>will be dropped</strong>.</p>
+</div>
+<div class="section level4">
+<h4 id="other-0-1-0-9030">Other<a class="anchor" aria-label="anchor" href="#other-0-1-0-9030"></a></h4>
+<p>Document the three import types and file formats in <code><a href="../reference/qc_deployment.html">qc_deployment()</a></code></p>
+</div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9029" id="buzzardsbay-0109029">BuzzardsBay 0.1.0.9029<a class="anchor" aria-label="anchor" href="#buzzardsbay-0109029"></a></h2>
 <p>Implement changes to analysis module requested in April</p>

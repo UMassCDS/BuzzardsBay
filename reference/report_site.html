@@ -56,7 +56,7 @@
 
 
 <dt id="arg-check">check<a class="anchor" aria-label="anchor" href="#arg-check"></a></dt>
-<dd><p>If TRUE, runs <code>check_site</code> to make sure source files haven't been changed</p></dd>
+<dd><p>If TRUE, runs <a href="check_site.html">check_site</a> to make sure source files haven't been changed</p></dd>
 
 
 <dt id="arg-baywatchers">baywatchers<a class="anchor" aria-label="anchor" href="#arg-baywatchers"></a></dt>
@@ -75,9 +75,9 @@
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Two files are written:</p><ol><li><p><code>daily_stats_&lt;site&gt;_&lt;year&gt;.csv</code> - a file with a row for each day of the season with several summary statistics</p></li>
 <li><p><code>report_&lt;site&gt;_&lt;year&gt;.pdf</code> - a PDF report with a table of seasonal stats and a number of graphs</p></li>
-</ol><p><code>stitch_site</code> must be run first to create the necessary data. If <code>stitch_site</code> was run at
-some point in the past, it is highly advisable to run <code>check_site</code> to make sure deployment
-files haven't changed since the last <code>stitch_site</code> run.</p>
+</ol><p><a href="stitch_site.html">stitch_site</a> must be run first to create the necessary data. If  <a href="stitch_site.html">stitch_site</a> was run at
+some point in the past, it is highly advisable to run <a href="check_site.html">check_site</a> to make sure deployment
+files haven't changed since the last <a href="stitch_site.html">stitch_site</a> run.</p>
 <p>Including plots based on Baywatchers data requires a file within the site <code>baywatchers/&lt;site&gt;.csv</code>. This file must
 include the date and time (a column that includes <code>Date_Time</code> in the name) and dissolved oxygen in mg/L (DO in the
 name, but not percent, pct, or %). Column names are case-insensitive. If this file is missing or the necessary
