@@ -6,3 +6,7 @@
 ^inst/rmd/*.html$
 .lintr
 scripts/*
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
