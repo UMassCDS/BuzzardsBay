@@ -41,3 +41,4 @@ Suggests:
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1.0)
+URL: https://umasscds.github.io/BuzzardsBay/
