@@ -16,12 +16,12 @@
   The new `details.yml` file in the calibrated directory will have to be 
   created by users and should have this format:
    
-    ```
-    calibration_start: 2025-01-02 15:50:02
-    calibration_end: 2025-01-04 13:00:02
-    timezone: EST
-    serial_number: 22145899
-    ```
+  ```
+  calibration_start: 2025-01-02 15:50:02
+  calibration_end: 2025-01-04 13:00:02
+  timezone: EST
+  serial_number: 22145899
+  ```
   The path to an example file can be retrieved with:
     `system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")`
   
