@@ -24,9 +24,9 @@ A list with items:
 \description{
 \code{qc_deployment()} will:
 \enumerate{
-\item Read the calibrated dissolved oxygen and conductivity files created by
+\item Read the calibrated dissolved oxygen and conductivity output from
 HOBOware.
-\item Read and parse the associated Details files into nested lists.
+\item Read and parse the associated Details file.
 \item Reformat and merge the data files.
 \item Add automatic flags, and create columns for manual QC
 \item Write the data and metadata.
@@ -46,6 +46,95 @@ for documentation on the data formats they each expect.
 In all cases input files are looked for within a \code{Calibration} sub directory
 to the deployment directory (\code{dir}).
 }
+\section{Supported import types}{
+
+
+There are currently 3 separate import functions to handle different formats
+of the data. They are:
+
+\strong{0 - Basic CSV Import}
+
+This import requires a CSV file and a YAML (\code{.yml}) file. It is intended to
+be a fall back / future proof import with a supper simple format.
+
+It should work with input columns names as Hoboware creates when calibrating
+the MX801 logger or the U24 and U26 loggers; as well as with the canonical
+names:  "Date_Time", "Raw_DO", "Temp_DOLog", "DO", "DO_Pct_Sat",
+"High_Range", "Temp_CondLog", "Spec_Cond", "Salinity",
+"Depth", "Latitude", and "Longitude".  The last three columns (Depth,
+Latitude, and Longitude) are optional.
+
+Note: when combining data from the U24 and U26 loggers into
+a single sheet for use with this function the two temperature columns
+will have to be manually renamed to "Temp_CondLog", and "Temp_DOLog".
+
+The YAML file will should look something
+like this:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{calibration_start: 2025-01-02 14:50:02
+calibration_end: 2025-01-04 15:10:02
+do_device:
+  product: MX801
+  serial_number: 22145888
+cond_device:
+  product: MX801
+  serial_number: 22145888
+timezone: EST
+}\if{html}{\out{</div>}}
+
+\strong{1 - U24 and U26 loggers}
+
+This is the first import that was supported by the \strong{BuzzardsBay} package.
+It is for when two loggers (U24 and U26) are used to record the salinity
+and dissolved oxygen data.
+
+It expects two CSV (ending in \code{.csv}) files along with
+two details files (ending in \code{details.txt}).
+
+One file of each type should contain \code{DO_} somewhere in the name indicating
+that it is from a dissolved oxygen logger; and one file of each type should
+contain either \code{SAL_} or \code{COND_} in the name indicating it is from a
+salinity/conductivity logger.
+
+The naming requirements are not case sensitive.
+
+\strong{2 - MX801}
+
+This import works with an excel file created by HOBOware while calibrating
+the MX801 combined DO and Salinity logger.
+
+The excel file should be as created by HOBOware.
+
+Run this:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{example_paths <- setup_example_dir(site_filter = "BBC",
+                                   year_filter = 2025)
+deployment_dirs <- example_paths$deployments
+print(deployment_dirs)
+
+}\if{html}{\out{</div>}}
+
+To create example files that can be inspected and used to run this import
+e.g. :
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{qc_deployment(deployment_dirs[1])
+
+}\if{html}{\out{</div>}}
+
+This import now requires a YAML file (\code{details.yml}) it should look something
+like this:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{calibration_start: 2025-01-02 15:50:02
+calibration_end: 2025-01-04 13:00:02
+timezone: EST
+serial_number: 22145899
+}\if{html}{\out{</div>}}
+
+Note \code{calibration_start} and \code{calibration_end} define the start and end
+of the deployment window. This is a legacy of the U24 and U26 loggers
+where the calibrated window and the deployment window were the same.
+}
+
 \examples{
 \dontrun{
   paths <- setup_example_dir()

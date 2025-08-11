@@ -24,7 +24,7 @@ Conductivity was calibrated with a single point calibration on these two dates i
 of the standard 2-point calibration. 
 
 ### BD1 2024-06-21
-    This sensor has a wierd column name:  
+    This sensor has a weird column name:  
 
     From Kristin:
     I was working through BD1 and got the error message: 

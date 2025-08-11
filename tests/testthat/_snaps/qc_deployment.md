@@ -1,4 +1,4 @@
-# qc_deployment() works
+# qc_deployment() works with U24 and U26 loggers
 
     Code
       flags
@@ -56,7 +56,7 @@
       3         NA            NA
       4         NA            NA
 
-# man/qc_deployment() checks depth range
+# man/qc_deployment() checks specific flags
 
     Code
       d[sel_rows, sel_cols]
