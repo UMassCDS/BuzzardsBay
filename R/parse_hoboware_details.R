@@ -54,6 +54,7 @@
 #'    yaml::as.yaml() |>
 #'    cat()
 #'
+#' @keywords internal
 parse_hoboware_details <- function(path) {
 
   # Read file
@@ -117,7 +118,7 @@ parse_hoboware_details <- function(path) {
 #'                      package = "BuzzardsBay")
 #'  do_cal  <- get_do_details(file)
 #'  cat(yaml::as.yaml(do_cal))
-#'
+#' @keywords internal
 get_do_details <- function(path) {
 
   # Parse file into list
@@ -271,7 +272,7 @@ get_do_details <- function(path) {
 #'                      package = "BuzzardsBay")
 #'  do_cal  <- get_cond_details(file)
 #'  cat(yaml::as.yaml(do_cal))
-#'
+#' @keywords internal
 get_cond_details <- function(path) {
 
   # Parse file into list

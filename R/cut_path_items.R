@@ -9,6 +9,7 @@
 #'   deployment_dir <- "C:/temp/bb_demo//BB_Data/2023/RB1/2023-06-09"
 #'   base_dir <- cut_path_items(deployment_dir, 3)
 #' }
+#' @keywords internal
 cut_path_items <- function(x, ncut) {
   re <- paste0("(^.*)",
                paste(rep("[/\\\\]+[^/\\\\]+", ncut), collapse = ""),

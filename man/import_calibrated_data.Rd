@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_calibrated_data.R
 \name{import_calibrated_data}
 \alias{import_calibrated_data}
-\title{Import Calibrated Data}
+\title{Import Calibrated Deployment Data}
 \usage{
 import_calibrated_data(paths, devices)
 }

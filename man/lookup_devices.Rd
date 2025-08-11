@@ -25,3 +25,4 @@ The assumption is that there is both a \code{"Do"} and
 \code{"Cond"} device type associated with each placement and this function
 will throw and error if that is violated for the specified deployment.
 }
+\keyword{internal}

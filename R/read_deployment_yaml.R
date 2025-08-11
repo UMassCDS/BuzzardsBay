@@ -7,6 +7,7 @@
 #' @param mx801  Set to TRUE when importing for mx801 which has slightly
 #' different requirements
 #' @returns Standardized metadata list
+#' @keywords internal
 read_deployment_yaml <- function(file, mx801 = FALSE)  {
 
 

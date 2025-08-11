@@ -13,6 +13,7 @@
 #'
 #' @return An informative error is thrown if something is wrong.
 #' Nothing is returned.
+#' @keywords internal
 check_placement <- function(sn, type, placements, deployment_date, site) {
 
   deployment_date <- lubridate::as_date(deployment_date)

@@ -1,6 +1,7 @@
 # BuzzardsBay 0.1.0.9030
 
-* Change to **MX801** import.  
+### Change to **MX801** import.  
+
   Switch to using a YAML file (`.yml`) when importing metadata from MX801, 
   ignoring the details sheet in the excel file that was previously
   used.
@@ -24,14 +25,17 @@
   The path to an example file can be retrieved with:
     `system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")`
   
-* Change to **CSV** import. Previously the CSV export expected the 
+### Change to **CSV** import. 
+
+Previously the CSV export expected the 
 `calibration_start` and `calibration_end` times in the YAML file to match the
  date and time of the first and last record in the file.
  Now, it does not need to match and any rows before `calibration_start` 
  or after `calibation_end` **will be dropped**.
  
-* Document the three import types and file formats in `qc_deployment()`
+### Other
 
+Document the three import types and file formats in `qc_deployment()`
 
 # BuzzardsBay 0.1.0.9029
 

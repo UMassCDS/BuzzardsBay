@@ -15,3 +15,4 @@ An object of class \code{rle}
 \description{
 A drop-in replacement for \code{base::rle()} that treats all NAs as identical
 }
+\keyword{internal}

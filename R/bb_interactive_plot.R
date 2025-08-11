@@ -15,6 +15,7 @@
 #' @return A plotly plot object.
 #'
 #' @export
+#' @keywords internal
 bb_interactive_plot <- function(d,
                                 dl,
                                 focal_column,

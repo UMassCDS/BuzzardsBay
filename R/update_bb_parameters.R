@@ -23,6 +23,7 @@
 #'
 #' @return Nothing is returned, but package parameters are updated.
 #' @export
+#' @keywords internal
 update_bb_parameters <- function(paths) {
   # bbp is an environment within the package that  is initialized
   # when the package is loaded.  See R/bbp.R and bb_options()
