@@ -30,7 +30,7 @@
  Now, it does not need to match and any rows before `calibration_start` 
  or after `calibation_end` **will be dropped**.
  
-* Document the three import types and file formats in `qc_deployment()`/
+* Document the three import types and file formats in `qc_deployment()`
   
 
 # BuzzardsBay 0.1.0.9027
