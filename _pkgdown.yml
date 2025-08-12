@@ -1,6 +1,16 @@
 url: https://umasscds.github.io/BuzzardsBay/
 template:
   bootstrap: 5
+home:
+  links:
+  - text: COMBB
+    href: https://combb.woodwellclimate.org/
+  - text: Center for Data Science
+    href: https://ds.cs.umass.edu/
+  - text: File Structure Documentation
+    href: https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU
+  - text: QC Data columns, error codes, and flags.
+    href: https://docs.google.com/spreadsheets/d/1bYxi0nbgDaUsKEyLoj_ry-1Zc-A4MNDfS_J_zH7HiJI
 reference:
 - title: Quality Control Module
   desc:  Run automated QC and support interactive QC on individual deployments

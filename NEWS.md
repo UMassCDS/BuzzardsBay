@@ -41,7 +41,8 @@ Document the three import types and file formats in `qc_deployment()`
 
 Implement changes to analysis module requested in April
 
-Changes to `stitch_site`:
+Changes to `stitch_site()`:
+
 - Fail more politely when run on a site with no QC data.
 - Quote strings when writing Archive and WPP files, as comments sometimes include
 commas, which are a no-no in CSVs. Quoting makes these files robust. There's no need
@@ -52,9 +53,11 @@ to quote strings in the core files, as they don't have comment fields.
 Instead of serial numbers, use the form "AB2_2024-08-06_14:40:00".
 
 Changes to daily stats
+
 - Add minimum and maximum temperature.
 
 Seasonal stats
+
 - Report_site now writes a seasonal stats CSV in addition to including stats as a table in report.
 - Round mean duration of DO to 0.1 hours.
 - Add standard deviation of DO.
@@ -65,6 +68,7 @@ are not clipped to these dates.
 footnote in the report.
 
 Changes to report:
+
 - Move figure captions above figures (which looks odd!).
 - Add vertical green lines marking starts of deployments to Fig. 2. ***Note***: this
 required adding a new column ("Deployment") to the core data file, as this file doesn't contain QC
