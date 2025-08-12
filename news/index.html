@@ -19,6 +19,7 @@
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/UMassCDS/BuzzardsBay/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -28,7 +29,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-
+      <small>Source: <a href="https://github.com/UMassCDS/BuzzardsBay/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
@@ -56,11 +57,28 @@ serial_number: 22145899</code></pre>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9029" id="buzzardsbay-0109029">BuzzardsBay 0.1.0.9029<a class="anchor" aria-label="anchor" href="#buzzardsbay-0109029"></a></h2>
 <p>Implement changes to analysis module requested in April</p>
-<p>Changes to <code>stitch_site</code>: - Fail more politely when run on a site with no QC data. - Quote strings when writing Archive and WPP files, as comments sometimes include commas, which are a no-no in CSVs. Quoting makes these files robust. There’s no need to quote strings in the core files, as they don’t have comment fields. - Always use blank, not #N/A in CSVs. - Reject any rows where Cal = 1 unless Gen_QC is 11 or 12. - Change Unique_ID to <site><em><date></date></em><time> to make it easier to compare across sites. Instead of serial numbers, use the form “AB2_2024-08-06_14:40:00”.</time></site></p>
-<p>Changes to daily stats - Add minimum and maximum temperature.</p>
-<p>Seasonal stats - Report_site now writes a seasonal stats CSV in addition to including stats as a table in report. - Round mean duration of DO to 0.1 hours. - Add standard deviation of DO. - Change text of % data missing to “percent of rows with missing data”. - Add an option to report_site (‘clip’) to restrict dates in seasonal statistics. Plots are not clipped to these dates. - Now reports date range (whether or not clipped) in seasonal stats; if clipped, there’s a footnote in the report.</p>
-<p>Changes to report: - Move figure captions above figures (which looks odd!). - Add vertical green lines marking starts of deployments to Fig. 2. <strong><em>Note</em></strong>: this required adding a new column (“Deployment”) to the core data file, as this file doesn’t contain QC data (I added it to all three files for consistency). Deployment is 1 when Gen_QC is 12, and empty otherwise. As a result of this change, all previously-stitched sites will have to be re-stitched. You’ll get an error reminding you to do this for sites where it hasn’t been done. - Add a time series of salinity by date, with deployment lines. This plot is optional: use <code>salinity = FALSE</code> to disable it. I’ve added the plot after daily salinity, and before the two Baywatchers plots. - Only “deep” Baywatchers samples are included (those where S_D = ‘D’). - Baywatchers points are now only interpolated to points within 10 minutes. If none are available, these points will be dropped.</p>
-</div>
+<p>Changes to <code><a href="../reference/stitch_site.html">stitch_site()</a></code>:</p>
+<ul><li>Fail more politely when run on a site with no QC data.</li>
+<li>Quote strings when writing Archive and WPP files, as comments sometimes include commas, which are a no-no in CSVs. Quoting makes these files robust. There’s no need to quote strings in the core files, as they don’t have comment fields.</li>
+<li>Always use blank, not #N/A in CSVs.</li>
+<li>Reject any rows where Cal = 1 unless Gen_QC is 11 or 12.</li>
+<li>Change Unique_ID to <site><em><date></date></em><time> to make it easier to compare across sites. Instead of serial numbers, use the form “AB2_2024-08-06_14:40:00”.</time></site></li>
+</ul><p>Changes to daily stats</p>
+<ul><li>Add minimum and maximum temperature.</li>
+</ul><p>Seasonal stats</p>
+<ul><li>Report_site now writes a seasonal stats CSV in addition to including stats as a table in report.</li>
+<li>Round mean duration of DO to 0.1 hours.</li>
+<li>Add standard deviation of DO.</li>
+<li>Change text of % data missing to “percent of rows with missing data”.</li>
+<li>Add an option to report_site (‘clip’) to restrict dates in seasonal statistics. Plots are not clipped to these dates.</li>
+<li>Now reports date range (whether or not clipped) in seasonal stats; if clipped, there’s a footnote in the report.</li>
+</ul><p>Changes to report:</p>
+<ul><li>Move figure captions above figures (which looks odd!).</li>
+<li>Add vertical green lines marking starts of deployments to Fig. 2. <strong><em>Note</em></strong>: this required adding a new column (“Deployment”) to the core data file, as this file doesn’t contain QC data (I added it to all three files for consistency). Deployment is 1 when Gen_QC is 12, and empty otherwise. As a result of this change, all previously-stitched sites will have to be re-stitched. You’ll get an error reminding you to do this for sites where it hasn’t been done.</li>
+<li>Add a time series of salinity by date, with deployment lines. This plot is optional: use <code>salinity = FALSE</code> to disable it. I’ve added the plot after daily salinity, and before the two Baywatchers plots.</li>
+<li>Only “deep” Baywatchers samples are included (those where S_D = ‘D’).</li>
+<li>Baywatchers points are now only interpolated to points within 10 minutes. If none are available, these points will be dropped.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9028" id="buzzardsbay-0109028">BuzzardsBay 0.1.0.9028<a class="anchor" aria-label="anchor" href="#buzzardsbay-0109028"></a></h2>
 <ul><li>Change default PDF engine in the hopes of making report_site work on Macs. This should have no effect on Windows machines.</li>
