@@ -185,7 +185,10 @@ import_calibrated_data <- function(paths, devices) {
                 "do_device",
                 "cond_calibration",
                 "cond_deployment",
-                "cond_device")
+                "cond_device",
+                "import_type")
+
+  md$import_type <- import_type
 
   stopifnot(all(md_order %in% names(md)))
 

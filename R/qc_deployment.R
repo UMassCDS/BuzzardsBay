@@ -247,7 +247,12 @@ qc_deployment <- function(dir, report = TRUE) {
   # Record calibrated pct
   md$pct_calibrated <- round(sum(sv) / length(sv)*100, 4)
   min_calibrated_pct <- 95
-  if(md$pct_calibrated < 95) {
+
+
+  pct_check_types <- c(0, 1) # don't check with 2 (MX801) bc file is often
+                                 # much bigger than deployed window
+
+  if(md$import_type %in% pct_check_types && md$pct_calibrated < 95) {
     warning(md$pct_calibrated, "% of the data is calibrated. ",
             " This is lower than the warning threshold of ", min_calibrated_pct, ".")
   }

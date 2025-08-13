@@ -13,6 +13,8 @@ test_that("qc_deployment() works with import type 0 (simple CSV)", {
 
 test_that("qc_deployment() works with U24 and U26 loggers", {
 
+  # RB1 2023-06-09
+
   example_paths <- local_example_dir(year_filter = 2023)
   expect_no_error(l <- qc_deployment(example_paths$deployment))
 
@@ -152,7 +154,7 @@ test_that("man/qc_deployment() works with MX801 data and yaml file", {
   deployment_dir <- example_paths$deployments[1]
   paths <- lookup_paths(deployment_dir = deployment_dir)
 
-  expect_warning(qc_deployment(deployment_dir), "lower than the warning threshold")
+  expect_no_error(qc_deployment(deployment_dir))
 
 })
 
@@ -182,7 +184,7 @@ test_that("qc_deployment() works with MX801 data", {
   n_cond <- 2
   ddir1 <- grep("2025-01-04", deployment_dirs, value = TRUE)
   paths1 <- lookup_paths(deployment_dir = ddir1)
-  expect_warning(res1 <- qc_deployment(paths1$deployment_dir), "lower than the warning threshold")
+  expect_no_failure(res1 <- qc_deployment(paths1$deployment_dir))
   expect_true("Depth" %in% names(res1$d))
 
   skip(paste0("Legacy tests to verify parsing of MX801 details",

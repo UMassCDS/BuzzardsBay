@@ -1,3 +1,12 @@
+# BuzzardsBay 0.1.0.9031
+
+* Added import_type to the metadata created by `qc_deployment()`
+
+* For MX801 imports (type  2) dropped warning when less than 95% of the data is
+  in the calibrated window. 
+  With these loggers the data typically extends well beyond the deployed
+  window, so the warning was always triggered and not informative. 
+
 # BuzzardsBay 0.1.0.9030
 
 ### Change to **MX801** import.  
