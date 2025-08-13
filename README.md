@@ -65,8 +65,7 @@ In particular:
   - HOBOware output with a `.csv` and `details.txt` file for both the
     conductivity and DO logger.  
     Likely from `U24` and `U26` loggers.
-
-  3.  A single `.xlsx` file as generate with the `MX801` logger.
+  - A single `.xlsx` file as generate with the `MX801` logger.
 
 See help for `import_calibrated_data()` for a detailed description of
 these files.

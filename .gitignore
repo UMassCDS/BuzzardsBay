@@ -5,3 +5,5 @@
 inst/rmd/*.html
 BuzzardsBay.Rproj
 docs
+inst/doc
+inst/extdata/*.html

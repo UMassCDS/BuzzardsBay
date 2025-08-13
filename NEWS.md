@@ -7,6 +7,8 @@
   With these loggers the data typically extends well beyond the deployed
   window, so the warning was always triggered and not informative. 
 
+* Added example-data vignette.
+
 # BuzzardsBay 0.1.0.9030
 
 ### Change to **MX801** import.  
