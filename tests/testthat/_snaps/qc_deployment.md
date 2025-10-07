@@ -56,6 +56,32 @@
       3         NA            NA
       4         NA            NA
 
+# qc_deployment()  MX801 date time bug is fixed
+
+    Code
+      as.data.frame(d2[49:51, ])
+    Output
+        Site       Date           Date_Time Gen_QC Flags     Time Time_QC Temp_DOLog
+      1  OB1 2025-07-24 2025-07-24 23:50:00     NA  <NA> 23:50:00      NA   21.77596
+      2  OB1 2025-07-25 2025-07-25 00:00:00     NA  <NA> 00:00:00      NA   21.85633
+      3  OB1 2025-07-25 2025-07-25 00:10:00     NA  <NA> 00:10:00      NA   21.98138
+        Temp_DOLog_QC Temp_CondLog Temp_CondLog_QC   Raw_DO Raw_DO_QC       DO DO_QC
+      1            NA     21.69342              NA 9.542710        NA 7.931957    NA
+      2            NA     21.72330              NA 9.419030        NA 7.830386    NA
+      3            NA     21.87265              NA 9.345158        NA 7.771935    NA
+        DO_Calibration_QC DO_Pct_Sat DO_Pct_Sat_QC Salinity Salinity_QC
+      1                NA   108.6740            NA 31.76196          NA
+      2                NA   107.4321            NA 31.75383          NA
+      3                NA   106.8469            NA 31.71777          NA
+        Sal_Calibration_QC High_Range High_Range_QC Spec_Cond Spec_Cond_QC Cal
+      1                 NA   45524.43            NA  48593.38           NA  NA
+      2                 NA   45542.15            NA  48582.70           NA  NA
+      3                 NA   45636.58            NA  48535.73           NA  NA
+           Depth Depth_QC QA_Comment Field_Comment
+      1 3.785083       NA         NA            NA
+      2 3.704349       NA         NA            NA
+      3 3.638687       NA         NA            NA
+
 # man/qc_deployment() checks specific flags
 
     Code

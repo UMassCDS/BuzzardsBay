@@ -133,7 +133,19 @@ test_that("qc_deployment()  MX801 date time bug is fixed", {
 
   paths <- lookup_paths(deployment_dir = deployment)
 
+  # Read in result with auto column detection
   d <- readr::read_csv(paths$deployment_prelim_qc)
+
+  # Read it in again with character Date_Times
+  spec <- readr::spec(d)
+  spec$cols$Date_Time <- col_character()
+  d2 <- readr::read_csv(paths$deployment_prelim_qc, col_types = spec)
+
+  # Check that first midnight is correct
+  expect_equal(d2$Date_Time[50], "2025-07-25 00:00:00")
+
+  #  3 row snap shot that includes midnight
+  expect_snapshot(d2[49:51, ] |> as.data.frame())
 
 })
 
