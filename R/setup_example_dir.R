@@ -114,10 +114,10 @@ setup_example_dir <- function(parent_dir = NULL, delete_old = FALSE,
 
       if (!is.null(deployment_filter)) {
         files <- grep(deployment_filter, files, value = TRUE)
-        if (length(files) == 0)
-          stop("All deployments were filtered out.")
       }
 
+      if(length(files) == 0)
+        next
 
       source_files <- file.path(site_dir, files)
       dest_site_dir <- file.path(example_base, year, site)
