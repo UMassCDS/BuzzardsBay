@@ -85,7 +85,7 @@ This sensor produced a weird column name:
     
     If you want to look at the data I'm working with, it's BD1 2024-06-21.
     
-#### OB9 2024-07-23
+#### OB9 2024-07-31
 
 Added to resolve a plot y axis limit that expanded to include -888.88 instead
 of treating that data as NA and thus not plotting it.
@@ -122,6 +122,12 @@ More example output from MX801 logger.
 This one uses different line endings inside cells than the previous three files.  
 The change in line endings prevented if from being processed correctly with
 `parse_mx901_details()` prior to bug fixed in 0.1.0.9017.
+
+#### OB1 2025-07-31
+
+This file was added as an example of a weird date-time bug where sometimes 
+date-times aren't processed properly.  We think the problem is that at 
+midnight the time component of the date-time is dropped.
 
 
 ### Tide Rider 

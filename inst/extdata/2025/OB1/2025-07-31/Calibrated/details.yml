@@ -1,0 +1,6 @@
+# This file sets the time range for this deployment
+calibration_start: 2025-07-24 15:50:00
+calibration_end: 2025-07-31 13:00:00
+timezone: EST
+serial_number: 22278621
+
