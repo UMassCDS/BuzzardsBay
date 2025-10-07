@@ -125,13 +125,25 @@ test_that("qc_deployment() date time bug is fixed", {
   expect_no_error(qc_deployment(deployment))
 })
 
+test_that("qc_deployment()  MX801 date time bug is fixed", {
+  # Added 2025-10-07 for OB1 2025-07-31
+  example_paths <- local_example_dir(site_filter = "OB1", year_filter = 2025)
+  deployment <- example_paths$deployment
+  expect_no_error(qc_deployment(deployment))
+
+  paths <- lookup_paths(deployment_dir = deployment)
+
+  d <- readr::read_csv(paths$deployment_prelim_qc)
+
+})
+
+
 test_that("qc_deployment() plot range with error codes in data", {
   # The sensors record -888.88 when there is an error we
   # don't want this to affect plotting.
   example_paths <- local_example_dir(site_filter = "OB9",
                                      deployment_filter = "2024-07-23")
 
-  paths <- lookup_paths(deployment_dir = example_paths$deployment)
   expect_no_error(qc_deployment(example_paths$deployment))
 
 })
