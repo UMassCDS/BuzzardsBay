@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BuzzardsBay</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9031</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9032</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,8 @@ of the data you want to include in the example data store. This will be
 quicker and use less disk space than including all the files.</p>
 <p>For example to get a single deployment:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_example_dir.html">setup_example_dir</a></span><span class="op">(</span>site_filter <span class="op">=</span>  <span class="st">"RB1"</span>, deployment_filter <span class="op">=</span> <span class="st">"2023-06-09"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_example_dir.html">setup_example_dir</a></span><span class="op">(</span>site_filter <span class="op">=</span>  <span class="st">"RB1"</span>,</span>
+<span>                           deployment_filter <span class="op">=</span> <span class="st">"2023-06-09"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">paths</span><span class="op">$</span><span class="va">deployments</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/qc_deployment.html">qc_deployment</a></span><span class="op">(</span><span class="va">paths</span><span class="op">$</span><span class="va">deployments</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>Or to get all the deployments for site WH1X:</p>
@@ -211,7 +212,7 @@ adjusted to still recognize it if "High Range" is repeated?
 If you want to look at the data I'm working with, it's BD1 2024-06-21.</code></pre>
 </div>
 <div class="section level5">
-<h5 id="ob9-2024-07-23">OB9 2024-07-23<a class="anchor" aria-label="anchor" href="#ob9-2024-07-23"></a>
+<h5 id="ob9-2024-07-31">OB9 2024-07-31<a class="anchor" aria-label="anchor" href="#ob9-2024-07-31"></a>
 </h5>
 <p>Added to resolve a plot y axis limit that expanded to include -888.88
 instead of treating that data as NA and thus not plotting it.</p>
@@ -251,6 +252,13 @@ endings inside cells than the previous three files.<br>
 The change in line endings prevented if from being processed correctly
 with <code>parse_mx901_details()</code> prior to bug fixed in
 0.1.0.9017.</p>
+</div>
+<div class="section level5">
+<h5 id="ob1-2025-07-31">OB1 2025-07-31<a class="anchor" aria-label="anchor" href="#ob1-2025-07-31"></a>
+</h5>
+<p>This file was added as an example of a weird date-time bug where
+sometimes date-times aren’t processed properly. We think the problem is
+that at midnight the time component of the date-time is dropped.</p>
 </div>
 </div>
 <div class="section level4">
