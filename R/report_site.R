@@ -124,6 +124,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    template <- system.file('rmd/seasonal_report.rmd', package = 'BuzzardsBay', mustWork = TRUE)
    report_file <- file.path(site_dir, 'combined', paste0('report_', site, '_', year, '.pdf'))
    abs_report_file <- file.path(normalizePath(file.path(site_dir, 'combined')), paste0('report_', site, '_', year, '.pdf'))
+   temp_report_file <- file.path(tempdir(), basename(abs_report_file))
+
 
    long_site <- get_site_name(site_dir)
    title <- paste0(long_site, ' (', site, ') in ', year)
@@ -137,9 +139,13 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
-
-   rmarkdown::render(input = template, output_file = abs_report_file,                     # write PDF (have to use absolute path here 😡)
+   # Writing to local temp file and then copying to final location to avoid
+   # weird OneDrive issues  see #24
+   rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
                      params = pars, quiet = TRUE)
+
+   file.copy(temp_report_file, abs_report_file)
+   file.remove(temp_report_file)
 
    msg('Seasonal report written to ', report_file)
 
