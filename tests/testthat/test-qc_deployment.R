@@ -7,6 +7,18 @@ test_that("qc_deployment() works with import type 0 (simple CSV)", {
   deployment_dir <- example_paths$deployment
   paths <- lookup_paths(deployment_dir = deployment_dir)
   expect_no_error(qc_deployment(deployment_dir))
+
+  d <- readr::read_csv(paths$deployment_auto_qc, n_max = 100)
+  col_spec <- spec(d)
+  col_spec$cols$Date_Time <- readr::col_character()
+  d2 <- readr::read_csv(paths$deployment_auto_qc, col_types = col_spec,
+                        n_max = 100)
+
+
+  expect_snapshot(as.data.frame(d2) |> head(2))
+
+  expect_equal(d2$Date_Time[1], "2025-01-02 14:50:02")
+
 })
 
 # Import type 1 -- U24 and U26

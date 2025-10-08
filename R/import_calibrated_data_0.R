@@ -53,17 +53,16 @@ import_calibrated_data_0 <- function(paths) {
   d <-  readr::read_csv(file = input_paths$data, show_col_types = FALSE) |>
     clean_csv_import_names()
 
-  d$Date_Time <- format_csv_date_time(d$Date_Time)
+  d$Date_Time <- format_csv_date_time(d$Date_Time, format = "character")
 
   # Record logging interval in minutes
-  t <- d$Date_Time[1:6]
+  t <- d$Date_Time[1:6] |> lubridate::ymd_hms()
   intervals <- (t[2:6]  - t[1:5]) |> as.numeric(units = "mins")
   if(!all(intervals == intervals[1])) {
     stop(input_paths$data, " appears to have a varying interval")
   }
   md$logging_interval_min <- intervals[1]
 
-  d$Date_Time <- as.character(d$Date_Time)
 
   # Other information
   md$site <- paths$site
