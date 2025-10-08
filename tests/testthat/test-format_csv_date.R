@@ -27,8 +27,7 @@ test_that("format_csv_date_time( ) treats dates without times as midnight", {
   result <- format_csv_date_time(x, format = "character")
   expected_result <- c("2025-05-27 23:50:00",
                        "2025-05-28 00:00:00",
-                       "2025-05-28 00:10:00"
-  )
+                       "2025-05-28 00:10:00")
 
   expect_equal(result, expected_result)
 
@@ -39,4 +38,3 @@ test_that("format_csv_date_time( ) treats dates without times as midnight", {
   expect_equal(result2, expected_result)
 
 })
-

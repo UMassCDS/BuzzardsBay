@@ -18,6 +18,7 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
   # TRUE indicates required items,
   # FALSE is for optional items
   # Inputs not on this list will be dropped
+  # nolint start: indentation_linter
   expected_input_md_items <-
     list(
       site = FALSE,  # Can be filled in later
@@ -79,29 +80,26 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
                          version_number = FALSE,
                          header_created = FALSE)
     )
-
+  # nolint end
   # Add in optional top level sublists as empty elements if missing
-  optional_top_lists <- c("cond_deployment", "cond_calibration", "do_deployment",
-                          "do_calibration")
+  optional_top_lists <- c("cond_deployment", "cond_calibration",
+                          "do_deployment", "do_calibration")
 
 
 
-  if(mx801) {
+  if (mx801) {
     # Drop separate device requirements for mx801
     optional_top_lists <- c(optional_top_lists, "do_device", "cond_device")
     expected_input_md_items$cond_device$product <- FALSE
     expected_input_md_items$cond_device$serial_number <- FALSE
     expected_input_md_items$do_device$product <- FALSE
     expected_input_md_items$do_device$serial_number <- FALSE
-      expected_input_md_items$serial_number <- TRUE
+    expected_input_md_items$serial_number <- TRUE
 
   }
 
-
-
-
   missing_top_lists <- setdiff(optional_top_lists, names(md))
-  if(length(missing_top_lists) > 0) {
+  if (length(missing_top_lists) > 0) {
     miss <- vector(mode = "list", length = length(missing_top_lists))
     names(miss) <- missing_top_lists
     md <- c(md, miss)
@@ -115,14 +113,14 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
     expected_item <- expected_input_md_items[[n]]
 
     md_item <- md[[n]]
-    if(is.list(expected_item)) {
-      if(!n %in% names(md)) {
+    if (is.list(expected_item)) {
+      if (!n %in% names(md)) {
         stop("Expected top level item: \"", n,
              "\" missing from YAML file:\n\t", file, "",
              sep = "")
 
       }
-      for(j in seq_along(expected_item)) {
+      for (j in seq_along(expected_item)) {
         inner_name <- names(expected_item)[j]
         if (expected_item[[j]] && !inner_name %in% names(md_item)) {
           stop("Required sub-element \"", inner_name, "\" missing from ", n,
@@ -131,14 +129,14 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
       } # end loop through sub-list
 
       # Eliminate extra sublist items
-      if(is.list(md_item)) {
+      if (is.list(md_item)) {
         md_item <- md_item[names(md_item) %in% names(expected_item)]
         md[[n]] <- md_item
       }
 
     } else {
       # Not a list, will be logical indicating if it's required
-      if(expected_item && !n %in% names(md)) {
+      if (expected_item && !n %in% names(md)) {
         stop("Expected top level item:", n,
              "missing from YAML file:\n\t", file, "")
       } # end missing required top level item
@@ -155,14 +153,11 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
 
   # Convert serial_number to DO and Cond device serial numbers for
   # consistency with original metadata format
-  if(mx801) {
+  if (mx801) {
     md$cond_device$serial_number <- md$serial_number
     md$do_device$serial_number <- md$serial_number
     md$serial_number <- NULL # drop from list
   }
 
-
-
   return(md)
-
 }

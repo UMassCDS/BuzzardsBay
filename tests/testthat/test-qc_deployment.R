@@ -224,7 +224,7 @@ test_that("qc_deployment() works with MX801 data", {
   expect_true("Depth" %in% names(res1$d))
 
   skip(paste0("Legacy tests to verify parsing of MX801 details",
-       "- always skipped"))
+              "- always skipped"))
   # The difference among these files was the details tab which needed to handle
   # variations in format depending on how many calibration points were used.
   # We have since stopped parsing the deails and instead are using a yaml file
@@ -368,9 +368,9 @@ test_that("man/qc_deployment() checks specific flags", {
 
   # update flags to account for trimmed dates
   retained <- original_dates %in% d$Date_Time
-  for(flag in c("too_deep", "not_wet", "review", "immediate_rejection"))
+  for (flag in c("too_deep", "not_wet", "review", "immediate_rejection")){
     assign(flag, value = get(flag)[retained])
-
+  }
 
 
   expect_true(all(d$Depth_QC[too_deep] == 7))
@@ -395,7 +395,3 @@ test_that("man/qc_deployment() checks specific flags", {
   expect_snapshot(d[sel_rows, sel_cols])
 
 })
-
-
-
-

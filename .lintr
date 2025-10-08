@@ -1,3 +1,6 @@
+linters: linters_with_defaults(
+    return_linter = NULL
+  )
 exclusions: list(
    'R/stitch_site.R',
    'R/extract_baywatchers.R',

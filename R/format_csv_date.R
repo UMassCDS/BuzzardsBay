@@ -46,12 +46,12 @@ format_csv_date <- function(x) {
 #'
 #' @param x Date times as character month/day/year h:m or year-month-day h:m
 #' can be mixed in one vector.  h:m:s is also acceptable in place of h:m
-#' Note if the time is missing it will be interpreted as midnight (00:00:00) thus
-#' month/day/year and year-month-day without times are also acceptable.
+#' Note if the time is missing it will be interpreted as midnight (00:00:00)
+#' thus month/day/year and year-month-day without times are also acceptable.
 #' @param format  Either `"datetime"` to return a datetime object or
 #' "`character`" to return as characters standardized on year-month-day h:m:s.
-#' @return Dates times as year-month-day h:m:s (character) or PosixCT depending on
-#' the  `format`.
+#' @return Dates times as year-month-day h:m:s (character) or PosixCT depending
+#' on the  `format`.
 #' @examples
 #' # example code
 #' \dontrun{
@@ -76,7 +76,7 @@ format_csv_date_time <- function(x, format = "datetime") {
     mdy_sv <- !is.na(x) & grepl("^[[:digit:]]+/[[:digit:]]+/[[:digit:]]+$", x) # assume midnight
     # nolint end: line_length_linter
     if (any(!is.na(x) & !mdy_hm_sv & !ymd_hm_sv & !mdy_hms_sv & !ymd_hms_sv &
-            !ymd_sv & !mdy_sv))
+            !ymd_sv & !mdy_sv)) # nolint
       stop("Some date times weren't parsed properly")
 
     # Process each format separately
@@ -90,9 +90,9 @@ format_csv_date_time <- function(x, format = "datetime") {
       dates[ymd_hms_sv] <- lubridate::ymd_hms(x[ymd_hms_sv])
     if (any(mdy_hms_sv))
       dates[mdy_hms_sv] <- lubridate::mdy_hms(x[mdy_hms_sv])
-    if(any(mdy_sv))
+    if (any(mdy_sv))
       dates[mdy_sv] <- lubridate::mdy(x[mdy_sv]) |> lubridate::as_datetime()
-    if(any(ymd_sv))
+    if (any(ymd_sv))
       dates[ymd_sv] <- lubridate::ymd(x[ymd_sv]) |> lubridate::as_datetime()
   }
 

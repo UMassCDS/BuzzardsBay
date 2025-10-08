@@ -46,7 +46,8 @@ quicker and use less disk space than including all the files.
 For example to get a single deployment:
 
 ```{r, eval = FALSE}
-paths <- setup_example_dir(site_filter =  "RB1", deployment_filter = "2023-06-09")
+paths <- setup_example_dir(site_filter =  "RB1",
+                           deployment_filter = "2023-06-09")
 print(paths$deployments)
 qc_deployment(paths$deployments[1])
 ```
@@ -73,5 +74,6 @@ only work for one of the two sets of functions.
 ```{r echo=FALSE, results='asis'}
 # This inserts the README in extdtata into the vignette output
 # (Describing all the datasets)
-cat(readLines(system.file(package = "BuzzardsBay", "extdata/README.md"))[-1], sep = '\n')
+cat(readLines(system.file(package = "BuzzardsBay", "extdata/README.md"))[-1],
+    sep = "\n")
 ```
