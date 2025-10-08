@@ -31,6 +31,9 @@
 #' @export
 #' @section Example data sets:
 #'
+#' Below is a partial list for the full list of example datasets see
+#' \code{vignette("example-data", package = "BuzzardsBay")}
+#'
 #' ## 2023
 #'
 #' * **RB1 2023-06-09** The original example data used to developing the
