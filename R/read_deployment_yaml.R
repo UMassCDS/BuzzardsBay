@@ -1,10 +1,10 @@
-#' Read deployment metadata from a yaml file
+#' Read deployment metadata from a YAML file
 #'
 #' This is used by import types 0 (CSV) and 2 (MX801 excel file) to
-#' read an accompanying yaml file and format into standard metadata list
+#' read an accompanying YAML file and format into standard metadata list
 #'
 #' @param file The YAML file path
-#' @param mx801  Set to TRUE when importing for mx801 which has slightly
+#' @param mx801  Set to TRUE when importing for MX801 which has slightly
 #' different requirements
 #' @returns Standardized metadata list
 #' @keywords internal

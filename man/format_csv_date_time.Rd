@@ -9,15 +9,15 @@ format_csv_date_time(x, format = "datetime")
 \arguments{
 \item{x}{Date times as character month/day/year h:m or year-month-day h:m
 can be mixed in one vector.  h:m:s is also acceptable in place of h:m
-Note if the time is missing it will be interpreted as midnight (00:00:00) thus
-month/day/year and year-month-day without times are also acceptable.}
+Note if the time is missing it will be interpreted as midnight (00:00:00)
+thus month/day/year and year-month-day without times are also acceptable.}
 
 \item{format}{Either \code{"datetime"} to return a datetime object or
 "\code{character}" to return as characters standardized on year-month-day h:m:s.}
 }
 \value{
-Dates times as year-month-day h:m:s (character) or PosixCT depending on
-the  \code{format}.
+Dates times as year-month-day h:m:s (character) or POSIXct depending
+on the  \code{format}.
 }
 \description{
 Excel with US localization will automatically convert dates from

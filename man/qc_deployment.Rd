@@ -57,7 +57,7 @@ of the data. They are:
 This import requires a CSV file and a YAML (\code{.yml}) file. It is intended to
 be a fall back / future proof import with a supper simple format.
 
-It should work with input columns names as Hoboware creates when calibrating
+It should work with input columns names as HOBOware creates when calibrating
 the MX801 logger or the U24 and U26 loggers; as well as with the canonical
 names:  "Date_Time", "Raw_DO", "Temp_DOLog", "DO", "DO_Pct_Sat",
 "High_Range", "Temp_CondLog", "Spec_Cond", "Salinity",

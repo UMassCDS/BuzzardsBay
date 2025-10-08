@@ -2,14 +2,14 @@
 % Please edit documentation in R/read_deployment_yaml.R
 \name{read_deployment_yaml}
 \alias{read_deployment_yaml}
-\title{Read deployment metadata from a yaml file}
+\title{Read deployment metadata from a YAML file}
 \usage{
 read_deployment_yaml(file, mx801 = FALSE)
 }
 \arguments{
 \item{file}{The YAML file path}
 
-\item{mx801}{Set to TRUE when importing for mx801 which has slightly
+\item{mx801}{Set to TRUE when importing for MX801 which has slightly
 different requirements}
 }
 \value{
@@ -17,6 +17,6 @@ Standardized metadata list
 }
 \description{
 This is used by import types 0 (CSV) and 2 (MX801 excel file) to
-read an accompanying yaml file and format into standard metadata list
+read an accompanying YAML file and format into standard metadata list
 }
 \keyword{internal}

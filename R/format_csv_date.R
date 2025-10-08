@@ -50,7 +50,7 @@ format_csv_date <- function(x) {
 #' thus month/day/year and year-month-day without times are also acceptable.
 #' @param format  Either `"datetime"` to return a datetime object or
 #' "`character`" to return as characters standardized on year-month-day h:m:s.
-#' @return Dates times as year-month-day h:m:s (character) or PosixCT depending
+#' @return Dates times as year-month-day h:m:s (character) or POSIXct depending
 #' on the  `format`.
 #' @examples
 #' # example code

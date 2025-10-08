@@ -37,7 +37,7 @@ data necessary to test `report_site()`.  Please report any ongoing issues.
   used.
   
   This change was  made to: 
-  (1) allow users to specify the deployment window in the yaml file
+  (1) allow users to specify the deployment window in the YAML file
   (use `calibration_start` and `calibration_end`); and 
   (2) make the import less susceptible to possible future changes in the 
   HOBOware details sheet.  This part of the import was complicated and 
