@@ -1,3 +1,22 @@
+# BuzzardsBay 0.1.0.9032
+2025-10-08
+
+* `make_deployment_report()` - called by `qc_deployment()` - and 
+`report_site()` both now create html output in a temporary location and then 
+copy it to the final location.  The hope is that this will fix the bug where
+sometimes the reports disappear from the OneDrive shortly after being created.
+See issue #24.
+
+* Fixed bugs in the CSV and MX801 import that caused the time to be dropped 
+from date-time strings at midnight. (#25)
+
+* `report_site()` now assumes that if a date-time row is missing the time that
+it is midnight and adds the "00:00:00" back in. (#25)
+
+I haven't fully tested these as I can't replicate the disappearing 
+files in my test environment and it was logistically a hassle to add the 
+data necessary to test `report_site()`.  Please report any ongoing issues.
+
 # BuzzardsBay 0.1.0.9031
 
 * Added import_type to the metadata created by `qc_deployment()`
