@@ -46,11 +46,18 @@ make_deployment_report <- function(dir, quiet = FALSE) {
   template_rmd <- system.file("rmd/QAQC_report.rmd", package = "BuzzardsBay",
                               mustWork = TRUE)
 
+  final_output <- paths$deployment_report
+  temp_output <- file.path(tempdir(), basename(final_output))
+
   rmarkdown::render(input = template_rmd,
-                    output_file = paths$deployment_report,
+                    output_file = temp_output,
                     params = list(paths = paths),
                     quiet = quiet)
 
+  # Writing to local temp file and then copying to final location to avoid
+  # weird OneDrive issues  see #24
+  file.copy(temp_output, final_output)
+  file.remove(temp_output)
 
   if (FALSE) {
     # Run this manually to step through QAQC_report.Rmd
@@ -62,6 +69,6 @@ make_deployment_report <- function(dir, quiet = FALSE) {
     # nolint end: object_usage_linter
   }
 
-  return(invisible(paths$deployment_report))
+  return(invisible(final_output))
 
 }
