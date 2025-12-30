@@ -26,3 +26,4 @@ be WGS84 (EPSG:4326)}
 This imports the location information for a Tide Rider from a CSV file.
 See \code{\link[=import_calibrated_data]{import_calibrated_data()}} for more information.
 }
+\keyword{internal}
