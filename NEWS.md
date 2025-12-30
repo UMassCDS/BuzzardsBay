@@ -1,3 +1,54 @@
+# BuzzardsBay 1.0.0.9001
+2025-12-30
+
+## Tide Rider Import
+
+ Tide Riders are mobile sensor platforms that actively control depth in the
+ water column and move laterally with the tides.
+
+ Tide Rider data can be included with any of the standard imports 
+ (Basic CSV, U24/U26 CSV, and MX801 Excel files).
+ Although currently we only anticipate Tide Riders being
+ deployed with the U24 and U26 loggers.
+
+ Each Tide Rider should be treated as a independent "Site" with a unique
+ site ID that should be in the sites and placements tables. Tide riders
+ do not need to be in the import_types table and the serial number
+ for tide riders is not required in nor used from the placements table.
+
+ Tide rider data should be included along with the DO and Conductivity
+ data in the calibrated directory for the "site".  For example
+ "2025/TRS102/2025-08-14/Calibrated" would hold both the logger and tide rider
+ data for the TRS102 tide rider ("site") for the deployment ending on
+ 2025-08-14. The Tide Rider data should be in a CSV file with "TR" in the name
+ isolated from other characters with "_" and/or "." e.g. "data_TR.csv";
+ beginning the file with "TR" does not count.  
+ The Tide Rider data file should not have "Cond_","DO_", or "Sal_" in the name 
+ as those indicate the calibrated CSV logger files.
+
+ Tide Rider standard column names and accepted alternate names that will be 
+ renamed on import to the standard name. 
+ 
+ Names used in the original example file are in bold.
+
+| Standard Name | Alternates allowed in input |
+|-------------:|----------------------------------:|
+| Date_Time | **Time** |
+ | **Latitude** | (none)  |
+ | **Longitude** | (none) |
+| Depth  | Logger Depth, **Logger Depth (m)** | 
+ | TR_Flags | **Flags** |
+
+ The "TR_Flags" column is checked for but not used.
+
+This information is also available in the Tide Rider section of the 
+help for `import_calibrated_data()`. 
+
+## Other changes
+
+* Dropped some snapshot testing that wasn't consistent across platforms.
+* Updated test for `get_file_hashes()` to make it work across platforms.
+
 # BuzzardsBay 0.1.0.9032
 2025-10-08
 

@@ -82,9 +82,18 @@ sites <- sites[sites$site == site, , drop = FALSE] |> as.list()
 
 # Add daylight info to d
 
+has_tide_rider <- all(c("Latitude", "Longitude", "Depth") %in% names(d))
+lat <- sites$latitude
+lon <- sites$longitude
+if(has_tide_rider) {
+  lat <- mean(d$Latitude, na.rm = TRUE)
+  lon <- mean(d$Longitude, na.rm = TRUE)
+}
+
+
 d$daylight <- is_daylight(d$Date_Time,
-                          lat = sites$latitude,
-                          lon = sites$longitude,
+                          lat = lat,
+                          lon = lon,
                           tz = md$timezone)
 
 
@@ -129,6 +138,9 @@ data_cols <- c("Temp_DOLog",
                "High_Range",
                "Spec_Cond")
 id_cols <- c("Site", "Date", "Date_Time", "Gen_QC", "Flags", "Prior_Dep")
+
+if("Depth" %in% names(d))
+  data_cols <- c(data_cols, "Depth")
 
 dl <- select(d, all_of(c(id_cols, data_cols))) |>
   tidyr::pivot_longer(cols = all_of(data_cols))
@@ -367,3 +379,5 @@ bb_interactive_plot(d, dl,
                     range_limit = c(bb_options("plot_min_temp"),
                                     bb_options("plot_max_temp")))
 ```
+
+```{r tide rider, eval = has_tide_rider, child = "./tide_rider.Rmd"}

@@ -1,3 +1,24 @@
+# qc_deployment() works with import type 0 (simple CSV)
+
+    Code
+      head(as.data.frame(d2), 2)
+    Output
+        Site       Date           Date_Time Gen_QC     Flags     Time Time_QC
+      1  SIM 2025-01-02 2025-01-02 14:50:02   9999 TDsl:TCsl 14:50:02      NA
+      2  SIM 2025-01-02 2025-01-02 15:00:02   9999 TDsl:TCsl 15:00:02      NA
+        Temp_DOLog Temp_DOLog_QC Temp_CondLog Temp_CondLog_QC Raw_DO Raw_DO_QC    DO
+      1      14.53            NA         9.92              NA  10.41        NA  8.69
+      2       9.49            NA         9.38              NA  12.71        NA 10.54
+        DO_QC DO_Calibration_QC DO_Pct_Sat DO_Pct_Sat_QC Salinity Salinity_QC
+      1    NA                NA     122.26            NA    29.20          NA
+      2    NA                NA     134.17            NA    29.17          NA
+        Sal_Calibration_QC High_Range High_Range_QC Spec_Cond Spec_Cond_QC Cal
+      1                 NA    32291.2            NA   47260.6           NA   1
+      2                 NA    31828.7            NA   47363.4           NA  NA
+          Depth Depth_QC QA_Comment Field_Comment
+      1 0.00000       NA         NA            NA
+      2 0.00997       NA         NA            NA
+
 # qc_deployment() works with U24 and U26 loggers
 
     Code

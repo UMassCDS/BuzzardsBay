@@ -1,6 +1,6 @@
 test_that("parse_mx801_details() works", {
 
-  skip("No longer parsing MX801 details - legacy code")
+  skip("More legacy tests to verify parsing of MX801 details- always skipped")
 
   example_paths <- local_example_dir(site_filter = "BBC",
                                      year_filter = 2025)

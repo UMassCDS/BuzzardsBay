@@ -1,7 +1,7 @@
 Package: BuzzardsBay
 Type: Package
 Title: Process and analyze data for the COMBB project
-Version: 0.1.0.9032
+Version: 1.0.0.9001
 Authors@R: 
     c(person("Ethan", "Plunkett",  email = "plunkett@umass.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-4405-2251")),
@@ -31,7 +31,7 @@ Language: en-US
 LazyData: true
 License: MIT + file LICENSE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rtide,

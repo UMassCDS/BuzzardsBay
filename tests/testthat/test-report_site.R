@@ -3,8 +3,10 @@ test_that('report is correct', {
    # set up deployment data
    example_paths <- local_example_dir(year_filter = 2024, site_filter = 'AB2',
                                       delete_old = TRUE)                                        # set up an example directory in a temporary path
-   withr::local_dir(dirname(example_paths$base))                                                # set working dir to temp dir
-   site_dir <- dirname(sub(paste0(getwd(), '/*'), '', example_paths$deployment))                # site_dir is a relative path, so paths shown will match across runs
+   wd <- dirname(example_paths$base)
+   withr::local_dir(wd)                                                                      # set working dir to temp dir
+   site_dir <- dirname(sub(paste0(wd, '/*'), '', example_paths$deployment))                  # site_dir is a relative path, so paths shown will match across runs
+
 
    f <- file.path(site_dir, '2024-08-16/QC_AB2_2024-08-16.csv')                                 # now add lots of QC codes to the first deployment
    x <- read.csv(f)

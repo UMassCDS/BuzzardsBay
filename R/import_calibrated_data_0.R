@@ -15,6 +15,8 @@ import_calibrated_data_0 <- function(paths) {
     list(data = grep("\\.csv$", l, value = TRUE, ignore.case = TRUE),
          metadata = grep("\\.yml$", l, value = TRUE, ignore.case = TRUE))
 
+  # Exclude Tide Rider CSV files from the data path
+  input_paths$data <- input_paths$data[!grepl(tide_rider_regex, basename(input_paths$data))]
 
   # Check that we found 1 and only 1 of each type of file in the calibration dir
   has_one <- sapply(input_paths, length) == 1
