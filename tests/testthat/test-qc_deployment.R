@@ -220,7 +220,7 @@ test_that("qc_deployment() works with MX801 data", {
   n_cond <- 2
   ddir1 <- grep("2025-01-04", deployment_dirs, value = TRUE)
   paths1 <- lookup_paths(deployment_dir = ddir1)
-  expect_no_failure(res1 <- qc_deployment(paths1$deployment_dir))
+  expect_no_error(res1 <- qc_deployment(paths1$deployment_dir))
   expect_true("Depth" %in% names(res1$d))
 
   skip(paste0("Legacy tests to verify parsing of MX801 details",

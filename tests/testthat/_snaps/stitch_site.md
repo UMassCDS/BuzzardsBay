@@ -260,11 +260,3 @@
       39           NA  NA         NA            NA      NA         NA
       40           NA  NA         NA            NA      NA         NA
 
----
-
-    Code
-      get_file_hashes(r)
-    Output
-      [1] "ac15b5874e652a09b0dcc8fe88bcc521" "f103b8cdc912de889e0d0f563635d307"
-      [3] "2c01a7f6db428d0a9894752d798f5c41"
-

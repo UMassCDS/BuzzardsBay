@@ -134,7 +134,13 @@ expected_column_names <- list(
                     "DO_Pct_Sat",
                     "Salinity",
                     "High_Range",
-                    "Spec_Cond")
+                    "Spec_Cond"),
+
+  tide_rider = c("Date_Time",  # "Time" before formatting
+                 "Latitude",
+                 "Longitude",
+                 "Depth",  # "Logger Depth (m)" before formatting
+                 "TR_Flags") # "Flags" before formatting
 )
 # nolint end
 

@@ -55,13 +55,23 @@ lookup_devices <- function(site, deployment_date, placements) {
   }
 
   types <- placements$type
-  if (!setequal(types, c("do", "cond"))) {
+  # excluding tide rider from this check as it's ok with or without it
+  if (!setequal(setdiff(types, "tr"), c("do", "cond"))) {
     stop("There should be both a DO and Cond type in placements for ",
          site, " on ", deployment_date)
   }
 
-  return(list(do_model = placements$model[placements$type == "do"],
+  result <- list(do_model = placements$model[placements$type == "do"],
               do_sn = placements$sn[placements$type == "do"],
               cond_model = placements$model[placements$type == "cond"],
-              cond_sn = placements$sn[placements$type == "cond"]))
+              cond_sn = placements$sn[placements$type == "cond"])
+
+  if ("tr" %in% placements$type) {
+    result <- c(result,
+                list(tr_model = placements$model[placements$type == "tr"],
+                     tr_sn = placements$sn[placements$type == "tr"]))
+  }
+
+  return(result)
+
 }
