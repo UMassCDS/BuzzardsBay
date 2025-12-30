@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BuzzardsBay</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9032</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,41 @@
       <small>Source: <a href="https://github.com/UMassCDS/BuzzardsBay/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0.9001" id="buzzardsbay-1009001">BuzzardsBay 1.0.0.9001<a class="anchor" aria-label="anchor" href="#buzzardsbay-1009001"></a></h2>
+<p>2025-12-30</p>
+<div class="section level3">
+<h3 id="tide-rider-import-1-0-0-9001">Tide Rider Import<a class="anchor" aria-label="anchor" href="#tide-rider-import-1-0-0-9001"></a></h3>
+<p>Tide Riders are mobile sensor platforms that actively control depth in the water column and move laterally with the tides.</p>
+<p>Tide Rider data can be included with any of the standard imports (Basic CSV, U24/U26 CSV, and MX801 Excel files). Although currently we only anticipate Tide Riders being deployed with the U24 and U26 loggers.</p>
+<p>Each Tide Rider should be treated as a independent “Site” with a unique site ID that should be in the sites and placements tables. Tide riders do not need to be in the import_types table and the serial number for tide riders is not required in nor used from the placements table.</p>
+<p>Tide rider data should be included along with the DO and Conductivity data in the calibrated directory for the “site”. For example “2025/TRS102/2025-08-14/Calibrated” would hold both the logger and tide rider data for the TRS102 tide rider (“site”) for the deployment ending on 2025-08-14. The Tide Rider data should be in a CSV file with “TR” in the name isolated from other characters with “<em>” and/or ”.” e.g. ”data_TR.csv”; beginning the file with ”TR” does not count.<br>
+The Tide Rider data file should not have ”Cond</em>”,“DO_”, or “Sal_” in the name as those indicate the calibrated CSV logger files.</p>
+<p>Tide Rider standard column names and accepted alternate names that will be renamed on import to the standard name.</p>
+<p>Names used in the original example file are in bold.</p>
+<table class="table"><thead><tr class="header"><th align="right">Standard Name</th>
+<th align="right">Alternates allowed in input</th>
+</tr></thead><tbody><tr class="odd"><td align="right">Date_Time</td>
+<td align="right"><strong>Time</strong></td>
+</tr><tr class="even"><td align="right"><strong>Latitude</strong></td>
+<td align="right">(none)</td>
+</tr><tr class="odd"><td align="right"><strong>Longitude</strong></td>
+<td align="right">(none)</td>
+</tr><tr class="even"><td align="right">Depth</td>
+<td align="right">Logger Depth, <strong>Logger Depth (m)</strong>
+</td>
+</tr><tr class="odd"><td align="right">TR_Flags</td>
+<td align="right"><strong>Flags</strong></td>
+</tr></tbody></table><p>The “TR_Flags” column is checked for but not used.</p>
+<p>This information is also available in the Tide Rider section of the help for <code><a href="../reference/import_calibrated_data.html">import_calibrated_data()</a></code>.</p>
+</div>
+<div class="section level3">
+<h3 id="other-changes-1-0-0-9001">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-1-0-0-9001"></a></h3>
+<ul><li>Dropped some snapshot testing that wasn’t consistent across platforms.</li>
+<li>Updated test for <code><a href="../reference/get_file_hashes.html">get_file_hashes()</a></code> to make it work across platforms.</li>
+<li>Bumped to version 1</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0.9032" id="buzzardsbay-0109032">BuzzardsBay 0.1.0.9032<a class="anchor" aria-label="anchor" href="#buzzardsbay-0109032"></a></h2>
 <p>2025-10-08</p>
@@ -443,7 +478,7 @@ It will now work with both formats.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

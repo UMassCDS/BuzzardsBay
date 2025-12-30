@@ -19,7 +19,7 @@ where [x] is an integer."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BuzzardsBay</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9032</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,20 +121,24 @@ conductance (older loggers) in microsiemens per cm.</p></dd>
 (parts per thousand), equivalent to PSU (Practical Salinity Units) which
 is the units assigned by the newer loggers</p></dd>
 
-</dl></div>
+</dl><p>The second is <code>md</code>, a list of metadata information.
+Details on the list contents are available
+<a href="https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?usp=sharing" class="external-link">here</a>.</p>
+    </div>
     <div class="section level2">
-    <h2 id="import-types">Import types<a class="anchor" aria-label="anchor" href="#import-types"></a></h2>
+    <h2 id="import-types">Import Types<a class="anchor" aria-label="anchor" href="#import-types"></a></h2>
 
 <div class="section">
-<h3 id="import-type-csv">Import Type 0 - CSV<a class="anchor" aria-label="anchor" href="#import-type-csv"></a></h3>
+<h3 id="import-type-single-csv">Import Type 0 - Single CSV<a class="anchor" aria-label="anchor" href="#import-type-single-csv"></a></h3>
 
 
-<p>This simple CSV import is a fallback in case updates to HOBOware or
-the loggers themselves break the targeted imports.
-It expects a CSV file and a YAML (<code>.yml</code>) file.</p>
+<p>The Single CSV import is a fallback in case updates to HOBOware or
+the loggers themselves break the other imports.
+It expects a single CSV file that contains data for both Salinity and DO
+and a YAML (<code>.yml</code>) file - described below.</p>
 <p>To use this import:</p><ol><li><p>Make sure in <code>import_types.csv</code> there's a default line:
 <code>default,0</code> This means that if an import type isn't identified for a model
-listed in a placement that the CSV import will be used.</p></li>
+listed in a placement that the Single CSV import will be used.</p></li>
 <li><p>In <code>placments.csv</code> if you want to use the CSV import use a model name
 that is NOT in <code>import_types.csv</code> so the default CSV import is used.
 I recommend using the model name with <code>-CSV</code> appended; e.g.
@@ -145,19 +149,24 @@ YAML file as described below.</p></li>
 <h4 id="csv-file">CSV file<a class="anchor" aria-label="anchor" href="#csv-file"></a></h4>
 
 
+<p>The CSV file would likely be created with external code or manually from
+calibrated output from HOBOWare.</p>
 <p>In the CSV file the columns are resolved by name not order and the import
 will attempt to resolve several different column naming conventions. Any
-of the following should work:</p><ul><li><p>The canonical column names used by this package:  "Date_Time", "Raw_DO",
-"Temp_DOLog", "DO", "DO_Pct_Sat", "High_Range", "Temp_CondLog",
-"Spec_Cond", "Salinity", "Depth", "Latitude", and "Longitude". The last
-three are optional, the rest are required.</p></li>
+of the following should work:</p><ul><li><p>The canonical column names used by this package:  <code>"Date_Time"</code>, <code>"Raw_DO"</code>,
+<code>"Temp_DOLog"</code>, <code>"DO"</code>, <code>"DO_Pct_Sat"</code>, <code>"High_Range"</code>, <code>"Temp_CondLog"</code>,
+<code>"Spec_Cond"</code>, <code>"Salinity"</code>, <code>"Depth"</code>, <code>"Latitude"</code>, and <code>"Longitude"</code>.
+The last three are optional, the rest are required.</p></li>
 <li><p>Columns names from the MX801 logger. For example by saving the first sheet
 as a CSV.</p></li>
 <li><p>Column names from the U24 and U26 loggers. However, when combining data
 from these two loggers into a single CSV the two temperature columns will
-have to be manually renamed to "Temp_CondLog", and "Temp_DOLog"
+have to be manually renamed to <code>"Temp_CondLog"</code>, and <code>"Temp_DOLog"</code>
 as they are otherwise indistinguishable.</p></li>
-</ul><p>If using other column names please verify carefully</p>
+</ul><p>Please verify carefully that the various DO, Conductivity, and Salinity columns
+are properly identified.
+For example make sure the resulting "DO" column has the calibrated values
+and the "Raw_DO" column has the un-calibrated values.</p>
 </div>
 
 <div class="section">
@@ -176,8 +185,8 @@ which is not a broadly supported timezone but is accepted here.
 The MX801 uses a timezone code "EST" which is also accepted here.</p></li>
 <li><p><strong>do_device:</strong> Information on the DO sensor or logger with items:</p><ul><li><p><strong>product:</strong> The dissolved oxygen sensor e.g.
 "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".</p></li>
-</ul></li>
 <li><p><strong>serial_number:</strong> The device serial number.</p></li>
+</ul></li>
 <li><p><strong>cond_device:</strong> List with information on the conductivity sensor with
 items:</p><ul><li><p><strong>product:</strong> The conductivity sensor e.g. "HOBO U24-002 Conductivity"</p></li>
 <li><p><strong>serial_number:</strong> Conductivity sensor serial number
@@ -195,25 +204,68 @@ will be ignored.</p></li>
 <h3 id="import-type-u-u-">Import Type 1 - U24, U26<a class="anchor" aria-label="anchor" href="#import-type-u-u-"></a></h3>
 
 
-<p>HOBOware derived from U24 and U26 loggers.
-Import type 1 expects to find two CSV files and two <code>details.txt</code>
+<p>This input works with HOBOware calibrated CSV files from U24 and U26 loggers,
+and expects to find two CSV files and two <code>details.txt</code>
 files in the calibration directory. The Dissolved Oxygen files should have
 <code>"Do_"</code> somewhere in the names while the Conductivity files should have
 either <code>"Cond_"</code> or <code>"Sal_</code> in the names.</p>
+<p>Do not include <code>"_TR_"</code> or <code>"_TR."</code> in the file names as they are used
+to indicate Tide Rider location data.</p>
 </div>
 
 <div class="section">
 <h3 id="import-type-mx-">Import Type 2 - MX801<a class="anchor" aria-label="anchor" href="#import-type-mx-"></a></h3>
 
 
-<p>This is the import type for the MX801 logger, it expects a single <code>.xlxs</code>
-file  with combined data from both loggers and on the first sheet
-and the details (metadata) on the third sheet.
-Note there should still be two lines for each placement  in <code>placements.csv</code>
-one each for <code>"DO"</code> and <code>"Cond"</code> both of which should indicate "MX801" as the
-model and have the same Serial Number.</p>
+<p>This is the import type for the MX801 logger, it expects a <code>.xlxs</code>
+file with combined data from both loggers and on the first sheet, and a
+<code>details.yml</code> file in the calibrated directory.
+The YAML file will be created by users and should have this format:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>calibration_start<span class="sc">:</span> <span class="dv">2025-01-02</span> <span class="dv">15</span><span class="sc">:</span><span class="dv">50</span><span class="sc">:</span><span class="dv">02</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>calibration_end<span class="sc">:</span> <span class="dv">2025-01-04</span> <span class="dv">13</span><span class="sc">:</span><span class="dv">00</span><span class="sc">:</span><span class="dv">02</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>timezone<span class="sc">:</span> EST</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>serial_number<span class="sc">:</span> <span class="dv">22145899</span></span></code></pre><p></p></div>
+<p><code>calibration_start</code> and <code>calibration_end</code> define the start and end
+of the deployment window - even if no calibration took place.
+This is a legacy of the U24 and U26 loggers
+where the calibrated window and the deployment window were the same.</p>
+<p>The path to an example file can be retrieved with:
+<code>system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")</code></p>
+<p>In <code>placements.csv</code> there should be two lines for the MX801 import.
+One each for <code>"DO"</code> and <code>"Cond"</code> both of which should
+indicate <code>"MX801"</code> as the model and have the same Serial Number.</p>
+<p>To create a local copy of example data for the MX801 import run this in R:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>example_paths <span class="ot">&lt;-</span> <span class="fu">setup_example_dir</span>(<span class="at">site_filter =</span> <span class="st">"BBC"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>                                  <span class="at">year_filter =</span> <span class="dv">2025</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>deployment_dirs <span class="ot">&lt;-</span> example_paths<span class="sc">$</span>deployments</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">print</span>(deployment_dirs)</span></code></pre><p></p></div>
+<p>To run QC on example data:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">qc_deployment</span>(deployment_dirs[<span class="dv">1</span>])</span></code></pre><p></p></div>
 </div>
 
+    </div>
+    <div class="section level2">
+    <h2 id="tide-rider-import">Tide Rider Import<a class="anchor" aria-label="anchor" href="#tide-rider-import"></a></h2>
+    <p>Tide Riders are mobile sensor platforms that actively control depth in the
+water column and move laterally with the tides.</p>
+<p>Tide Rider data can be included with any of the above imports, although
+currently we only anticipate Tide Riders being
+equipped with the U24 and U26 loggers.</p>
+<p>Each Tide Rider should be treated as a independent "Site" with a unique
+site ID that should be in the sites and placements tables. Tide riders
+do not need to be in the import_types table and the serial number
+for tide riders is not required in nor used from the placements table.</p>
+<p>Tide rider data should be included along with the DO and Conductivity
+data in the calibrated directory for the "site".  For example
+"2025/TRS102/2025-08-14/Calibrated" would hold both the logger and tide rider
+data for the TRS102 tide rider ("site") for the deployment ending on
+2025-08-14. The Tide Rider data should be in a CSV file with<code>"TR"</code> in the name
+isolated from other characters with <code>"_"</code> and/or <code>"."</code> e.g. <code>"data_TR.csv"</code>;
+beginning the file with <code>"TR"</code> does not count it should not have <code>"Cond_"</code>,<code>"DO_"</code>,
+or <code>"Sal_"</code> in the name as those indicate the calibrated CSV logger files.</p>
+<p>The expected columns are listed below.
+Alternate names are allowed in the CSV but will be renamed on import
+to the standard name. Names used in the original example file are bold.</p><table class="table table"><tr><td><strong>Standard Name</strong></td><td><strong>Alternates allowed in input</strong></td></tr><tr><td>Date_Time</td><td><strong>Time</strong></td></tr><tr><td><strong>Latitude</strong></td><td>(none)</td></tr><tr><td><strong>Longitude</strong></td><td>(none)</td></tr><tr><td>Depth</td><td>Logger Depth, <strong>Logger Depth (m)</strong></td></tr><tr><td>TR_Flags</td><td><strong>Flags</strong></td></tr></table><p>The <code>"TR_Flags"</code> column is required for but not used.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -225,7 +277,7 @@ model and have the same Serial Number.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

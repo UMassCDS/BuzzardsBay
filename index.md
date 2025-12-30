@@ -1,0 +1,208 @@
+# BuzzardsBay
+
+The goal of **BuzzardsBay** (R package) is to process and analyze data
+for the [Continuous Oxygen Monitoring in Buzzards Bay (COMBB)
+project](https://www.woodwellclimate.org/project/combb/).
+
+This package is split into two modules, the **QC Module**, which
+prepares calibrated data and produces a report in preparation for a
+quality control editing of deployment files, and the **Analysis
+Module**, which stitches deployment files for a site and year into a set
+of result files, produces a daily statistical summary file, and a report
+with seasonal statistics and a set of graphs.
+
+## Installation
+
+You can install or update **BuzzardsBay** from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("UMassCDS/BuzzardsBay")
+```
+
+To make seasonal reports, you’ll also need to install TinyTeX, which is
+required to create PDFs. Use:
+
+``` R
+install.packages('tinytex')
+tinytex::install_tinytex()
+```
+
+## QC Module
+
+The primary function in the QC module is
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+it reads in calibrated data for a deployment and generates files
+containing merged and flagged copies of the data, and an html report
+with plots of the data.  
+A second function
+[`make_deployment_report()`](https://umasscds.github.io/BuzzardsBay/reference/make_deployment_report.md)
+is typically called by
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+but can also be called independently to recreate the report from CSV
+files created by
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md).
+
+### File structure
+
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+and the **BuzzardsBay** package in general assume [a specific file
+structure and naming
+convention](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU).
+
+In particular:
+
+- All the data associated with a deployment should be stored in a
+  deployment directory with a path
+  `/BB_Data/<year>/<site>/<year>-<month>-<day>/` e.g.  
+  `"~/BB_Data/2022/SR4/2022-07-08"`.  
+- The path to base directory and it’s name (`"BB_Data"` in example) can
+  be any valid path.
+- Within the deployment directory there should be a “Calibrated/”
+  sub-directory with the calibrated files in one of the three supported
+  formats:
+  - Simple import based on a CSV and a YAML file.
+  - HOBOware output with a `.csv` and `details.txt` file for both the
+    conductivity and DO logger.  
+    Likely from `U24` and `U26` loggers.
+  - A single `.xlsx` file as generate with the `MX801` logger.
+
+See help for
+[`import_calibrated_data()`](https://umasscds.github.io/BuzzardsBay/reference/import_calibrated_data.md)
+for a detailed description of these files.
+
+### Usage
+
+Once files are in place we can process the calibrated data in the
+deployment and generate the html report with the code below.
+
+``` r
+library(BuzzardsBay)
+deployment_dir <- ""  # Provide full path here. Don't include `Calibration/`
+qc_deployment(deployment_dir)
+```
+
+### Running on example data
+
+Create an example data folder structure and deployment with
+[`setup_example_dir()`](https://umasscds.github.io/BuzzardsBay/reference/setup_example_dir.md).
+If you specify a path with the `parent_dir` argument the example will be
+created there. Otherwise, as in the example below, it creates the
+example files within the location specified by
+[`tempdir()`](https://rdrr.io/r/base/tempfile.html).
+
+``` r
+paths <- setup_example_dir()  
+print(paths)
+```
+
+With that in place we can then call
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+on the example deployment stored in `paths$deployment` which will also
+be where the output files are created.
+
+``` r
+a <- qc_deployment(paths$deployment)
+```
+
+The code above will only work once as
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+will throw an error if the output already exists. To run again create a
+fresh example directory with: `setup_example_dir(delete_old = TRUE)`
+
+#### Output
+
+[`qc_deployment()`](https://umasscds.github.io/BuzzardsBay/reference/qc_deployment.md)
+writes two identical CSV files, a metadata file, and an HTML report to
+the deployment directory.
+
+- `Auto_QC_<deployment>.csv` is a permanent record of this state of the
+  process and should not be edited.
+- `Preliminary_QC_<deployment>.csv` is for subsequent review and
+  editing. `Preliminary_` should be dropped from the name when review is
+  complete.
+- `Metadata_<deployment>.yml` contains the metadata written as a YAML
+  file.
+- `QC_<deployment>_report.html` contains plots and summary information
+  about the deployment. It is a very large file so should be deleted
+  after the QC is complete. It can be recreated later with
+  `make_deployment_report(deployment_dir)` as long as the Auto QC and
+  metadata files are present.
+
+## Analysis Module
+
+The Analysis Module consists of three primary functions:
+[`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md),
+[`check_site()`](https://umasscds.github.io/BuzzardsBay/reference/check_site.md),
+and
+[`report_site()`](https://umasscds.github.io/BuzzardsBay/reference/report_site.md).
+Each takes the site path as the primary argument,
+`/BB_Data/<year>/<site>` e.g. `"~/BB_Data/2022/AB2"`. An additional
+function,
+[`extract_baywatchers()`](https://umasscds.github.io/BuzzardsBay/reference/extract_baywatchers.md),
+applies to all sites for a given year.
+
+1.  [`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md)
+    reads the deployment files for the specified site and year and
+    merges them into a single file. Gaps between deployments are filled
+    with missing values (a warning is displayed if the gap is greater
+    than 1 hour; this may be changed with the `max_gap` option, setting
+    the maximum gap (in hours) to accept silently. Three result files
+    are written to `/BB_Data/<year>/<site>/<combined>/`:
+
+    1.  The **archive** file, e.g., `archive_AB2_2024.csv`, with all
+        columns and values, including rejected data. Missing data are
+        represented by blanks. This file is intended to be for long-term
+        storage of the complete set of QC’d data.
+
+    2.  The **WPP** file, e.g., `WPP_AB2_2024.csv`, with all columns.
+        Rejected values are replaced with `DR` (for “data rejected”).
+        Missing data are represented by blanks. This file is in the
+        format that MassDEP wants.
+
+    3.  The **core** file, e.g., `core_AB2_2024.csv`, with selected
+        columns. Rejected values and missing values are represented by
+        blanks. This is the file used for statistics and graphs in the
+        report, and is also intended for sharing with collaborators.
+
+    [`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md)
+    can optionally run
+    [`report_site()`](https://umasscds.github.io/BuzzardsBay/reference/report_site.md)
+    (use `report = TRUE`) to stitch and produce a report for the site in
+    one call.
+
+2.  `extract_baywatchers` extracts a given year’s Baywatchers data from
+    the Excel repository, which must be placed in the base directory
+    (`BB_data`).
+
+3.  [`check_site()`](https://umasscds.github.io/BuzzardsBay/reference/check_site.md),
+    intended to be run after some time has elapsed since running
+    [`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md),
+    checks to see if any of the deployment files have been updated or if
+    any of the result data files have changed (likely through
+    inadvertent editing). It also checks for missing files. If a site
+    passes
+    [`check_site()`](https://umasscds.github.io/BuzzardsBay/reference/check_site.md),
+    the result data files are up to date. If it fails, result files and
+    the report need to be recreated by running
+    [`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md)
+    again. `check_site` also checks to make sure data haven’t been
+    changed since most recent report has been produced, and it checks to
+    be sure that extracted Baywatchers data are up to date with respect
+    to the source Excel file.
+
+4.  [`report_site()`](https://umasscds.github.io/BuzzardsBay/reference/report_site.md)
+    reads the `core` file produced by
+    [`stitch_site()`](https://umasscds.github.io/BuzzardsBay/reference/stitch_site.md)
+    and produces the daily statistics file, e.g.,
+    `combined\daily_stats_AB2_2024.csv`, the seasonally summary
+    statistics file, e.g., `combined\seasonal_stats_AB2_2024.csv`, and
+    the site report, `combined\site_report_AB2_2024.pdf`.
+    [`report_site()`](https://umasscds.github.io/BuzzardsBay/reference/report_site.md)
+    normally runs
+    [`check_site()`](https://umasscds.github.io/BuzzardsBay/reference/check_site.md)
+    before producing the report and throws an error if the check fails;
+    you can override this with `check = FALSE`. If you don’t have
+    Baywatchers data for this site and year, use `baywatchers = FALSE`.
+    The example data for `2023/WH1X` includes Baywatchers data.

@@ -1,0 +1,57 @@
+# Apply at timezone to a date time string or object
+
+`apply_timezone()` Takes date time text in -- h:m:s and a separate
+"timezone" expressed as an offset from UTC/GMT or as a real timezone and
+convert to a date-time object with a timezone.
+
+## Usage
+
+``` r
+apply_timezone(dt, tz)
+```
+
+## Arguments
+
+- dt:
+
+  One or more date time strings e.g. "2024-05-28 3:30:00" or a date
+  object made from such a string without specifying the timezone. In the
+  later case the listed times should be in the timezone indicated by
+  `tz`, but quite possibly the defined timezone of the date time object
+  won't be correct.
+
+- tz:
+
+  Either (1) "timezone" string expressing the offset from GMT e.g.
+  "GMT-4:00"- this is the format used by HOBOware and saved into the
+  metadata object and file, but is not a standard timezone; or (2) a
+  standard time zone e.g. "EDT" as appears in other calibrated files.
+
+## Value
+
+A date time object in with a defined timezone that together locates the
+observations correctly in time (but may not be in the local timezone).
+
+## Details
+
+HOBOware is configured to log the time based on an offset from GMT. The
+BuzzardsBay package stores that "timezone", but the offset isn't a valid
+timezone. This gets around that by adding the offset hours and then
+defining the timezone as "UTC" - thus the points are correctly located
+in time - but not in the local timezone.
+
+More recent ONSET software uses a valid time zone ("EDT") and for data
+processed with this software that timezone is recorded in the metadata.
+For these timezones `apply_timezone()` simply returns the date-times in
+`dt` with `tz` specified.
+
+For plotting convert the string to a date-time object without specifying
+the timezone and ignore the default (UTC) timezone and thus do NOT use
+this function.
+
+However, for some uses it's important that the times are fully and
+correctly defined. For example to looking up the correct sunrise and
+sunset times, or tide charts. For these uses it's not actually important
+that its in the local timezone and so UTC with the offset applied is
+fine, as long as the resulting object correctly identifies when the data
+was collected.

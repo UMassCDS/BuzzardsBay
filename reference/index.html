@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BuzzardsBay</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9032</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,8 +40,7 @@
 
       <div class="section-desc"><p>Run automated QC and support interactive QC on individual deployments</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -52,7 +51,8 @@
 
         </dt>
         <dd>Run automatic quality control on a deployment</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="make_deployment_report.html">make_deployment_report()</a></code>
 
@@ -63,8 +63,7 @@
 
       <div class="section-desc"><p>Stitch and report on all the deployments at a site</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -75,13 +74,15 @@
 
         </dt>
         <dd>Produce stats and a report for a site and year</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check_site.html">check_site()</a></code>
 
         </dt>
         <dd>Check to be sure that result files from <code>stitch_site</code> are up to date</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="stitch_site.html">stitch_site()</a></code>
 
@@ -92,8 +93,7 @@
 
       <div class="section-desc"><p>Secondary functions that are primarily used internally but might be useful to users</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -104,61 +104,71 @@
 
         </dt>
         <dd>Set and retrieve BuzzardsBay package options</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bb_plot.html">bb_plot()</a></code>
 
         </dt>
         <dd>Make static plot of logger data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="create_parameter_file.html">create_parameter_file()</a></code>
 
         </dt>
         <dd>Create a BuzzardsBay parameter file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="extract_baywatchers.html">extract_baywatchers()</a></code>
 
         </dt>
         <dd>Extract relevant Baywatchers data from ginormous Excel file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_tide_height.html">get_tide_height()</a></code>
 
         </dt>
         <dd>Get the tide height at a particular station corresponding to a series of date, times. Note due to limitations in the <strong>rtide</strong> package this only works for about a third of the Buzzards Bay NOAA tide stations.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="import_calibrated_data.html">import_calibrated_data()</a></code>
 
         </dt>
         <dd>Import Calibrated Deployment Data</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="is_daylight.html">is_daylight()</a></code>
 
         </dt>
         <dd>Determine if observation correspond to daylight hours or not</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="lookup_paths.html">lookup_paths()</a></code>
 
         </dt>
         <dd>Lookup paths for data and parameter files</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="plot_tide_sun.html">plot_tide_sun()</a></code>
 
         </dt>
         <dd>Plot tide height and daylight hours</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="tide_station_info.html">tide_station_info</a></code>
 
         </dt>
         <dd>Locations of NOAA tide stations within Buzzards Bay</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="setup_example_dir.html">setup_example_dir()</a></code>
 
@@ -169,8 +179,7 @@
 
       <div class="section-desc"><p>Internal functions, not intended for package users</p></div>
 
-
-    </div><div class="section level2">
+      <dl></dl></div><div class="section level2">
 
 
 
@@ -181,193 +190,232 @@
 
         </dt>
         <dd>Improved version of aggregate</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="apply_timezone.html">apply_timezone()</a></code>
 
         </dt>
         <dd>Apply at timezone to a date time string or object</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="bb_interactive_plot.html">bb_interactive_plot()</a></code>
 
         </dt>
         <dd>Interactive logger data plot</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="check_placement.html">check_placement()</a></code>
 
         </dt>
         <dd>Check SN, site, deployment date, and logger type against placements table</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="clean_csv_import_names.html">clean_csv_import_names()</a></code>
 
         </dt>
         <dd>Clean up column names for basic CSV input</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="combine_flags.html">combine_flags()</a></code>
 
         </dt>
         <dd>Combine the flags from individual "_Flags" columns into a single flags vector.</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="cut_path_items.html">cut_path_items()</a></code>
 
         </dt>
         <dd>cut items off the end of a path</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="daily_stats.html">daily_stats()</a></code>
 
         </dt>
         <dd>Produce daily stats for a site</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="format_csv_date.html">format_csv_date()</a></code>
 
         </dt>
         <dd>Format CSV date that might have been corrupted by excel</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="format_csv_date_time.html">format_csv_date_time()</a></code>
 
         </dt>
         <dd>Format CSV date time that might have been corrupted by excel</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="format_date_time.html">format_date_time()</a></code>
 
         </dt>
         <dd>Internal function to reformat the date time date from Details.txt</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_cond_details.html">get_cond_details()</a></code>
 
         </dt>
         <dd>Retrieve information from a conductivity calibration details file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_do_details.html">get_do_details()</a></code>
 
         </dt>
         <dd>Retrieve information stored a Dissolved Oxygen calibration details file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_expected_columns.html">get_expected_columns()</a></code>
 
         </dt>
         <dd>Look up expected column names and order</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_file_hashes.html">get_file_hashes()</a></code>
 
         </dt>
         <dd>Get md5 hashes for a vector of files</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="get_site_name.html">get_site_name()</a></code>
 
         </dt>
         <dd>Get the full site name for a site</dd>
-      </dl><dl><dt>
+
+        <dt>
+
+          <code><a href="import_tide_rider.html">import_tide_rider()</a></code>
+
+        </dt>
+        <dd>Import Tide Rider Data</dd>
+
+        <dt>
 
           <code><a href="longest_duration.html">longest_duration()</a></code>
 
         </dt>
         <dd>Give duration of the longest run of low DO for each day</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="lookup_devices.html">lookup_devices()</a></code>
 
         </dt>
         <dd>Lookup the DO and conductivity logger device models</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="lookup_site_paths.html">lookup_site_paths()</a></code>
 
         </dt>
         <dd>Look up paths for a specified site</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="make_facet_plot.html">make_facet_plot()</a></code>
 
         </dt>
         <dd>Produce a paired time series plot of DO and Temperature for the final report</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="make_plot.html">make_plot()</a></code>
 
         </dt>
         <dd>Produce a time series plot for the final report</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="make_plot_2var.html">make_plot_2var()</a></code>
 
         </dt>
         <dd>Produce a time series plot with two datasets for the final report</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="mean_daily_durations.html">mean_daily_durations()</a></code>
 
         </dt>
         <dd>Give mean duration of low-DO runs in hours</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="parse_hoboware_details.html">parse_hoboware_details()</a></code>
 
         </dt>
         <dd>Read HOBOware details file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="parse_mx801_details.html">parse_mx801_details()</a></code>
 
         </dt>
         <dd>Extract specific metadata items from the MX801 details sheet</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="read_and_format_placements.html">read_and_format_placements()</a></code>
 
         </dt>
         <dd>Read and format placements</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="read_deployment_yaml.html">read_deployment_yaml()</a></code>
 
         </dt>
         <dd>Read deployment metadata from a YAML file</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="read_mx801_data.html">read_mx801_data()</a></code>
 
         </dt>
         <dd>Import data from MX801 logger</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="replace_na_runs.html">replace_na_runs()</a></code>
 
         </dt>
         <dd>Replace short runs of NA in logical vector</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="rle2.html">rle2()</a></code>
 
         </dt>
         <dd>A drop-in replacement for <code><a href="https://rdrr.io/r/base/rle.html" class="external-link">base::rle()</a></code> that treats all NAs as identical</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="seasonal_stats.html">seasonal_stats()</a></code>
 
         </dt>
         <dd>Produce seasonal stats for a site</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="suppress_specific_warnings.html">suppress_specific_warnings()</a></code>
 
         </dt>
         <dd>Suppress some specific warnings</dd>
-      </dl><dl><dt>
+
+        <dt>
 
           <code><a href="update_bb_parameters.html">update_bb_parameters()</a></code>
 
@@ -383,7 +431,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>
