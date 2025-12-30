@@ -48,6 +48,7 @@ help for `import_calibrated_data()`.
 
 * Dropped some snapshot testing that wasn't consistent across platforms.
 * Updated test for `get_file_hashes()` to make it work across platforms.
+* Bumped to version 1
 
 # BuzzardsBay 0.1.0.9032
 2025-10-08
