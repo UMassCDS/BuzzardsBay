@@ -21,6 +21,7 @@ tide_rider_regex <- "[\\._]TR[\\._].*csv$"
 #' be WGS84 (EPSG:4326)}
 #' \item{Depth}{Logger depth in meters}
 #' \item{TR_Flags}{Tide Rider Flags.}
+#' @keywords internal
 import_tide_rider <- function(paths) {
 
   l <- list.files(paths$deployment_cal_dir, full.names = TRUE)
