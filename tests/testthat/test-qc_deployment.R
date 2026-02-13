@@ -1,4 +1,31 @@
-test_that("qc_deployment() works", {
+
+# Import type  0 -- CSV
+
+test_that("qc_deployment() works with import type 0 (simple CSV)", {
+  example_paths <- local_example_dir(site_filter = "SIM",
+                                     year_filter = 2025)
+  deployment_dir <- example_paths$deployment
+  paths <- lookup_paths(deployment_dir = deployment_dir)
+  expect_no_error(qc_deployment(deployment_dir))
+
+  d <- readr::read_csv(paths$deployment_auto_qc, n_max = 100)
+  col_spec <- spec(d)
+  col_spec$cols$Date_Time <- readr::col_character()
+  d2 <- readr::read_csv(paths$deployment_auto_qc, col_types = col_spec,
+                        n_max = 100)
+
+
+  expect_snapshot(as.data.frame(d2) |> head(2))
+
+  expect_equal(d2$Date_Time[1], "2025-01-02 14:50:02")
+
+})
+
+# Import type 1 -- U24 and U26
+
+test_that("qc_deployment() works with U24 and U26 loggers", {
+
+  # RB1 2023-06-09
 
   example_paths <- local_example_dir(year_filter = 2023)
   expect_no_error(l <- qc_deployment(example_paths$deployment))
@@ -110,13 +137,37 @@ test_that("qc_deployment() date time bug is fixed", {
   expect_no_error(qc_deployment(deployment))
 })
 
+test_that("qc_deployment()  MX801 date time bug is fixed", {
+  # Added 2025-10-07 for OB1 2025-07-31
+  example_paths <- local_example_dir(site_filter = "OB1", year_filter = 2025)
+  deployment <- example_paths$deployment
+  expect_no_error(qc_deployment(deployment))
+
+  paths <- lookup_paths(deployment_dir = deployment)
+
+  # Read in result with auto column detection
+  d <- readr::read_csv(paths$deployment_prelim_qc)
+
+  # Read it in again with character Date_Times
+  spec <- readr::spec(d)
+  spec$cols$Date_Time <- col_character()
+  d2 <- readr::read_csv(paths$deployment_prelim_qc, col_types = spec)
+
+  # Check that first midnight is correct
+  expect_equal(d2$Date_Time[50], "2025-07-25 00:00:00")
+
+  #  3 row snap shot that includes midnight
+  expect_snapshot(d2[49:51, ] |> as.data.frame())
+
+})
+
+
 test_that("qc_deployment() plot range with error codes in data", {
   # The sensors record -888.88 when there is an error we
   # don't want this to affect plotting.
   example_paths <- local_example_dir(site_filter = "OB9",
                                      deployment_filter = "2024-07-23")
 
-  paths <- lookup_paths(deployment_dir = example_paths$deployment)
   expect_no_error(qc_deployment(example_paths$deployment))
 
 })
@@ -129,13 +180,33 @@ test_that("qc_deployment() works with fixed salinity calibration", {
   expect_no_error(qc_deployment(example_paths$deployment))
 })
 
+test_that("man/qc_deployment() works with MX801 data and yaml file", {
 
-test_that("man/qc_deployment() works with MX801 data", {
+
+  example_paths <- local_example_dir(site_filter = "BBC",
+                                     year_filter = 2025,
+                                     deployment_filter = "2025-01-04",
+                                     subdir = "mx801")
+  deployment_dir <- example_paths$deployments[1]
+  paths <- lookup_paths(deployment_dir = deployment_dir)
+
+  expect_no_error(qc_deployment(deployment_dir))
+
+})
+
+
+# Import type 2  -- MX801
+
+
+test_that("qc_deployment() works with MX801 data", {
 
   #   * 2025-01-04 (2, 2) - two point calibration for both DO and Cond.
   #    calibration. I think this is the most common type.
   #   * 2025-01-06 (2, 3)- two points for DO and three points for Cond. cal.
   #   * 2025-01-27 (2, 1) - one point for DO and two points for Cond. cal.
+  # Note I'm no longer parsing the details sheet which is what most of this
+  # test is about so am skipping a lot of it.  Leaving code here in case we
+  # ever decide to revert to parsing the details sheet.
 
 
   example_paths <- local_example_dir(site_filter = "BBC",
@@ -152,15 +223,12 @@ test_that("man/qc_deployment() works with MX801 data", {
   expect_no_error(res1 <- qc_deployment(paths1$deployment_dir))
   expect_true("Depth" %in% names(res1$d))
 
-  #n do
-  expect_equal(res1$md$do_calibration$n_points, n_do)
-  expect_length(res1$md$do_calibration$pct_saturation, n_do)
-  expect_length(res1$md$do_calibration$measured_do, n_do)
-
-  # n Cond
-  expect_length(res1$md$cond_calibration$spec_cond_25c, n_cond)
-  expect_length(res1$md$cond_calibration$measured_cond, n_cond)
-  expect_length(res1$md$cond_calibration$temperature, n_cond)
+  skip(paste0("Legacy tests to verify parsing of MX801 details",
+              "- always skipped"))
+  # The difference among these files was the details tab which needed to handle
+  # variations in format depending on how many calibration points were used.
+  # We have since stopped parsing the deails and instead are using a yaml file
+  # so users can set the window.
 
   #----------------------------------------------------------------------------#
   # File with 2 point DO and 3 point Conductivity calibration
@@ -171,15 +239,6 @@ test_that("man/qc_deployment() works with MX801 data", {
   expect_no_error(res2 <- qc_deployment(paths2$deployment_dir))
   expect_true("Depth" %in% names(res2$d))
 
-  #n do
-  expect_equal(res2$md$do_calibration$n_points, n_do)
-  expect_length(res2$md$do_calibration$pct_saturation, n_do)
-  expect_length(res2$md$do_calibration$measured_do, n_do)
-
-  # n Cond
-  expect_length(res2$md$cond_calibration$spec_cond_25c, n_cond)
-  expect_length(res2$md$cond_calibration$measured_cond, n_cond)
-  expect_length(res2$md$cond_calibration$temperature, n_cond)
 
   #----------------------------------------------------------------------------#
   # File with 1 point DO and 2 point Conductivity calibration
@@ -192,16 +251,6 @@ test_that("man/qc_deployment() works with MX801 data", {
 
   expect_true("Depth" %in% names(res3$d))
 
-  #n do
-  expect_equal(res3$md$do_calibration$n_points, n_do)
-  expect_length(res3$md$do_calibration$pct_saturation, n_do)
-  expect_length(res3$md$do_calibration$measured_do, n_do)
-
-  # n Cond
-  expect_length(res3$md$cond_calibration$spec_cond_25c, n_cond)
-  expect_length(res3$md$cond_calibration$measured_cond, n_cond)
-  expect_length(res3$md$cond_calibration$temperature, n_cond)
-
   #----------------------------------------------------------------------------#
   #  Input file with different internal line endings
   #----------------------------------------------------------------------------#
@@ -213,7 +262,11 @@ test_that("man/qc_deployment() works with MX801 data", {
 })
 
 
-test_that("man/qc_deployment() checks depth range", {
+
+
+# Test specific flags -- uses import type 0
+
+test_that("man/qc_deployment() checks specific flags", {
 
   # There's a lot of overhead here to make a test file
   # I'm setting up to use the simple csv import on  the example data
@@ -232,14 +285,22 @@ test_that("man/qc_deployment() checks depth range", {
 
   calibrated_file <- list.files(paths$deployment_cal_dir,
                                 pattern = "xlsx", full.names = TRUE)
+  md_file <-  list.files(paths$deployment_cal_dir,
+                         pattern = "yml$", full.names = TRUE)
   expect_length(calibrated_file, 1)
 
+
+  # REformat metadata from mx801 to CSV import style
+  md <- read_deployment_yaml(md_file, mx801 = TRUE)
+  file.remove(md_file)
+  yaml::write_yaml(md, md_file)
+
+
+  # Reformat data -- adding issues
   d <- readxl::read_excel(calibrated_file, sheet = 1)
-  md <- parse_mx801_details(calibrated_file)
+
   sites <- readr::read_csv(paths$sites, show_col_types = FALSE)
-
   max_depth <- bb_options("max_depth")
-
   depth_col <- grep("Water Level", names(d), value = TRUE)
 
   # Add fake too deep
@@ -279,15 +340,12 @@ test_that("man/qc_deployment() checks depth range", {
     sites$Min_QC_Temp[sites$site == site] - 0.5 # Flag will be "TCsl"
 
 
-  csv <- file.path(paths$deployment_cal_dir, "MX801_calibrated.csv")
-  yaml <- file.path(paths$deployment_cal_dir, "MX801_metadata.yml")
-
+  original_dates <- d$`Date-Time (EST)` |> as.character()
 
   # Write new example data in the CSV / YAML formats
+  csv <- file.path(paths$deployment_cal_dir, "MX801_calibrated.csv")
   readr::write_csv(d, csv)
-  yaml::write_yaml(md, yaml)
-
-  file.remove(calibrated_file) #  delete excel file
+  file.remove(calibrated_file) #  delete old excel file
 
   # Update placements so that it will be read as csv not xlsx
   placements <- readr::read_csv(paths$placements, show_col_types = FALSE)
@@ -299,10 +357,21 @@ test_that("man/qc_deployment() checks depth range", {
   # DONE SETUP
 
 
+
   # TEST
-  res <- qc_deployment(deployment_dir)
+  expect_warning(res <- qc_deployment(deployment_dir),
+                 regexp = "lower than the warning threshold")
   d <- res$d
   md <- res$md
+
+
+
+  # update flags to account for trimmed dates
+  retained <- original_dates %in% d$Date_Time
+  for (flag in c("too_deep", "not_wet", "review", "immediate_rejection")){
+    assign(flag, value = get(flag)[retained])
+  }
+
 
   expect_true(all(d$Depth_QC[too_deep] == 7))
   expect_true(all(grepl("Wh", d$Flags[too_deep])))
@@ -325,15 +394,4 @@ test_that("man/qc_deployment() checks depth range", {
 
   expect_snapshot(d[sel_rows, sel_cols])
 
-})
-
-
-
-
-test_that("qc_deployment() works with import type 0 (simple CSV)", {
-  example_paths <- local_example_dir(site_filter = "SIM",
-                                     year_filter = 2025)
-  deployment_dir <- example_paths$deployment
-  paths <- lookup_paths(deployment_dir = deployment_dir)
-  expect_no_error(qc_deployment(deployment_dir))
 })

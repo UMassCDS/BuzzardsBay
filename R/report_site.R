@@ -6,9 +6,9 @@
 #' 1. `daily_stats_<site>_<year>.csv` - a file with a row for each day of the season with several summary statistics
 #' 2. `report_<site>_<year>.pdf` - a PDF report with a table of seasonal stats and a number of graphs
 #'
-#' `stitch_site` must be run first to create the necessary data. If `stitch_site` was run at
-#' some point in the past, it is highly advisable to run `check_site` to make sure deployment
-#' files haven't changed since the last `stitch_site` run.
+#' [stitch_site] must be run first to create the necessary data. If  [stitch_site] was run at
+#' some point in the past, it is highly advisable to run [check_site] to make sure deployment
+#' files haven't changed since the last [stitch_site] run.
 #'
 #' Including plots based on Baywatchers data requires a file within the site `baywatchers/<site>.csv`. This file must
 #' include the date and time (a column that includes `Date_Time` in the name) and dissolved oxygen in mg/L (DO in the
@@ -20,7 +20,7 @@
 #' will affect the seasonal statistics table in the report and CSV file, but not graphs.
 #'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`)
-#' @param check If TRUE, runs `check_site` to make sure source files haven't been changed
+#' @param check If TRUE, runs [check_site] to make sure source files haven't been changed
 #' @param baywatchers If TRUE, do 2 additional comparison plots with Baywatchers data
 #' @param salinity If TRUE, include an additional time series plot of salinity
 #' @param clip Optionally supply a pair of dates (in `yyyy-mm-dd` format) to clip seasonal statistics
@@ -124,6 +124,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    template <- system.file('rmd/seasonal_report.rmd', package = 'BuzzardsBay', mustWork = TRUE)
    report_file <- file.path(site_dir, 'combined', paste0('report_', site, '_', year, '.pdf'))
    abs_report_file <- file.path(normalizePath(file.path(site_dir, 'combined')), paste0('report_', site, '_', year, '.pdf'))
+   temp_report_file <- file.path(tempdir(), basename(abs_report_file))
+
 
    long_site <- get_site_name(site_dir)
    title <- paste0(long_site, ' (', site, ') in ', year)
@@ -137,9 +139,13 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
-
-   rmarkdown::render(input = template, output_file = abs_report_file,                     # write PDF (have to use absolute path here 😡)
+   # Writing to local temp file and then copying to final location to avoid
+   # weird OneDrive issues  see #24
+   rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
                      params = pars, quiet = TRUE)
+
+   file.copy(temp_report_file, abs_report_file)
+   file.remove(temp_report_file)
 
    msg('Seasonal report written to ', report_file)
 

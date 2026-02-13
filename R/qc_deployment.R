@@ -2,25 +2,25 @@
 #' Run automatic quality control on a deployment
 #'
 #' `qc_deployment()` will:
-#' 1. Read the calibrated dissolved oxygen and conductivity files created by
-#' HOBOware.
-#' 2. Read and parse the associated Details files into nested lists.
-#' 3. Reformat and merge the data files.
+#' 1. Read  calibrated dissolved oxygen and conductivity data from one or more
+#' files.  See import types below for format information.
+#' 2. Read metadata from a YAML or text file.
+#' 3. Combine and reformat the data.
 #' 4. Add automatic flags, and create columns for manual QC
 #' 5. Write the data and metadata.
 #' 6. If `report = TRUE` it will call [make_deployment_report()] to make
 #' and interactive HTML report with plots for QAQC.
 #'
-#' `qc_deployment()` assumes the files are arranged in a specific
-#' [file structure](https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU/edit#heading=h.s6vs4d7vj0cn).
 #'
-#' @note
 #' `qc_deployment()` calls [import_calibrated_data()] which currently supports
-#' three completely different import functions.  See [import_calibrated_data()]
-#' for documentation on the data formats they each expect.
+#' three completely different import functions.
 #'
 #' In all cases input files are looked for within a `Calibration` sub directory
 #' to the deployment directory (`dir`).
+#'
+#' ```{r child = "man/rmd/import_types.md"}
+#' ```
+#'
 #'
 #' @param dir The path to a deployment directory to run QC on.  It should
 #' have a `Calibration/` directory with calibrated DO and conductivity data
@@ -40,7 +40,6 @@
 #' \dontrun{
 #'   paths <- setup_example_dir()
 #'   a <- qc_deployment(paths$deployment)
-#'
 #' }
 #'
 qc_deployment <- function(dir, report = TRUE) {
@@ -161,7 +160,12 @@ qc_deployment <- function(dir, report = TRUE) {
   # Record calibrated pct
   md$pct_calibrated <- round(sum(sv) / length(sv)*100, 4)
   min_calibrated_pct <- 95
-  if(md$pct_calibrated < 95) {
+
+
+  pct_check_types <- c(0, 1) # don't check with 2 (MX801) bc file is often
+                                 # much bigger than deployed window
+
+  if(md$import_type %in% pct_check_types && md$pct_calibrated < 95) {
     warning(md$pct_calibrated, "% of the data is calibrated. ",
             " This is lower than the warning threshold of ", min_calibrated_pct, ".")
   }

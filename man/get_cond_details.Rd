@@ -25,7 +25,6 @@ calibration.
                      package = "BuzzardsBay")
  do_cal  <- get_cond_details(file)
  cat(yaml::as.yaml(do_cal))
-
 }
 \seealso{
 \itemize{
@@ -35,3 +34,4 @@ a HOBOware details file generated while calibrating dissolved oxygen.
 of the information in a HOBOware details file.
 }
 }
+\keyword{internal}

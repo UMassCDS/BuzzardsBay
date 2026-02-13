@@ -20,6 +20,9 @@ result file
 \item \code{final_core} columns in the core result file
 \item \code{final_sensors} columns representing sensors WPP result file; may be set
 to "DR"
+\item \code{tide_rider} Tide Rider csv columns after
+dropping parenthesis and their contents, e.g. "\code{(m)}",
+and trimming leading and trailing spaces.
 when rejected in QC
 }}
 

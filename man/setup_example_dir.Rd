@@ -48,6 +48,9 @@ package and can be found in the source within \verb{inst/extdata/}.
 }
 \section{Example data sets}{
 
+
+Below is a partial list for the full list of example datasets see
+\code{vignette("example-data", package = "BuzzardsBay")}
 \subsection{2023}{
 \itemize{
 \item \strong{RB1 2023-06-09} The original example data used to developing the

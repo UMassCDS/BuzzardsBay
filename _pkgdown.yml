@@ -1,0 +1,44 @@
+url: https://umasscds.github.io/BuzzardsBay/
+template:
+  bootstrap: 5
+home:
+  links:
+  - text: COMBB
+    href: https://combb.woodwellclimate.org/
+  - text: Center for Data Science
+    href: https://ds.cs.umass.edu/
+  - text: File Structure Documentation
+    href: https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU
+  - text: QC Data columns, error codes, and flags.
+    href: https://docs.google.com/spreadsheets/d/1bYxi0nbgDaUsKEyLoj_ry-1Zc-A4MNDfS_J_zH7HiJI
+reference:
+- title: Quality Control Module
+  desc:  Run automated QC and support interactive QC on individual deployments
+- contents:
+  - qc_deployment
+  - make_deployment_report
+- title: Analysis Module
+  desc: Stitch and report on all the deployments at a site
+- contents:
+  - report_site
+  - check_site
+  - stitch_site
+- title: Secondary functions
+  desc:  Secondary functions that are primarily used internally but might be useful to users
+- contents:
+  - bb_options
+  - bb_plot
+  - create_parameter_file
+  - extract_baywatchers
+  - get_tide_height
+  - import_calibrated_data
+  - is_daylight
+  - lookup_paths
+  - plot_tide_sun
+  - tide_station_info
+  - setup_example_dir
+- title: Internal functions
+  desc:     Internal functions, not intended for package users
+- contents:
+  - has_keyword("internal")
+

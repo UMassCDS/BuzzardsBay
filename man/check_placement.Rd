@@ -27,3 +27,4 @@ This internal function verifies that the logger with the given SN was
 placed at the expected, site, at the deployment date and that it is of the
 expected type.
 }
+\keyword{internal}

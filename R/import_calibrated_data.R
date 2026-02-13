@@ -1,5 +1,5 @@
 # nolint start: line_length_linter
-#' Import Calibrated Data
+#' Import Calibrated Deployment Data
 #'
 #' This function imports calibrated data for a single deployment from its
 #'  `Calibrated` sub directory.
@@ -10,88 +10,9 @@
 #' and have the naming structure `import_calibrated_data_[x]`
 #' where `[x]` is an integer.
 #'
-#' # Import types
 #'
-#' ## Import Type 0 - CSV
-#'  This simple CSV import is a fallback in case updates to HOBOware or
-#'  the loggers themselves break the targeted imports.
-#'  It expects a CSV file and a YAML (`.yml`) file.
-#'
-#'  To use this import:
-#'   1. Make sure in `import_types.csv` there's a default line:
-#'   `default,0` This means that if an import type isn't identified for a model
-#'   listed in a placement that the CSV import will be used.
-#'  2. In `placments.csv` if you want to use the CSV import use a model name
-#'  that is NOT in `import_types.csv` so the default CSV import is used.
-#'   I recommend using the model name with `-CSV` appended; e.g.
-#'    instead of `MX801` use `MX801-CSV`.
-#' 3. In the deployment's `Calibrated` directory create an appropriate CSV and
-#' YAML file as described below.
-#'
-#' ### CSV file
-#' In the CSV file the columns are resolved by name not order and the import
-#' will attempt to resolve several different column naming conventions. Any
-#' of the following should work:
-#'
-#'   * The canonical column names used by this package:  "Date_Time", "Raw_DO",
-#' "Temp_DOLog", "DO", "DO_Pct_Sat", "High_Range", "Temp_CondLog",
-#' "Spec_Cond", "Salinity", "Depth", "Latitude", and "Longitude". The last
-#' three are optional, the rest are required.
-#' * Columns names from the MX801 logger. For example by saving the first sheet
-#' as a CSV.
-#' * Column names from the U24 and U26 loggers. However, when combining data
-#' from these two loggers into a single CSV the two temperature columns will
-#' have to be manually renamed to "Temp_CondLog", and "Temp_DOLog"
-#' as they are otherwise indistinguishable.
-#'
-#' If using other column names please verify carefully
-#  that the various DO, Conductivity, and Salinity columns
-#  are properly identified.
-#  For example make sure the resulting "DO" column has the calibrated values
-#  and the "Raw_DO" column has the un-calibrated values.
-#'
-#' ### YAML file
-#'
-#' In the YAML file the following items are required:
-#'
-#'   * **calibration_start:** The date and time of the start of the deployment.
-#' For field calibrated sensors (U24, U26) this is also the calibration time.
-#' For factory calibrated sensors (MX801) this is NOT the calibration time.
-#' * **calibration_end:** As in the above, the end of the deployment and/or
-#' calibrated window.
-#' * **timezone:** The timezone as reported by the logger and/or calibration
-#' software.
-#' The output from HOBOware uses a GMT offset like "GMT-04:00",
-#' which is not a broadly supported timezone but is accepted here.
-#' The MX801 uses a timezone code "EST" which is also accepted here.
-#' * **do_device:** Information on the DO sensor or logger with items:
-#'   * **product:** The dissolved oxygen sensor e.g.
-#'  "HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
-#' * **serial_number:** The device serial number.
-#' * **cond_device:** List with information on the conductivity sensor with
-#'   items:
-#'   * **product:** The conductivity sensor e.g. "HOBO U24-002 Conductivity"
-#'   * **serial_number:** Conductivity sensor serial number
-#' Additional items that appear in the
-#' [metadata documentation](https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?tab=t.0)
-#' are permitted and will be retained. Items that do not appear in that document
-#' will be ignored.
-#'
-#' ## Import Type 1 - U24, U26
-#  This is the original input type that used calibrated data exported from
-#' HOBOware derived from U24 and U26 loggers.
-#' Import type 1 expects to find two CSV files and two `details.txt`
-#' files in the calibration directory. The Dissolved Oxygen files should have
-#' `"Do_"` somewhere in the names while the Conductivity files should have
-#' either `"Cond_"` or `"Sal_` in the names.
-#'
-#' ## Import Type 2 - MX801
-#' This is the import type for the MX801 logger, it expects a single `.xlxs`
-#' file  with combined data from both loggers and on the first sheet
-#' and the details (metadata) on the third sheet.
-#' Note there should still be two lines for each placement  in `placements.csv`
-#' one each for `"DO"` and `"Cond"` both of which should indicate "MX801" as the
-#' model and have the same Serial Number.
+#' ```{r child = "man/rmd/import_types.md"}
+#' ```
 #'
 #' @param paths Path list as returned from [lookup_paths()].  Only the
 #' `import_types` component is used here.
@@ -119,6 +40,10 @@
 #' \item{Salinity}{Salinity as recorded by the Conductivity logger in ppt
 #' (parts per thousand), equivalent to PSU (Practical Salinity Units) which
 #' is the units assigned by the newer loggers}
+#' The second is `md`, a list of metadata information.
+#' Details on the list contents are available
+#' [here](https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?usp=sharing).
+#'
 #' @export
 # nolint end
 import_calibrated_data <- function(paths, devices) {
@@ -167,7 +92,7 @@ import_calibrated_data <- function(paths, devices) {
          paste(miss, collapse = "\", \""))
   }
 
-  # Check for expected top level metdata items and put in proper order
+  # Check for expected top level metadata items and put in proper order
   md_order <- c("site",
                 "deployment",
                 "deployment_date",
@@ -185,11 +110,49 @@ import_calibrated_data <- function(paths, devices) {
                 "do_device",
                 "cond_calibration",
                 "cond_deployment",
-                "cond_device")
+                "cond_device",
+                "import_type")
 
+  md$import_type <- import_type
   stopifnot(all(md_order %in% names(md)))
-
   md <- md[md_order]
+
+  # Tide Rider Import
+  # If a tide rider was deployed at the "site" as indicated in
+  # site, placements, and devices - see lookup_devices()
+  if("tr_model" %in% names(models) && !is.na(models$tr_model)) {
+
+     tr <- import_tide_rider(paths)
+
+     # If already a depth column (From MX801) drop it here and
+     # use tide rider depth instead
+     if("Depth" %in% names(d))
+       d$Depth <- NULL
+
+     tr_pct <- sum(d$Date_Time %in% tr$Date_Time) / nrow(d) * 100
+     if(tr_pct < 95)
+       warning("Only ", round(tr_pct, 1), "% of the logger data is covered by the tide rider data")
+
+     if(tr_pct == 0)
+       stop("None of the tide rider date times match the logger date times. This is either because they don't cover the same range of times or because the times are slightly offset and so don't match.")
+
+     # Add columns
+     d <- dplyr::left_join(d, tr[, c("Date_Time", "Latitude", "Longitude", "Depth")], dplyr::join_by("Date_Time"))
+
+     # Check for missing locations
+     miss <- is.na(d$Longitude) | is.na(d$Latitude) | is.na(d$Depth)
+     # Number of times that there is data where the preceeding value doesn't
+     # have data
+     n_starts <- sum( c(TRUE, miss) &
+            !c(miss, TRUE), na.rm = TRUE)
+     n_gaps <- n_starts - 1
+     if(n_gaps != 0) {
+       warning("There ",
+               ifelse(n_gaps == 1, "is a gap", paste0("are ", n_gaps, " gaps")),
+               " in the Tide Rider location information.")
+     }
+  }
+
 
   l <- list(d = d, md = md)
 

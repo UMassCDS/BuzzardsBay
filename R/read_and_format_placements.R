@@ -1,7 +1,6 @@
 
 #' Read and format placements
 #'
-#'
 #' @param placement_path path to placements file
 #'
 #' @return placement data_frame
@@ -10,6 +9,7 @@
 #' * dates are formatted as dates while handling both the `yyyy-mm-dd` format
 #'  and the format that excel converts them to.
 #' * `type` is forced to lower case.
+#' @keywords internal
 read_and_format_placements <- function(placement_path) {
   placements <- readr::read_csv(placement_path,
                                 col_types = readr::cols(),

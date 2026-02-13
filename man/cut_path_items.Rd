@@ -23,3 +23,4 @@ cut items off the end of a path
   base_dir <- cut_path_items(deployment_dir, 3)
 }
 }
+\keyword{internal}

@@ -1,6 +1,6 @@
 #' Check to be sure that result files from `stitch_site` are up to date
 #'
-#' Check that source files for a site and year haven't changed since `stitch_site` was used
+#' Check that source files for a site and year haven't changed since [stitch_site] was used
 #' to create result files. Uses `hash.txt`, created by `check_site`. Separately reports on
 #' missing hash file, missing source or result files, and changed source or result files.
 #'
@@ -8,7 +8,7 @@
 #' function (currently, just report_site) can use the silent return value to throw appropriate errors.
 #'
 #' @param site_dir Full path to site data (i.e., `<base>/<year>/<site>`). The path must include
-#' QC'd results and result files from `stitch_site`.
+#' QC'd results and result files from [stitch_site].
 #' @param check_report If TRUE, check to see if the report is up to date. Don't check when calling from
 #' report_site, of course.
 #' @param check_baywatchers IF TRUE, check to see if the extracted Baywatchers data are up to date with

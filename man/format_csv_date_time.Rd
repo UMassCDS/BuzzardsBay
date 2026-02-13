@@ -2,16 +2,22 @@
 % Please edit documentation in R/format_csv_date.R
 \name{format_csv_date_time}
 \alias{format_csv_date_time}
-\title{Format CSV date that might have been corrupted by excel}
+\title{Format CSV date time that might have been corrupted by excel}
 \usage{
 format_csv_date_time(x, format = "datetime")
 }
 \arguments{
 \item{x}{Date times as character month/day/year h:m or year-month-day h:m
-can be mixed in one vector.  h:m:s is also acceptable in place of h:m}
+can be mixed in one vector.  h:m:s is also acceptable in place of h:m
+Note if the time is missing it will be interpreted as midnight (00:00:00)
+thus month/day/year and year-month-day without times are also acceptable.}
+
+\item{format}{Either \code{"datetime"} to return a datetime object or
+"\code{character}" to return as characters standardized on year-month-day h:m:s.}
 }
 \value{
-Dates as year-month-day (character)
+Dates times as year-month-day h:m:s (character) or POSIXct depending
+on the  \code{format}.
 }
 \description{
 Excel with US localization will automatically convert dates from
@@ -19,10 +25,15 @@ year-month-day to month/day/year.  Thus whenever a date is read from a
 CSV that might have been edited with Excel I'm going to check for slashes
 and assume month/day/year if they are present.
 }
+\details{
+A separate issue - sometimes date-times are missing the time at midnight
+thus instead of "2025-05-28 00:00:00" it might be read as "2025-05-28".
+}
 \examples{
 # example code
 \dontrun{
-x <- c(NA, "2024-05-15", "2024-05-16", "5/16/2024")
+x <- c(NA, "2024-05-15 11:50:00", "2024-05-16", "5/17/2024 00:10")
+format_csv_date_time(x)
 }
 }
 \keyword{internal}

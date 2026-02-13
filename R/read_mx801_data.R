@@ -70,7 +70,7 @@ read_mx801_data <- function(file) {
 
   d <- d[, expected_cols]
 
-  d$Date_Time <- as.character(d$Date_Time)
+  d$Date_Time <- format_csv_date_time(d$Date_Time, format = "character")
 
   return(d)
 

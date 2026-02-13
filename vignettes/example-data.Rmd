@@ -1,0 +1,79 @@
+---
+title: "Setting up and using example data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+Example data files are included with the **BuzzardsBay** package 
+to facilitate code development and testing.
+You can also use this example data to play with the package functions
+independent of a pre-existing or important data archive.
+
+## Setup
+Load the package:
+
+```{r setup}
+library(BuzzardsBay)
+```
+
+## All the example files
+
+To put all the example data in the package in one large example data store
+with many files:
+```{r example dir}
+paths <- setup_example_dir()
+```
+by default it will be set up in a path created by `tempdir()` but you can
+also use the `parent_dir` argument to specify where you want it created.
+
+## A subset of example files
+
+You can  use combinations of the filter arguments to specify a subset
+of the data you want to include in the example data store. This will be 
+quicker and use less disk space than including all the files.
+
+For example to get a single deployment:
+
+```{r, eval = FALSE}
+paths <- setup_example_dir(site_filter =  "RB1",
+                           deployment_filter = "2023-06-09")
+print(paths$deployments)
+qc_deployment(paths$deployments[1])
+```
+
+Or to get all the deployments for site WH1X:
+
+```{r, eval = FALSE}
+paths <- setup_example_dir(site_filter =  "WH1X", delete_old = TRUE)
+print(paths$deployments)
+```
+
+`delete_old = TRUE` was added to clear out the prior example data and is useful
+if you want to reset the example - perhaps clearing out previously run reports
+and QC files.
+
+--------------------------------------------------------------------------------
+
+# Available example datasets 
+
+These are grouped into examples for the analysis module and the qc module. The
+formats of the two sets of files is different so each example deployment will
+only work for one of the two sets of functions.
+
+```{r echo=FALSE, results='asis'}
+# This inserts the README in extdtata into the vignette output
+# (Describing all the datasets)
+cat(readLines(system.file(package = "BuzzardsBay", "extdata/README.md"))[-1],
+    sep = "\n")
+```

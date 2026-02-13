@@ -62,3 +62,4 @@ included with the package for example usage, found by running:
 \code{bb_interactive_plot()} uses the \strong{plotly} package to make an interactive
 plot of data from a Buzzard's Bay logger deployment.
 }
+\keyword{internal}

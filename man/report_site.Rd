@@ -15,7 +15,7 @@ report_site(
 \arguments{
 \item{site_dir}{Full path to site data (i.e., \verb{<base>/<year>/<site>})}
 
-\item{check}{If TRUE, runs \code{check_site} to make sure source files haven't been changed}
+\item{check}{If TRUE, runs \link{check_site} to make sure source files haven't been changed}
 
 \item{baywatchers}{If TRUE, do 2 additional comparison plots with Baywatchers data}
 
@@ -33,9 +33,9 @@ Two files are written:
 \item \verb{report_<site>_<year>.pdf} - a PDF report with a table of seasonal stats and a number of graphs
 }
 
-\code{stitch_site} must be run first to create the necessary data. If \code{stitch_site} was run at
-some point in the past, it is highly advisable to run \code{check_site} to make sure deployment
-files haven't changed since the last \code{stitch_site} run.
+\link{stitch_site} must be run first to create the necessary data. If  \link{stitch_site} was run at
+some point in the past, it is highly advisable to run \link{check_site} to make sure deployment
+files haven't changed since the last \link{stitch_site} run.
 
 Including plots based on Baywatchers data requires a file within the site \verb{baywatchers/<site>.csv}. This file must
 include the date and time (a column that includes \code{Date_Time} in the name) and dissolved oxygen in mg/L (DO in the

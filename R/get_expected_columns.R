@@ -26,6 +26,9 @@
 #' * `final_core` columns in the core result file
 #' * `final_sensors` columns representing sensors WPP result file; may be set
 #'    to "DR"
+#' * `tide_rider` Tide Rider csv columns after
+#'     dropping parenthesis and their contents, e.g. "`(m)`",
+#'     and trimming leading and trailing spaces.
 #' when rejected in QC
 #' @param existing A vector of existing column names. This is used to determine
 #' which of the optional column names are present
@@ -49,8 +52,6 @@ get_expected_columns <- function(type, existing = character(0)) {
   # Expected cols includes a few that are optional
   expected <-  expected_column_names[[type]]
   optional <-  expected_column_names[[paste0("optional_", type)]]
-
-
 
   # Drop the missing optional cols from expected cols
   missing_optional <- optional[!optional %in% existing]

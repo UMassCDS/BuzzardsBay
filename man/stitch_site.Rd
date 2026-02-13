@@ -19,7 +19,7 @@ stitch_site(site_dir, max_gap = 1, report = FALSE, baywatchers = TRUE)
 Merges all QC'd deployments for the specified site and year and writes result files. Missing
 dates and times are interpolated, with a warning for gaps that are suspiciously large. Data
 that are out range for their sensor are flagged. Writes three versions of the data file for the
-complete season, and hash files for use by \code{check_site}.
+complete season, and hash files for use by \link{check_site}.
 }
 \details{
 Three versions of the data file are written to \verb{<site_dir>/combined/}:
@@ -29,7 +29,7 @@ Three versions of the data file are written to \verb{<site_dir>/combined/}:
 \item \verb{core_<site>_<year>} - just the good stuff. This is the file used for producing summaries and reports.
 }
 
-An additional file is written for internal use by \code{check_site}:
+An additional file is written for internal use by \link{check_site}:
 \enumerate{
 \item \code{hash.txt} - a tab-delimited file lists paths to deployment files and md5 hashes.
 }

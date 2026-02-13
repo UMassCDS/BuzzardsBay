@@ -1,15 +1,137 @@
-# BuzzardsBay 0.1.0.9030
+# BuzzardsBay 1.0.0.9002
 
 Minor changes to reporting:
 - Fix bug that misreported proportion of DO under 3 mg/L
 - in daily_stats.csv, change precision of Min_Temp and Max_Temp to 2 digits
 - in WPP<site><year>.csv, change precision of Saility to 2 digits, and High_Range and Spec_Cond to whole numbers
 
+# BuzzardsBay 1.0.0.9001
+2025-12-30
+
+## Tide Rider Import
+
+ Tide Riders are mobile sensor platforms that actively control depth in the
+ water column and move laterally with the tides.
+
+ Tide Rider data can be included with any of the standard imports 
+ (Basic CSV, U24/U26 CSV, and MX801 Excel files).
+ Although currently we only anticipate Tide Riders being
+ deployed with the U24 and U26 loggers.
+
+ Each Tide Rider should be treated as a independent "Site" with a unique
+ site ID that should be in the sites and placements tables. Tide riders
+ do not need to be in the import_types table and the serial number
+ for tide riders is not required in nor used from the placements table.
+
+ Tide rider data should be included along with the DO and Conductivity
+ data in the calibrated directory for the "site".  For example
+ "2025/TRS102/2025-08-14/Calibrated" would hold both the logger and tide rider
+ data for the TRS102 tide rider ("site") for the deployment ending on
+ 2025-08-14. The Tide Rider data should be in a CSV file with "TR" in the name
+ isolated from other characters with "_" and/or "." e.g. "data_TR.csv";
+ beginning the file with "TR" does not count.  
+ The Tide Rider data file should not have "Cond_","DO_", or "Sal_" in the name 
+ as those indicate the calibrated CSV logger files.
+
+ Tide Rider standard column names and accepted alternate names that will be 
+ renamed on import to the standard name. 
+ 
+ Names used in the original example file are in bold.
+
+| Standard Name | Alternates allowed in input |
+|-------------:|----------------------------------:|
+| Date_Time | **Time** |
+ | **Latitude** | (none)  |
+ | **Longitude** | (none) |
+| Depth  | Logger Depth, **Logger Depth (m)** | 
+ | TR_Flags | **Flags** |
+
+ The "TR_Flags" column is checked for but not used.
+
+This information is also available in the Tide Rider section of the 
+help for `import_calibrated_data()`. 
+
+## Other changes
+
+* Dropped some snapshot testing that wasn't consistent across platforms.
+* Updated test for `get_file_hashes()` to make it work across platforms.
+* Bumped to version 1
+
+# BuzzardsBay 0.1.0.9032
+2025-10-08
+
+* `make_deployment_report()` - called by `qc_deployment()` - and 
+`report_site()` both now create html output in a temporary location and then 
+copy it to the final location.  The hope is that this will fix the bug where
+sometimes the reports disappear from the OneDrive shortly after being created.
+See issue #24.
+
+* Fixed bugs in the CSV and MX801 import that caused the time to be dropped 
+from date-time strings at midnight. (#25)
+
+* `stitch_site()` now assumes that if a date-time row is missing the time that
+it is midnight and adds the "00:00:00" back in. (#25)
+
+I haven't fully tested these as I can't replicate the disappearing 
+files in my test environment and it was logistically a hassle to add the 
+data necessary to test `stitch_site()`.  Please report any ongoing issues.
+
+# BuzzardsBay 0.1.0.9031
+
+* Added import_type to the metadata created by `qc_deployment()`
+
+* For MX801 imports (type  2) dropped warning when less than 95% of the data is
+  in the calibrated window. 
+  With these loggers the data typically extends well beyond the deployed
+  window, so the warning was always triggered and not informative. 
+
+* Added example-data vignette.
+
+# BuzzardsBay 0.1.0.9030
+
+### Change to **MX801** import.  
+
+  Switch to using a YAML file (`.yml`) when importing metadata from MX801, 
+  ignoring the details sheet in the excel file that was previously
+  used.
+  
+  This change was  made to: 
+  (1) allow users to specify the deployment window in the YAML file
+  (use `calibration_start` and `calibration_end`); and 
+  (2) make the import less susceptible to possible future changes in the 
+  HOBOware details sheet.  This part of the import was complicated and 
+  likely to break with minor changes to the format.
+
+  The new `details.yml` file in the calibrated directory will have to be 
+  created by users and should have this format:
+   
+  ```
+  calibration_start: 2025-01-02 15:50:02
+  calibration_end: 2025-01-04 13:00:02
+  timezone: EST
+  serial_number: 22145899
+  ```
+  The path to an example file can be retrieved with:
+    `system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")`
+  
+### Change to **CSV** import. 
+
+Previously the CSV export expected the 
+`calibration_start` and `calibration_end` times in the YAML file to match the
+ date and time of the first and last record in the file.
+ Now, it does not need to match and any rows before `calibration_start` 
+ or after `calibation_end` **will be dropped**.
+ 
+### Other
+
+Document the three import types and file formats in `qc_deployment()`
+
 # BuzzardsBay 0.1.0.9029
 
 Implement changes to analysis module requested in April
 
-Changes to `stitch_site`:
+Changes to `stitch_site()`:
+
 - Fail more politely when run on a site with no QC data.
 - Quote strings when writing Archive and WPP files, as comments sometimes include
 commas, which are a no-no in CSVs. Quoting makes these files robust. There's no need
@@ -20,9 +142,11 @@ to quote strings in the core files, as they don't have comment fields.
 Instead of serial numbers, use the form "AB2_2024-08-06_14:40:00".
 
 Changes to daily stats
+
 - Add minimum and maximum temperature.
 
 Seasonal stats
+
 - Report_site now writes a seasonal stats CSV in addition to including stats as a table in report.
 - Round mean duration of DO to 0.1 hours.
 - Add standard deviation of DO.
@@ -33,6 +157,7 @@ are not clipped to these dates.
 footnote in the report.
 
 Changes to report:
+
 - Move figure captions above figures (which looks odd!).
 - Add vertical green lines marking starts of deployments to Fig. 2. ***Note***: this
 required adding a new column ("Deployment") to the core data file, as this file doesn't contain QC

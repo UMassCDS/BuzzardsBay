@@ -1,0 +1,125 @@
+---
+title: "tide_rider"
+output: html_document
+---
+
+```{r setup maps}
+
+library(leaflet)
+library(dplyr)
+library(viridis)  
+library(RColorBrewer)
+
+```
+
+
+# Tide Rider
+
+```{r depth plot}
+
+
+p <- bb_plot(d, dl,
+             focal_column = c("Depth"),
+             jump_pattern = "zzzzzzz",
+             focal_flag_pattern = "zzzzzz",
+             err_pattern = "zzzzzzz",
+             plot_label = "Depth",
+             y_label = "Depth (m)",
+             threshold_values = 0,
+             threshold_labels = "Surface",
+             threshold_colors = rgb(1, 0, 0, .8),
+             range_limit = range(d$Depth, na.rm = TRUE))
+
+p  <- p + ggplot2::scale_y_reverse()
+suppress_specific_warnings(print(p))
+
+```
+
+
+```{r map}
+
+d <- d[!is.na(d$Longitude) & !is.na(d$Latitude), ]
+
+
+# compute bounds with small padding if necessary
+lng_rng <- range(d$Longitude, na.rm = TRUE)
+lat_rng <- range(d$Latitude,  na.rm = TRUE)
+if (diff(lng_rng) == 0) lng_rng <- lng_rng + c(-0.01, 0.01)
+if (diff(lat_rng) == 0) lat_rng <- lat_rng + c(-0.01, 0.01)
+
+
+
+alpha <- 0.7
+
+spectral_fun <- RColorBrewer::brewer.pal(11, name = "Spectral") |> colorRampPalette()
+
+depth_colors <- rev(viridis::viridis(256, alpha = alpha))
+salinity_colors <- rev(viridis::plasma(256, alpha = alpha))
+do_colors <- rev(scales::alpha(rev(spectral_fun(256)), alpha = alpha))
+                           
+pal_depth <- colorNumeric(depth_colors, 
+                          domain = d$Depth, na.color = "transparent")
+
+# See: https://stackoverflow.com/questions/40276569/reverse-order-in-r-leaflet-continuous-legend
+pal_depth_rev <- colorNumeric(rev(depth_colors), 
+                            domain = d$Depth, na.color = "transparent")
+                      
+
+
+pal_do    <- colorNumeric(do_colors,
+                          domain = d$DO, na.color = "transparent")
+pal_do_rev    <- colorNumeric(rev(do_colors),
+                          domain = d$DO, na.color = "transparent")
+
+pal_salinity    <- colorNumeric(salinity_colors,
+                          domain = d$Salinity, na.color = "transparent")
+pal_salinity_rev    <- colorNumeric(rev(salinity_colors),
+                          domain = d$Salinity, na.color = "transparent")
+
+
+d$popup <- paste0("<b>", d$Date_Time, "</b><br>",
+                  "Depth: ", d$Depth, "<br>",
+                  "DO: ", d$DO, "<br>",
+                  "Lat/Lon: ", round(d$Latitude,5), ", ", round(d$Longitude,5), "<br>", 
+                  "Salinity: ", d$Salinity)
+
+leaflet(d) %>%
+  # add two basemap providers as baseGroups (radio buttons)
+  addProviderTiles(providers$CartoDB.Positron, group = "Map") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Orthophoto") %>%
+  # zoom to data extent
+  fitBounds(lng1 = lng_rng[1], lat1 = lat_rng[1], lng2 = lng_rng[2], lat2 = lat_rng[2]) %>%
+  # marker overlays (checkboxes) colored by Depth and DO
+  addCircleMarkers(lng = ~Longitude, lat = ~Latitude,
+                   color = ~pal_depth(Depth), fillOpacity = 0.9, radius = 3, stroke = FALSE,
+                   popup = ~popup, group = "Color by Depth") %>%
+  addCircleMarkers(lng = ~Longitude, lat = ~Latitude,
+                   color = ~pal_do(DO), fillOpacity = 0.9, radius = 3, stroke = FALSE,
+                   popup = ~popup, group = "Color by DO") %>%
+   addCircleMarkers(lng = ~Longitude, lat = ~Latitude,
+                   color = ~pal_salinity(Salinity), fillOpacity = 0.9, radius = 3, stroke = FALSE,
+                   popup = ~popup, group = "Color by Salinity") %>%
+  # show Positron by default, hide orthophoto initially
+  showGroup("Map") %>%
+  hideGroup("Orthophoto") %>%
+  # optionally hide the second marker layer initially
+  showGroup("Color by Depth") %>%
+  hideGroup("Color by DO") %>%
+  hideGroup("Color by Salinity") %>%
+  
+  addLayersControl(
+    baseGroups = c("Map", "Orthophoto"),
+    overlayGroups = c("Color by Depth", "Color by DO", "Color by Salinity"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addLegend("bottomright", pal = pal_depth_rev, values = ~Depth, title = "Depth", opacity = 1,
+             labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE))) %>% 
+  
+   addLegend("bottomleft", pal = pal_do_rev, values = ~DO, title = "DO", opacity = 1,
+              labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE)))  %>% 
+  
+   addLegend("bottomleft", pal = pal_salinity_rev, values = ~Salinity, title = "Salinity", opacity = 1, 
+             labFormat = labelFormat(transform = function(x) sort(x, decreasing = TRUE))) 
+
+
+```

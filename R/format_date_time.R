@@ -12,6 +12,7 @@
 #' x <- "06/10/19 08:05:37  GMT-04:00"
 #' format_date_time(x)
 #' }
+#' @keywords internal
 format_date_time <- function(x) {
   x <- gsub("[[:blank:]]*GMT.*$", "", x) # drop GMT offset
   x <- lubridate::mdy_hms(x) |> format(format = "%Y-%m-%d %H:%M:%S")

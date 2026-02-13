@@ -24,10 +24,10 @@ A list with items:
 \description{
 \code{qc_deployment()} will:
 \enumerate{
-\item Read the calibrated dissolved oxygen and conductivity files created by
-HOBOware.
-\item Read and parse the associated Details files into nested lists.
-\item Reformat and merge the data files.
+\item Read  calibrated dissolved oxygen and conductivity data from one or more
+files.  See import types below for format information.
+\item Read metadata from a YAML or text file.
+\item Combine and reformat the data.
 \item Add automatic flags, and create columns for manual QC
 \item Write the data and metadata.
 \item If \code{report = TRUE} it will call \code{\link[=make_deployment_report]{make_deployment_report()}} to make
@@ -35,22 +35,187 @@ and interactive HTML report with plots for QAQC.
 }
 }
 \details{
-\code{qc_deployment()} assumes the files are arranged in a specific
-\href{https://docs.google.com/document/d/1kJttcEXzpNNknGwjkVwdYHw9LzZyjJ-FaX0CrU7H7NU/edit#heading=h.s6vs4d7vj0cn}{file structure}.
-}
-\note{
 \code{qc_deployment()} calls \code{\link[=import_calibrated_data]{import_calibrated_data()}} which currently supports
-three completely different import functions.  See \code{\link[=import_calibrated_data]{import_calibrated_data()}}
-for documentation on the data formats they each expect.
+three completely different import functions.
 
 In all cases input files are looked for within a \code{Calibration} sub directory
 to the deployment directory (\code{dir}).
 }
+\section{Import Types}{
+\subsection{Import Type 0 - Single CSV}{
+
+The Single CSV import is a fallback in case updates to HOBOware or
+the loggers themselves break the other imports.
+It expects a single CSV file that contains data for both Salinity and DO
+and a YAML (\code{.yml}) file - described below.
+
+To use this import:
+\enumerate{
+\item Make sure in \code{import_types.csv} there's a default line:
+\verb{default,0} This means that if an import type isn't identified for a model
+listed in a placement that the Single CSV import will be used.
+\item In \code{placments.csv} if you want to use the CSV import use a model name
+that is NOT in \code{import_types.csv} so the default CSV import is used.
+I recommend using the model name with \code{-CSV} appended; e.g.
+instead of \code{MX801} use \code{MX801-CSV}.
+\item In the deployment's \code{Calibrated} directory create an appropriate CSV and
+YAML file as described below.
+}
+\subsection{CSV file}{
+
+The CSV file would likely be created with external code or manually from
+calibrated output from HOBOWare.
+
+In the CSV file the columns are resolved by name not order and the import
+will attempt to resolve several different column naming conventions. Any
+of the following should work:
+\itemize{
+\item The canonical column names used by this package:  \code{"Date_Time"}, \code{"Raw_DO"},
+\code{"Temp_DOLog"}, \code{"DO"}, \code{"DO_Pct_Sat"}, \code{"High_Range"}, \code{"Temp_CondLog"},
+\code{"Spec_Cond"}, \code{"Salinity"}, \code{"Depth"}, \code{"Latitude"}, and \code{"Longitude"}.
+The last three are optional, the rest are required.
+\item Columns names from the MX801 logger. For example by saving the first sheet
+as a CSV.
+\item Column names from the U24 and U26 loggers. However, when combining data
+from these two loggers into a single CSV the two temperature columns will
+have to be manually renamed to \code{"Temp_CondLog"}, and \code{"Temp_DOLog"}
+as they are otherwise indistinguishable.
+}
+
+Please verify carefully that the various DO, Conductivity, and Salinity columns
+are properly identified.
+For example make sure the resulting "DO" column has the calibrated values
+and the "Raw_DO" column has the un-calibrated values.
+}
+
+\subsection{YAML file}{
+
+In the YAML file the following items are required:
+\itemize{
+\item \strong{calibration_start:} The date and time of the start of the deployment.
+For field calibrated sensors (U24, U26) this is also the calibration time.
+For factory calibrated sensors (MX801) this is NOT the calibration time.
+\item \strong{calibration_end:} As in the above, the end of the deployment and/or
+calibrated window.
+\item \strong{timezone:} The timezone as reported by the logger and/or calibration
+software.
+The output from HOBOware uses a GMT offset like "GMT-04:00",
+which is not a broadly supported timezone but is accepted here.
+The MX801 uses a timezone code "EST" which is also accepted here.
+\item \strong{do_device:} Information on the DO sensor or logger with items:
+\itemize{
+\item \strong{product:} The dissolved oxygen sensor e.g.
+"HOBO U26-001 Dissolved Oxygen", "U26-01", or "MX801".
+\item \strong{serial_number:} The device serial number.
+}
+\item \strong{cond_device:} List with information on the conductivity sensor with
+items:
+\itemize{
+\item \strong{product:} The conductivity sensor e.g. "HOBO U24-002 Conductivity"
+\item \strong{serial_number:} Conductivity sensor serial number
+Additional items that appear in the
+\href{https://docs.google.com/document/d/1GKw3eq9ALigEcX_AWl4vnlejSzsTiIVHzy6LoKCR1jw/edit?tab=t.0}{metadata documentation}
+are permitted and will be retained. Items that do not appear in that document
+will be ignored.
+}
+}
+}
+
+}
+
+\subsection{Import Type 1 - U24, U26}{
+
+This input works with HOBOware calibrated CSV files from U24 and U26 loggers,
+and expects to find two CSV files and two \code{details.txt}
+files in the calibration directory. The Dissolved Oxygen files should have
+\code{"Do_"} somewhere in the names while the Conductivity files should have
+either \code{"Cond_"} or \verb{"Sal_} in the names.
+
+Do not include \code{"_TR_"} or \code{"_TR."} in the file names as they are used
+to indicate Tide Rider location data.
+}
+
+\subsection{Import Type 2 - MX801}{
+
+This is the import type for the MX801 logger, it expects a \code{.xlxs}
+file with combined data from both loggers and on the first sheet, and a
+\code{details.yml} file in the calibrated directory.
+The YAML file will be created by users and should have this format:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{calibration_start: 2025-01-02 15:50:02
+calibration_end: 2025-01-04 13:00:02
+timezone: EST
+serial_number: 22145899
+}\if{html}{\out{</div>}}
+
+\code{calibration_start} and \code{calibration_end} define the start and end
+of the deployment window - even if no calibration took place.
+This is a legacy of the U24 and U26 loggers
+where the calibrated window and the deployment window were the same.
+
+The path to an example file can be retrieved with:
+\code{system.file("extdata/2025/BBC/2025-01-04/Calibrated/details.yml", package = "BuzzardsBay")}
+
+In \code{placements.csv} there should be two lines for the MX801 import.
+One each for \code{"DO"} and \code{"Cond"} both of which should
+indicate \code{"MX801"} as the model and have the same Serial Number.
+
+To create a local copy of example data for the MX801 import run this in R:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{example_paths <- setup_example_dir(site_filter = "BBC",
+                                  year_filter = 2025)
+deployment_dirs <- example_paths$deployments
+print(deployment_dirs)
+}\if{html}{\out{</div>}}
+
+To run QC on example data:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{qc_deployment(deployment_dirs[1])
+}\if{html}{\out{</div>}}
+}
+}
+
+\section{Tide Rider Import}{
+Tide Riders are mobile sensor platforms that actively control depth in the
+water column and move laterally with the tides.
+
+Tide Rider data can be included with any of the above imports, although
+currently we only anticipate Tide Riders being
+equipped with the U24 and U26 loggers.
+
+Each Tide Rider should be treated as a independent "Site" with a unique
+site ID that should be in the sites and placements tables. Tide riders
+do not need to be in the import_types table and the serial number
+for tide riders is not required in nor used from the placements table.
+
+Tide rider data should be included along with the DO and Conductivity
+data in the calibrated directory for the "site".  For example
+"2025/TRS102/2025-08-14/Calibrated" would hold both the logger and tide rider
+data for the TRS102 tide rider ("site") for the deployment ending on
+2025-08-14. The Tide Rider data should be in a CSV file with\code{"TR"} in the name
+isolated from other characters with \code{"_"} and/or \code{"."} e.g. \code{"data_TR.csv"};
+beginning the file with \code{"TR"} does not count it should not have \code{"Cond_"},\code{"DO_"},
+or \code{"Sal_"} in the name as those indicate the calibrated CSV logger files.
+
+The expected columns are listed below.
+Alternate names are allowed in the CSV but will be renamed on import
+to the standard name. Names used in the original example file are bold.\tabular{rr}{
+   \strong{Standard Name} \tab \strong{Alternates allowed in input} \cr
+   Date_Time \tab \strong{Time} \cr
+   \strong{Latitude} \tab (none) \cr
+   \strong{Longitude} \tab (none) \cr
+   Depth \tab Logger Depth, \strong{Logger Depth (m)} \cr
+   TR_Flags \tab \strong{Flags} \cr
+}
+
+
+The \code{"TR_Flags"} column is required for but not used.
+}
+
 \examples{
 \dontrun{
   paths <- setup_example_dir()
   a <- qc_deployment(paths$deployment)
-
 }
 
 }

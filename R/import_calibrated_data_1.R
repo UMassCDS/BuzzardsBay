@@ -135,6 +135,7 @@ import_calibrated_data_1 <- function(paths) {
     c("cond_device", "header_created")
   )
   for(item in dt_items){
+    if(md[[item]] == "none") md[[item]] <- NA # DO in TR 2025=08-12 example
     md[[item]] <- format_date_time(md[[item]])
   }
 

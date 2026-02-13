@@ -4,3 +4,7 @@
 .Ruserdata
 inst/rmd/*.html
 BuzzardsBay.Rproj
+docs
+inst/doc
+inst/extdata/*.html
+*.DS_Store
