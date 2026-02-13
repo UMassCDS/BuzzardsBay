@@ -171,8 +171,22 @@ stitch_site <- function(site_dir, max_gap = 1, report = FALSE, baywatchers = TRU
    if(failure)
       stop('Invalid QC codes')
 
+
+   reround <- function(x, digits) {
+
+      x[x == 'DR'] <- NA
+      x <- as.character(round(as.numeric(x), digits))
+      x[is.na(x)] <- 'DR'
+      x
+   }
+
+   z2 <- z                                                                             # special rounding for some columns
+   z2$Salinity <- reround(z2$Salinity, 2)
+   z2$High_Range <- reround(z2$High_Range, 0)
+   z2$Spec_Cond <- reround(z2$Spec_Cond, 0)
+
    res[2] <- file.path(rpath, paste0('WPP_', site, '_', year, '.csv'))
-   write.csv(z[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
+   write.csv(z2[, wpp_cols], file = file.path(site_dir, res[2]), row.names = FALSE,
              quote = TRUE, na = '')                                                    # "WPP" result file, with all columns; rejected values replaced with "DR"
 
    z[z == 'DR'] <- NA

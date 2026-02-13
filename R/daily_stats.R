@@ -35,7 +35,7 @@ daily_stats <- function(core) {
    z$Duration_Under_6 <- longest_duration(core[, c('Date', 'Date_Time', 'DO6')]) # duration of longest run under 6 mg/L
 
    core$DO3 <- core$DO < 3                                                       # proportion with DO < 3 mg/L
-   z$Prop_Under_3 <- aggreg(core$DO6, core$Date, sum) /
+   z$Prop_Under_3 <- aggreg(core$DO3, core$Date, sum) /
       aggreg(!is.na(core$DO), core$Date, sum)
    z$Prop_Under_3[is.nan(z$Prop_Under_3)] <- NA
 

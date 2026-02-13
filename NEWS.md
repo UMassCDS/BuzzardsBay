@@ -1,3 +1,10 @@
+# BuzzardsBay 0.1.0.9030
+
+Minor changes to reporting:
+- Fix bug that misreported proportion of DO under 3 mg/L
+- in daily_stats.csv, change precision of Min_Temp and Max_Temp to 2 digits
+- in WPP<site><year>.csv, change precision of Saility to 2 digits, and High_Range and Spec_Cond to whole numbers
+
 # BuzzardsBay 0.1.0.9029
 
 Implement changes to analysis module requested in April
