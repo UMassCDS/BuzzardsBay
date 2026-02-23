@@ -97,16 +97,30 @@ import_calibrated_data_0 <- function(paths) {
   # Process data
   #============================================================================#
 
-  # Subset to expected columns
-  final_names <- get_expected_columns("calibrated", names(d))
-  if (!"Salinity" %in% names(d)) {
-    stop("Salinity input column missing in CSV file.")
-  }
+
+
+
   # This is a hack for MX801 or other data streams that don't have two
   # version of salinity, to make the output compatible with the original
   # processing which included two salinity data sets
-  if(!"Salinity_DOLog" %in% names(d)) {
+  if(!"Salinity_DOLog" %in% names(d) && "Salinity" %in% names(d)) {
     d$Salinity_DOLog <- d$Salinity
+  }
+
+
+  # Subset to expected columns
+  final_names <- get_expected_columns("calibrated", names(d))
+  salt_names <- get_expected_columns("calibrated_salinity")
+
+  # Handle special case of import without salinity information
+  # Invoked if all salinity cols are missing
+  # Add them in with NA values
+  if(!any(salt_names %in% names(d))) {
+    a <- matrix(data = NA_real_, nrow = nrow(d), ncol = length(salt_names), dimnames = list(NULL, salt_names)) |>
+      as.data.frame()
+    d <- cbind(d, a)
+  } else if (!"Salinity" %in% names(d)) {
+      stop("Salinity input column missing in CSV file.")
   }
 
   if (!all(final_names %in% names(d))) {

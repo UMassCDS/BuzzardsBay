@@ -21,6 +21,13 @@ expected_column_names <- list(
       "Longitude", # optional
       "Depth" ),     # optional
 
+  # This is used in the simple import to allow import without the salinity data
+  calibrated_salinity =
+    c("High_Range",
+      "Temp_CondLog",
+      "Spec_Cond",
+      "Salinity",
+      "Salinity_DOLog"),
 
   # Note intermediate columns include individual flag columns for each data
   # column.  These will be combined in $Flags and then dropped.
@@ -172,5 +179,7 @@ optional_cols <- c(optional_base,
 expected_column_names$optional_calibrated <- optional_cols
 expected_column_names$optional_qc_intermediate <- optional_cols
 expected_column_names$optional_qc_final <- optional_cols
+
+
 
 rm(optional_base, optional_cols)

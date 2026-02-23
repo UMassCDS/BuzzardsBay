@@ -6,7 +6,25 @@ test_that("qc_deployment() works with import type 0 (simple CSV)", {
                                      year_filter = 2025)
   deployment_dir <- example_paths$deployment
   paths <- lookup_paths(deployment_dir = deployment_dir)
+
+
+  # Add some NA values see Issue #30
+  csv <- list.files(paths$deployment_cal_dir, pattern = "\\.csv$", full.names = TRUE)
+  d <- readr::read_csv(csv)
+  na_allowed_cols <- names(d)[!grepl("Date-Time", names(d), ignore.case = TRUE)]
+
+  d[c(30, 40:49), na_allowed_cols] <- NA
+
+  # Write modified dat file
+  readr::write_csv(d, csv)
+
+
   expect_no_error(qc_deployment(deployment_dir))
+
+
+
+
+
 
   d <- readr::read_csv(paths$deployment_auto_qc, n_max = 100)
   col_spec <- spec(d)
@@ -20,6 +38,63 @@ test_that("qc_deployment() works with import type 0 (simple CSV)", {
   expect_equal(d2$Date_Time[1], "2025-01-02 14:50:02")
 
 })
+
+
+test_that("qc_deployment() works with import type 0 (simple CSV) and missing salinity data and various data formats", {
+
+  # Setup
+  # Standard CSV
+  a <- local_example_dir(site_filter = "SIM",
+                                     year_filter = 2025)
+  paths <- lookup_paths(deployment_dir = a$deployment)
+
+  # Delete Extra Cols
+  csv <- list.files(paths$deployment_cal_dir, pattern = "\\.csv$", full.names = TRUE)
+
+  d <- readr::read_csv(csv)
+
+  # These are specific to this test file
+  salinity_cols <- c("Temperature (°C) (W-CTD-00 22118267)",
+                     "Electrical Conductivity (µS/cm) (W-CTD-00 22118267)", "Specific Conductivity (µS/cm) (W-CTD-00 22118267)",
+                     "Salinity (PSU) (W-CTD-00 22118267)")
+
+  stopifnot(all(salinity_cols %in% names(d)))
+
+  # Change format to month/day/year h:m:s to make sure that works too
+  d <- d[, !colnames(d) %in% salinity_cols]
+  d$`Date-Time (EST)` <-  d$`Date-Time (EST)` |> format_csv_date_time( format = "character")
+
+
+
+  # Add some empty cells
+  d$`Measured DO (mg/L) (W-DO 22124011)`[c(5, 10:13)] <- NA
+
+  na_allowed_cols <- c("Temperature (°C) (W-DO 22124011)",
+  "Measured DO (mg/L) (W-DO 22124011)", "Salinity-Adjusted DO (mg/L) (W-DO 22124011)",
+  "Absolute Pressure (kPa) (W-CTD-00 22118267)", "Barometric Pressure (kPa)",
+  "Percent Saturation (%)", "Water Level (m)")
+
+  d[c(30, 40:49), na_allowed_cols] <- NA
+
+  # Write modified dat file
+  readr::write_csv(d, csv)
+
+  # change md date format as well
+  yaml <-  list.files(paths$deployment_cal_dir, pattern = "\\.yml$", full.names = TRUE)
+  l <- readLines(yaml)
+  l[1] <- "calibration_start: 1/2/2025 14:50:02"
+  writeLines(l, yaml)
+
+
+  # Test
+  expect_no_error(qc_deployment(paths$deployment_dir))
+
+
+})
+
+
+
+
 
 # Import type 1 -- U24 and U26
 

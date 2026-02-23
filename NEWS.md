@@ -2,6 +2,15 @@
 
 * Document Tide Rider example data.  [#29](https://github.com/UMassCDS/BuzzardsBay/issues/29)
 
+**Changes to simple CSV import (type 0)**
+
+- Allow the same flexibility for date formats in the YAML file as we allow in the CSV file.
+- Allow users to import files that are missing all of the salinity data.  Note this will only work if all of the salinity
+ columns are omitted. 
+- Allow for NA cells in most columns but not in date-time column. Updates now prevent errors during the QC process from 
+  internal NAs.  Note though that internal NA's may prevent checks from triggering.
+  For example the sequence 0, NA, 1  will not trigger a jump flag even if 0 next to 1 would.
+
 
 # BuzzardsBay 1.0.0.9002
 
