@@ -47,7 +47,7 @@ ir_check_raw_do <- function(d, interval = 0.25) {
   sv <- d %in% bbp$logger_error_values
   flag[sv] <- paste0(flag[sv], "Re:")
 
-  sv <- d > bbp$max_raw_do
+  sv <- d > bbp$max_raw_do & !is.na(d)
   flag[sv] <-  paste0(flag[sv], "Rh:")
 
   flag

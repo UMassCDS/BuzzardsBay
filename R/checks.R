@@ -58,6 +58,7 @@ check_do <- function(x, interval = 15, site, sites) {
     slider::slide_vec(x, .before = n - 1,
                       .f = function(x) all(x < bbp$do_streak_min),
                       .complete = TRUE)
+  end_of_streak[is.na(end_of_streak)] <- FALSE
 
   # Expand flag to catch all the values that were in the streak
   in_low_streak <- slider::slide_vec(end_of_streak, .after = n - 1, .f = any)
@@ -82,8 +83,8 @@ check_do <- function(x, interval = 15, site, sites) {
   # High or low for site
   #----------------------------------------------------------------------------#
   si <- which(sites$site == site) # site index
-  low_for_site <- x < sites$Min_QC_DO[si]
-  high_for_site <- x > sites$Max_QC_DO[si]
+  low_for_site <- x < sites$Min_QC_DO[si] & !is.na(x)
+  high_for_site <- x > sites$Max_QC_DO[si] & !is.na(x)
 
 
   #----------------------------------------------------------------------------#
