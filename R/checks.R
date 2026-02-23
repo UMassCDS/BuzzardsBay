@@ -58,6 +58,7 @@ check_do <- function(x, interval = 15, site, sites) {
     slider::slide_vec(x, .before = n - 1,
                       .f = function(x) all(x < bbp$do_streak_min),
                       .complete = TRUE)
+  end_of_streak[is.na(end_of_streak)] <- FALSE
 
   # Expand flag to catch all the values that were in the streak
   in_low_streak <- slider::slide_vec(end_of_streak, .after = n - 1, .f = any)
@@ -82,8 +83,8 @@ check_do <- function(x, interval = 15, site, sites) {
   # High or low for site
   #----------------------------------------------------------------------------#
   si <- which(sites$site == site) # site index
-  low_for_site <- x < sites$Min_QC_DO[si]
-  high_for_site <- x > sites$Max_QC_DO[si]
+  low_for_site <- x < sites$Min_QC_DO[si] & !is.na(x)
+  high_for_site <- x > sites$Max_QC_DO[si] & !is.na(x)
 
 
   #----------------------------------------------------------------------------#
@@ -115,21 +116,23 @@ check_salinity <- function(x, interval = 15, site, sites) {
   diff <- c(x[-1], NA) - x
   end_of_jump <- abs(diff) > bbp$sal_max_jump & !is.na(diff)
   big_jump <- end_of_jump | c(FALSE, end_of_jump[-length(end_of_jump)])
-  big_jump
+  big_jump[is.na(big_jump)] <- FALSE
+
 
   # Low variation
   n <- ceiling(bbp$sal_lv_duration / interval) + 1
   low_var <- has_low_variation(x,
                                max_range = bbp$sal_lv_range,
                                n)
-
-  #----------------------------------------------------------------------------#
+  low_var[is.na(low_var)] <- FALSE
+   #----------------------------------------------------------------------------#
   # High or low for site
   #----------------------------------------------------------------------------#
   si <- which(sites$site == site) # site index
   low_for_site <- x < sites$Min_QC_Sal[si]
   high_for_site <- x > sites$Max_QC_Sal[si]
-
+  low_for_site[is.na(low_for_site)] <- FALSE
+  high_for_site[is.na(high_for_site)] <- FALSE
   #----------------------------------------------------------------------------#
   # Set flags
   #----------------------------------------------------------------------------#

@@ -132,10 +132,17 @@ midnight the time component of the date-time is dropped.
 
 ### Tide Rider 
 
+#### TSR102 2025-08-15
+
+Complete tide rider example data including DO and Cond. logger data.
+
+To setup an example using this data:
+`a <- local_example_dir(year_filter = 2025, site_filter = "TRS102", delete_old = TRUE)`
+
 
 #### WFH 2024-04-09
 
-This is the first example of tide rider output I receeived.
+This is the first example of tide rider output I received.
 The TR_WFH_20240409_TRSX01.csv was from Michael Jakuba and 
 emailed to me by Kristin Huizenga on 2024-12-05. 
 

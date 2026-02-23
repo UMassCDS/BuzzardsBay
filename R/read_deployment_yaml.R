@@ -159,5 +159,10 @@ read_deployment_yaml <- function(file, mx801 = FALSE)  {
     md$serial_number <- NULL # drop from list
   }
 
+  # Force dates to consistent format
+  md$calibration_start <- format_csv_date_time(md$calibration_start, format = "character")
+  md$calibration_end <- format_csv_date_time(md$calibration_end, format = "character")
+
+
   return(md)
 }
