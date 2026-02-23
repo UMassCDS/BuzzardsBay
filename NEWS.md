@@ -1,3 +1,8 @@
+# BuzzardsBay 1.0.0.9003
+
+* Document Tide Rider example data.  [#29](https://github.com/UMassCDS/BuzzardsBay/issues/29)
+
+
 # BuzzardsBay 1.0.0.9002
 
 Minor changes to reporting:
