@@ -22,7 +22,7 @@
       median_temp                       Median Temp (C)                     26.2
       mean_temp                           Mean Temp (C)                       26
       q3_temp                               Q3 Temp (C)                     27.5
-      max_temp                             Max Temp (C)                     30.4
+      max_temp                             Max Temp (C)                    30.35
       std_temp    Standard deviation of temperature (C)                        2
       first_do_6            First date with DO < 6 mg/L               2024-07-01
       first_do_3            First date with DO < 3 mg/L               2024-07-17
@@ -50,12 +50,12 @@
       q3_do                                Q3 DO (mg/L)                      7.6
       max_do                              Max DO (mg/L)                     10.2
       std_do            Standard deviation of DO (mg/L)                      1.2
-      min_temp                             Min Temp (C)                     21.5
+      min_temp                             Min Temp (C)                    21.50
       q1_temp                               Q1 Temp (C)                     24.4
       median_temp                       Median Temp (C)                     26.2
       mean_temp                           Mean Temp (C)                     26.0
       q3_temp                               Q3 Temp (C)                     27.5
-      max_temp                             Max Temp (C)                     30.4
+      max_temp                             Max Temp (C)                    30.35
       std_temp    Standard deviation of temperature (C)                      2.0
       first_do_6            First date with DO < 6 mg/L               2024-07-01
       first_do_3            First date with DO < 3 mg/L               2024-07-17
