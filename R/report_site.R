@@ -149,7 +149,7 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    # Writing to local temp file and then copying to final location to avoid
    # weird OneDrive issues  see #24
    rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
-                     params = pars, quiet = TRUE)
+                     params = pars, quiet = FALSE)
 
    message('Report rendered. Copying report file...')
    file.copy(temp_report_file, abs_report_file)
