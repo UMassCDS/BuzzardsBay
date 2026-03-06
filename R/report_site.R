@@ -139,11 +139,19 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
+   message('===== Report diagnostics =====')
+   message('template = ', template)
+   message('report_file = ', report_file)
+   message('abs_report_file = ', abs_report_file)
+   message('temp_report_file = ', temp_report_file)
+
+   message('Rendering report...')
    # Writing to local temp file and then copying to final location to avoid
    # weird OneDrive issues  see #24
    rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
                      params = pars, quiet = TRUE)
 
+   message('Report rendered. Copying report file...')
    file.copy(temp_report_file, abs_report_file)
    file.remove(temp_report_file)
 
