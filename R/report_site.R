@@ -138,6 +138,9 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
+   long_tmp <- normalizePath(tempdir(), winslash = '/')                                   # Force long temp path for this R session to prevent Win 8.3 paths
+   Sys.setenv(TMPDIR = long_tmp, TMP = long_tmp, TEMP = long_tmp)
+
    message('===== Report diagnostics =====')
    message('template = ', template)
    message('report_file = ', report_file)
@@ -150,7 +153,6 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
                      params = pars, quiet = FALSE, output_options = list(keep_tex = TRUE))
 
-   stop()
 
    message('Report rendered. Copying report file...')
    file.copy(temp_report_file, abs_report_file)
