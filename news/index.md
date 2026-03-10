@@ -1,5 +1,10 @@
 # Changelog
 
+## BuzzardsBay 1.0.0.9004
+
+- Bug fix: When producing report PDF, Pandoc choked on long names in
+  path, effectively breaking it for users with long last names.
+
 ## BuzzardsBay 1.0.0.9003
 
 - Document Tide Rider example data.

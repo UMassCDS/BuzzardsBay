@@ -13,13 +13,13 @@ Source:
 [`DESCRIPTION`](https://github.com/UMassCDS/BuzzardsBay/blob/main/DESCRIPTION)
 
 Plunkett E, Compton B (2026). *BuzzardsBay: Process and analyze data for
-the COMBB project*. R package version 1.0.0.9003,
+the COMBB project*. R package version 1.0.0.9004,
 <https://umasscds.github.io/BuzzardsBay/>.
 
     @Manual{,
       title = {BuzzardsBay: Process and analyze data for the COMBB project},
       author = {Ethan Plunkett and Bradley Compton},
       year = {2026},
-      note = {R package version 1.0.0.9003},
+      note = {R package version 1.0.0.9004},
       url = {https://umasscds.github.io/BuzzardsBay/},
     }
