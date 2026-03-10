@@ -36,6 +36,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    max_interp <- 10                                                                       # max distance for Baywatchers interpolation (min)
 
+
+
    if(check) {
       if(!check_site(site_dir, check_report = FALSE, check_baywatchers = baywatchers))
          stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
@@ -124,8 +126,7 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    template <- system.file('rmd/seasonal_report.rmd', package = 'BuzzardsBay', mustWork = TRUE)
    report_file <- file.path(site_dir, 'combined', paste0('report_', site, '_', year, '.pdf'))
    abs_report_file <- file.path(normalizePath(file.path(site_dir, 'combined')), paste0('report_', site, '_', year, '.pdf'))
-   temp_report_file <- file.path(tempdir(), basename(abs_report_file))
-
+   temp_report_file <- file.path(normalizePath(tempdir(), winslash = '/'), basename(abs_report_file))
 
    long_site <- get_site_name(site_dir)
    title <- paste0(long_site, ' (', site, ') in ', year)
@@ -139,10 +140,15 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    pars <- list(title = title, date = date, stat = seasonal$stat, value = seasonal$value)
 
-   # Writing to local temp file and then copying to final location to avoid
-   # weird OneDrive issues  see #24
+   long_tmp <- normalizePath(tempdir(), winslash = '/')                                   # Force long temp path for this R session to prevent Win 8.3 paths
+   Sys.setenv(TMPDIR = long_tmp, TMP = long_tmp, TEMP = long_tmp)
+
+
+   msg('Rendering report...')
+   # Writing to local temp file and then copying to final location to avoid weird OneDrive issues  see #24
    rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
-                     params = pars, quiet = TRUE)
+                     params = pars, quiet = TRUE, output_options = list(keep_tex = FALSE))
+
 
    file.copy(temp_report_file, abs_report_file)
    file.remove(temp_report_file)
