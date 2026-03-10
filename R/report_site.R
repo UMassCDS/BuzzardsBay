@@ -36,6 +36,8 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
 
    max_interp <- 10                                                                       # max distance for Baywatchers interpolation (min)
 
+
+
    if(check) {
       if(!check_site(site_dir, check_report = FALSE, check_baywatchers = baywatchers))
          stop('check_site failed. Address the issues or rerun report_site with check = FALSE.')
@@ -141,20 +143,13 @@ report_site <- function(site_dir, check = TRUE, baywatchers = TRUE, salinity = T
    long_tmp <- normalizePath(tempdir(), winslash = '/')                                   # Force long temp path for this R session to prevent Win 8.3 paths
    Sys.setenv(TMPDIR = long_tmp, TMP = long_tmp, TEMP = long_tmp)
 
-   message('===== Report diagnostics =====')
-   message('template = ', template)
-   message('report_file = ', report_file)
-   message('abs_report_file = ', abs_report_file)
-   message('temp_report_file = ', temp_report_file)
 
-   message('Rendering report...')
-   # Writing to local temp file and then copying to final location to avoid
-   # weird OneDrive issues  see #24
+   msg('Rendering report...')
+   # Writing to local temp file and then copying to final location to avoid weird OneDrive issues  see #24
    rmarkdown::render(input = template, output_file = temp_report_file,                     # write PDF (have to use absolute path here 😡)
-                     params = pars, quiet = FALSE, output_options = list(keep_tex = TRUE))
+                     params = pars, quiet = TRUE, output_options = list(keep_tex = FALSE))
 
 
-   message('Report rendered. Copying report file...')
    file.copy(temp_report_file, abs_report_file)
    file.remove(temp_report_file)
 
